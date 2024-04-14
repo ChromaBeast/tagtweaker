@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "768847026435",
+    "project_id": "tagtweaker-sheersh",
+    "storage_bucket": "tagtweaker-sheersh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768847026435:android:12d5205e1198d3e5167136",
+        "android_client_info": {
+          "package_name": "com.sheersh.tag_tweaker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768847026435-1fapgf0eqqle6vds1sp4tjpi8ljibd31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAikjFp-pCDZ-fKkNvZO1cFSra2reYQIJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768847026435-1fapgf0eqqle6vds1sp4tjpi8ljibd31.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768847026435-vqpcarcltvegdrqsehonm9ssjormr731.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.catalogueApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
