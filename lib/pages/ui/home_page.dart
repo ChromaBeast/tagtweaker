@@ -1,0 +1,79 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import '../../widgets/homepage/category_row_4.dart';
+import '../../widgets/homepage/circular_row_1.dart';
+import '../../widgets/homepage/corousel_2.dart';
+import '../../widgets/homepage/image_banner_3.dart';
+import '../auth/login_page.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.black,
+        title: const Text(
+          'Tag Tweaker',
+          style: TextStyle(fontFamily: 'Lobster'),
+        ),
+        actions: [
+          FirebaseAuth.instance.currentUser == null
+              ? IconButton(
+                  icon: const Icon(Icons.person),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    );
+                  },
+                )
+              : Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        FirebaseAuth.instance.currentUser?.photoURL ??
+                            'https://via.placeholder.com/150',
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.logout),
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            circularRow(),
+            carouselSlider(context),
+            const SizedBox(height: 10),
+            imageBanner(),
+            const SizedBox(height: 10),
+            categoryRow("Trending", "Now"),
+          ],
+        ),
+      ),
+    );
+  }
+}
