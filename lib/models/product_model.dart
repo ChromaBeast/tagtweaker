@@ -743,6 +743,15 @@ class Product {
     }
   ];
 
+  static List categories = [
+    "Smartphone",
+    "Laptop",
+    "Perfume",
+    "Skincare",
+    "Grocery",
+    "Home Decor",
+  ];
+
   static List search(String query) {
     return products
         .where((product) => product['title']
@@ -751,4 +760,14 @@ class Product {
             .contains(query.toLowerCase()))
         .toList();
   }
+
+  static List filterByCategory(String category) {
+    return products
+        .where((product) => product['category'] == category)
+        .toList();
+  }
+
+  static List catalogItems = products
+      .where((product) => product["ui"]["isInCatalog"] == true)
+      .toList();
 }

@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/authentication_bloc.dart';
 import '../ui/ui_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,17 +13,84 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationStarted());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
       body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildGoogleSignInButton(),
-            const SizedBox(width: 8),
-            _buildAnonymousSignInButton(),
-          ],
+        child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+            if (state == AuthenticationState.authenticated) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const UIPage(),
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state == AuthenticationState.authenticating) {
+              return const CircularProgressIndicator();
+            }
+
+            return Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    image: DecorationImage(
+                      image: AssetImage('assets/animations/splash_screen.gif'),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.black,
+                      ),
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                    color: Colors.white,
+                  ),
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Text(
+                        'Welcome to Tag Tweaker',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildGoogleSignInButton(),
+                          _buildAnonymousSignInButton(),
+                        ],
+                      ),
+                      //role based login
+                      // role selection
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -31,33 +98,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildGoogleSignInButton() {
     return InkWell(
-      onTap: () async {
-        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser!.authentication;
-        final OAuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const UIPage(),
-          ),
-        );
+      onTap: () {
+        BlocProvider.of<AuthenticationBloc>(context)
+            .add(GoogleSignInRequested());
       },
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 1,
-              offset: const Offset(0, 1),
-            ),
-          ],
           color: Colors.black,
           borderRadius: BorderRadius.circular(8),
         ),
@@ -76,14 +123,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildAnonymousSignInButton() {
     return InkWell(
-      onTap: () async {
-        await FirebaseAuth.instance.signInAnonymously();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const UIPage(),
-          ),
-        );
+      onTap: () {
+        BlocProvider.of<AuthenticationBloc>(context)
+            .add(AnonymousSignInRequested());
       },
       child: Container(
         height: 40,
@@ -100,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.black,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Text('sign in anonymously'),
+        child: const Text('Sign in anonymously'),
       ),
     );
   }

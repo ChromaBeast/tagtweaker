@@ -1,5 +1,5 @@
-import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:flutter/material.dart';
+import 'package:tag_tweaker/pages/ui/product_page.dart';
 
 import '../../models/searched_product_model.dart';
 import '../../widgets/functions/share_individual.dart';
@@ -17,6 +17,7 @@ class SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[900],
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Search Products'),
@@ -31,8 +32,8 @@ class SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildSearchTextField() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      margin: const EdgeInsets.all(10.0),
       child: TextField(
         controller: searchController,
         onChanged: (query) {
@@ -41,12 +42,14 @@ class SearchPageState extends State<SearchPage> {
           });
         },
         decoration: const InputDecoration(
+          contentPadding: EdgeInsets.all(10.0),
           hintText: 'Search Products',
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            borderRadius: BorderRadius.all(Radius.circular(30.0)),
           ),
         ),
+        cursorColor: Colors.white,
       ),
     );
   }
@@ -63,9 +66,10 @@ class SearchPageState extends State<SearchPage> {
           itemBuilder: (context, index) {
             return Container(
               margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(16.0),
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(10.0),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

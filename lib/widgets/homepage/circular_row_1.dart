@@ -1,65 +1,73 @@
 import 'package:flutter/material.dart';
 
-import '../../models/categories.dart';
 import '../../models/product_model.dart';
 import '../../pages/ui/category_page.dart';
 
-Widget circularRow() {
+Widget circularRow(BuildContext context) {
   return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(30),
+    ),
     padding: const EdgeInsets.all(10.0),
-    height: 180,
+    height: MediaQuery.of(context).size.height * 0.17,
     child: ListView.builder(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
-      itemCount: Category.categories.length,
+      itemCount: Product.categories.length,
       itemBuilder: (BuildContext context, int index) {
-        final category = Category.categories[index].toLowerCase();
+        final category = Product.categories[index].toLowerCase();
         final img = "assets/icons/$category.png";
         final categoryProducts = Product.products
             .where((element) => element['category'] == category)
             .toList();
         return Row(
           children: [
-            Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CategoryPage(
-                          categoryList: categoryProducts,
-                          category: category,
-                          text: Category.categories[index],
+            Container(
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryPage(
+                            categoryList: categoryProducts,
+                            category: category,
+                            text: Product.categories[index],
+                          ),
                         ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(5),
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        shape: BoxShape.circle,
                       ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.18,
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(255, 255, 255, 0.85),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Image.asset(img),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(img),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Hero(
-                  tag: Category.categories[index].toLowerCase(),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Text(Category.categories[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
+                  Hero(
+                    tag: Product.categories[index].toLowerCase(),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(Product.categories[index],
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const SizedBox(width: 20),
           ],
         );
       },
