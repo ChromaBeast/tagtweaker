@@ -18,12 +18,12 @@ class Product {
         "isTrending": true
       },
       "thumbnail":
-          "https://m.media-amazon.com/images/I/4193g0Lz6aL._SX300_SY300_QL70_FMwebp_.jpg", // Placeholder, find a better image when leaks appear
+          "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_cc5lmd.png?tr=w-640", // Placeholder, find a better image when leaks appear
       "images": [
-        "https://m.media-amazon.com/images/I/4193g0Lz6aL._SX300_SY300_QL70_FMwebp_.jpg",
-        "https://m.media-amazon.com/images/I/71JLhofuYJL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71ZdFihN4YL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71E-ptCgHcL._SX679_.jpg",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_cc5lmd.png?tr=w-640",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1706712983/Croma%20Assets/Communication/Mobiles/Images/303817_2_uil61o.png?tr=w-640",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_3_aaqm14.png?tr=w-640",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_4_wgxzg1.png?tr=w-640",
       ]
     },
     {
@@ -44,11 +44,11 @@ class Product {
         "isTrending": true
       },
       "thumbnail":
-          "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/e/6/-original-imagtwh4vnkzsrsg.jpeg?q=70&crop=false",
+          "https://gadgets.beebom.com/wp-content/uploads/2023/12/Google-Pixel-8-Pro.png?w=470",
       "images": [
-        "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/e/6/-original-imagtwh4vnkzsrsg.jpeg?q=70&crop=false",
-        "https://rukminim2.flixcart.com/image/128/128/xif0q/mobile/z/s/u/-original-imagtwh4kdbg5rvr.jpeg?q=70&crop=false",
-        "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/h/s/7/-original-imagtwh4m7aygzv3.jpeg?q=70&crop=false"
+        "https://gadgets.beebom.com/wp-content/uploads/2023/12/Google-Pixel-8-Pro.png?w=470",
+        "https://gadgets.beebom.com/wp-content/uploads/2023/12/Untitled-design-34.png?w=470",
+        "https://gadgets.beebom.com/wp-content/uploads/2023/12/Untitled-design-35.png?w=140&h=180"
       ]
     },
     {
@@ -69,11 +69,12 @@ class Product {
         "isTrending": true
       },
       "thumbnail":
-          "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
+          "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1708678829/Croma%20Assets/Communication/Mobiles/Images/300822_0_vy3iid.png?tr=w-640",
       "images": [
-        "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
-        "https://m.media-amazon.com/images/I/61HZS-ZSCLL._SL1500_.jpg",
-        "https://m.media-amazon.com/images/I/71kGvmn-t8L._SL1500_.jpg"
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1708678829/Croma%20Assets/Communication/Mobiles/Images/300822_0_vy3iid.png?tr=w-640",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1708678828/Croma%20Assets/Communication/Mobiles/Images/300822_4_avln9b.png?tr=w-640",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1708678831/Croma%20Assets/Communication/Mobiles/Images/300822_5_zmrbwu.png?tr=w-640",
+        "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1708678824/Croma%20Assets/Communication/Mobiles/Images/300822_9_wwghsb.png?tr=w-640"
       ]
     },
     {
