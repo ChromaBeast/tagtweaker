@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:tag_tweaker/models/favourite_products.dart';
 import 'package:flutter/material.dart';
+import 'package:tag_tweaker/models/favourite_products.dart';
 
 class ProductPage extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -18,6 +18,12 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(16.0),
+            bottomRight: Radius.circular(16.0),
+          ),
+        ),
         title: const Text('Product Page'),
       ),
       body: Column(

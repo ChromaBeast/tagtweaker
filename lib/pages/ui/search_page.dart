@@ -19,6 +19,13 @@ class SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
+        backgroundColor: Colors.grey[900],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(16.0),
+            bottomRight: Radius.circular(16.0),
+          ),
+        ),
         centerTitle: true,
         title: const Text('Search Products'),
       ),
