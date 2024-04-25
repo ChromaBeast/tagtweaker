@@ -22,28 +22,30 @@ Widget circularRow(BuildContext context) {
             .toList();
         return Row(
           children: [
-            Container(
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CategoryPage(
-                            categoryList: categoryProducts,
-                            category: category,
-                            text: Product.categories[index],
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
+            InkWell(
+              splashColor: Colors.transparent,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryPage(
+                      categoryList: categoryProducts,
+                      category: category,
+                      text: Product.categories[index],
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    Container(
                       margin: const EdgeInsets.all(5),
                       width: MediaQuery.of(context).size.width * 0.15,
                       decoration: BoxDecoration(
@@ -55,17 +57,17 @@ Widget circularRow(BuildContext context) {
                         child: Image.asset(img),
                       ),
                     ),
-                  ),
-                  Hero(
-                    tag: Product.categories[index].toLowerCase(),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Text(Product.categories[index],
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    Hero(
+                      tag: Product.categories[index].toLowerCase(),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(Product.categories[index],
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
