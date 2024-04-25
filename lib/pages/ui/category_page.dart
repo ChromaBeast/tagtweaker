@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 
 class CategoryPage extends StatelessWidget {
@@ -37,54 +38,90 @@ class CategoryPage extends StatelessWidget {
       body: GridView.builder(
         itemCount: categoryList.length,
         itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductPage(
-                          product: categoryList[index],
-                        ),
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductPage(
+                    product: categoryList[index],
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.4,
+              width: MediaQuery.of(context).size.width * 0.4,
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    );
-                  },
-                  child: Hero(
-                    tag: categoryList[index]['id'].toString(),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Image.network(
-                        categoryList[index]['thumbnail'].toString(),
-                        fit: BoxFit.contain,
-                        height: 200.0,
+                      child: Hero(
+                        tag: categoryList[index]['thumbnail'],
+                        child: Image.network(
+                          categoryList[index]['thumbnail'],
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                Hero(
-                  tag: categoryList[index]['title'].toString(),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Text(
-                      categoryList[index]['title'].toString(),
+                  const SizedBox(height: 10),
+                  Text(categoryList[index]['title'],
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white, // High contrast text
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
+                  RatingBar.builder(
+                    initialRating: categoryList[index]['rating'],
+                    minRating: 0,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    updateOnDrag: false,
+                    itemCount: 5,
+                    itemSize: 20, // Adjust the size of the stars
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.circle,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (double value) {},
+                    ignoreGestures: true,
+                  ),
+                  Text(
+                    "${categoryList[index]['category']}",
+                    style: TextStyle(
+                      color: Colors.grey[50], //  Lighter text
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
-                ),
-              ],
+                  Text(
+                    "by ${categoryList[index]['brand']}",
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: Colors.grey[400], // Slightly lighter 'by' text
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

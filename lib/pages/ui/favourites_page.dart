@@ -16,6 +16,12 @@ class _FavouritesPageState extends State<FavouritesPage> {
     return Scaffold(
         backgroundColor: Colors.grey[900],
         appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(16.0),
+              bottomRight: Radius.circular(16.0),
+            ),
+          ),
           backgroundColor: Colors.grey[900],
           centerTitle: true,
           title: const Text(

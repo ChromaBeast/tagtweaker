@@ -13,6 +13,12 @@ class PdfPreviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(16.0),
+              bottomRight: Radius.circular(16.0),
+            ),
+          ),
           title: const Text('PDF Preview'),
         ),
         body: PDFView(
