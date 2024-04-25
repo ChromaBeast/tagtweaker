@@ -122,16 +122,17 @@ class _PDFGenPageState extends State<PDFGenPage> {
           },
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: FloatingActionButton(
-        isExtended: true,
-        backgroundColor: Colors.white,
+        shape: const CircleBorder(),
+        backgroundColor: Colors.black,
         onPressed: () {
           _generatePDF(
             context,
           );
         },
-        child: const Icon(Icons.check_sharp, color: Colors.black),
+        child: const Icon(Icons.remove_red_eye_outlined, color: Colors.white),
       ),
     );
   }
