@@ -2,73 +2,95 @@
   "products": [
     {
       "id": 1,
-      "title": "iPhone 9",
-      "description": "An apple mobile which was not made by Apple, highly recommended for those who can't afford it but still want to feel like they own and use an",
-      "price": 549,
-      "discountPercentage": 12.96,
-      "rating": 4.69,
-      "stock": 94,
-      "brand": "Apple",
-      "category": "smartphones",
-      "thumbnail": "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
+      "title": "Samsung Galaxy S24 Ultra",
+      "description": "Samsung's anticipated flagship with potential upgrades in camera, processor, and possibly new design features.",
+      "price": 1299,
+      "discountPercentage": 0,
+      "rating": 4.8,
+      "stock": 80,
+      "brand": "Samsung",
+      "category": "smartphone",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true,
+        "isTrending": true
+      },
+      "thumbnail": "https://m.media-amazon.com/images/I/4193g0Lz6aL._SX300_SY300_QL70_FMwebp_.jpg",
       "images": [
-        "https://cdn.dummyjson.com/product-images/1/1.jpg",
-        "https://cdn.dummyjson.com/product-images/1/2.jpg",
-        "https://cdn.dummyjson.com/product-images/1/3.jpg",
-        "https://cdn.dummyjson.com/product-images/1/4.jpg",
-        "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg"
+        "https://m.media-amazon.com/images/I/4193g0Lz6aL._SX300_SY300_QL70_FMwebp_.jpg",
+        "https://m.media-amazon.com/images/I/71JLhofuYJL._SX679_.jpg",
+        "https://m.media-amazon.com/images/I/71ZdFihN4YL._SX679_.jpg",
+        "https://m.media-amazon.com/images/I/71E-ptCgHcL._SX679_.jpg"
       ]
     },
     {
       "id": 2,
-      "title": "iPhone X",
-      "description": "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
+      "title": "Google Pixel 8 Pro",
+      "description": "AI-powered camera, pure Android experience, great for photo enthusiasts.",
       "price": 899,
-      "discountPercentage": 17.94,
-      "rating": 4.44,
-      "stock": 34,
-      "brand": "Apple",
-      "category": "smartphones",
-      "thumbnail": "https://cdn.dummyjson.com/product-images/2/thumbnail.jpg",
+      "discountPercentage": 0,
+      "rating": 4.6,
+      "stock": 60,
+      "brand": "Google",
+      "category": "smartphone",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true,
+        "isTrending": true
+      },
+      "thumbnail": "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/e/6/-original-imagtwh4vnkzsrsg.jpeg?q=70&crop=false",
       "images": [
-        "https://cdn.dummyjson.com/product-images/2/1.jpg",
-        "https://cdn.dummyjson.com/product-images/2/2.jpg",
-        "https://cdn.dummyjson.com/product-images/2/3.jpg",
-        "https://cdn.dummyjson.com/product-images/2/thumbnail.jpg"
+        "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/y/e/6/-original-imagtwh4vnkzsrsg.jpeg?q=70&crop=false",
+        "https://rukminim2.flixcart.com/image/128/128/xif0q/mobile/z/s/u/-original-imagtwh4kdbg5rvr.jpeg?q=70&crop=false",
+        "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/h/s/7/-original-imagtwh4m7aygzv3.jpeg?q=70&crop=false"
       ]
     },
     {
       "id": 3,
-      "title": "Samsung Universe 9",
-      "description": "Samsung's new variant which goes beyond Galaxy to the Universe",
-      "price": 1249,
-      "discountPercentage": 15.46,
-      "rating": 4.09,
-      "stock": 36,
-      "brand": "Samsung",
-      "category": "smartphones",
-      "thumbnail": "https://cdn.dummyjson.com/product-images/3/thumbnail.jpg",
+      "title": "iPhone 15 Pro Max",
+      "description": "Powerful camera, long battery life, seamless iOS experience.",
+      "price": 1299,
+      "discountPercentage": 5,
+      "rating": 4.7,
+      "stock": 85,
+      "brand": "Apple",
+      "category": "smartphone",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true,
+        "isTrending": true
+      },
+      "thumbnail": "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
       "images": [
-        "https://cdn.dummyjson.com/product-images/3/1.jpg"
+        "https://m.media-amazon.com/images/I/81fxjeu8fdL._SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/61HZS-ZSCLL._SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/71kGvmn-t8L._SL1500_.jpg"
       ]
     },
     {
       "id": 4,
-      "title": "OPPOF19",
-      "description": "OPPO F19 is officially announced on April 2021.",
-      "price": 280,
-      "discountPercentage": 17.91,
-      "rating": 4.3,
-      "stock": 123,
-      "brand": "OPPO",
-      "category": "smartphones",
-      "thumbnail": "https://cdn.dummyjson.com/product-images/4/thumbnail.jpg",
+      "title": "OnePlus 12",
+      "description": "Fast performance, Hasselblad camera tuning, competitive price.",
+      "price": 699,
+      "discountPercentage": 8,
+      "rating": 4.5,
+      "stock": 75,
+      "brand": "OnePlus",
+      "category": "smartphone",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true,
+        "isTrending": true
+      },
+      "thumbnail": "https://image01-in.oneplus.net/india-oneplus-statics-file/epb/202401/10/t2fz2WfD34sf7ZFd.png?x-amz-process=image/format,webp/quality,Q_80",
       "images": [
-        "https://cdn.dummyjson.com/product-images/4/1.jpg",
-        "https://cdn.dummyjson.com/product-images/4/2.jpg",
-        "https://cdn.dummyjson.com/product-images/4/3.jpg",
-        "https://cdn.dummyjson.com/product-images/4/4.jpg",
-        "https://cdn.dummyjson.com/product-images/4/thumbnail.jpg"
+        "https://image01-in.oneplus.net/india-oneplus-statics-file/epb/202401/10/t2fz2WfD34sf7ZFd.png?x-amz-process=image/format,webp/quality,Q_80",
+        "https://image01-in.oneplus.net/ebp/202404/02/1-M00-52-A4-CpgM7mYLwNWAXYJFAAaFX-jVpmc450.jpg?x-amz-process=image/format,webp/quality,Q_80",
+        "https://image01-in.oneplus.net/india-oneplus-statics-file/epb/202401/10/iaxCtvY5C6HPBCti.png?x-amz-process=image/format,webp/quality,Q_80"
       ]
     },
     {
@@ -80,9 +102,16 @@
       "rating": 4.09,
       "stock": 32,
       "brand": "Huawei",
-      "category": "smartphones",
+      "category": "smartphone",
       "thumbnail": "https://cdn.dummyjson.com/product-images/5/thumbnail.jpg",
+      "ui": {
+        "isFavorite": false,
+        "carousel": false,
+        "isInCatalog": false,
+        "isTrending": true
+      },
       "images": [
+        "https://cdn.dummyjson.com/product-images/5/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/5/1.jpg",
         "https://cdn.dummyjson.com/product-images/5/2.jpg",
         "https://cdn.dummyjson.com/product-images/5/3.jpg"
@@ -97,9 +126,16 @@
       "rating": 4.57,
       "stock": 83,
       "brand": "Apple",
-      "category": "laptops",
+      "category": "laptop",
       "thumbnail": "https://cdn.dummyjson.com/product-images/6/thumbnail.png",
+      "ui": {
+        "isFavorite": false,
+        "carousel": true,
+        "isInCatalog": false,
+        "isTrending": true
+      },
       "images": [
+        "https://cdn.dummyjson.com/product-images/6/thumbnail.png",
         "https://cdn.dummyjson.com/product-images/6/1.png",
         "https://cdn.dummyjson.com/product-images/6/2.jpg",
         "https://cdn.dummyjson.com/product-images/6/3.png",
@@ -115,13 +151,18 @@
       "rating": 4.25,
       "stock": 50,
       "brand": "Samsung",
-      "category": "laptops",
+      "category": "laptop",
       "thumbnail": "https://cdn.dummyjson.com/product-images/7/thumbnail.jpg",
+      "ui": {
+        "isFavorite": false,
+        "carousel": false,
+        "isInCatalog": false
+      },
       "images": [
+        "https://cdn.dummyjson.com/product-images/7/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/7/1.jpg",
         "https://cdn.dummyjson.com/product-images/7/2.jpg",
-        "https://cdn.dummyjson.com/product-images/7/3.jpg",
-        "https://cdn.dummyjson.com/product-images/7/thumbnail.jpg"
+        "https://cdn.dummyjson.com/product-images/7/3.jpg"
       ]
     },
     {
@@ -133,14 +174,19 @@
       "rating": 4.43,
       "stock": 68,
       "brand": "Microsoft Surface",
-      "category": "laptops",
+      "category": "laptop",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/8/thumbnail.jpg",
       "images": [
+        "https://cdn.dummyjson.com/product-images/8/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/8/1.jpg",
         "https://cdn.dummyjson.com/product-images/8/2.jpg",
         "https://cdn.dummyjson.com/product-images/8/3.jpg",
-        "https://cdn.dummyjson.com/product-images/8/4.jpg",
-        "https://cdn.dummyjson.com/product-images/8/thumbnail.jpg"
+        "https://cdn.dummyjson.com/product-images/8/4.jpg"
       ]
     },
     {
@@ -152,14 +198,19 @@
       "rating": 4.54,
       "stock": 96,
       "brand": "Infinix",
-      "category": "laptops",
+      "category": "laptop",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/9/thumbnail.jpg",
       "images": [
+        "https://cdn.dummyjson.com/product-images/9/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/9/1.jpg",
         "https://cdn.dummyjson.com/product-images/9/2.png",
         "https://cdn.dummyjson.com/product-images/9/3.png",
-        "https://cdn.dummyjson.com/product-images/9/4.jpg",
-        "https://cdn.dummyjson.com/product-images/9/thumbnail.jpg"
+        "https://cdn.dummyjson.com/product-images/9/4.jpg"
       ]
     },
     {
@@ -171,13 +222,18 @@
       "rating": 4.43,
       "stock": 89,
       "brand": "HP Pavilion",
-      "category": "laptops",
+      "category": "laptop",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/10/thumbnail.jpeg",
       "images": [
+        "https://cdn.dummyjson.com/product-images/10/thumbnail.jpeg",
         "https://cdn.dummyjson.com/product-images/10/1.jpg",
         "https://cdn.dummyjson.com/product-images/10/2.jpg",
-        "https://cdn.dummyjson.com/product-images/10/3.jpg",
-        "https://cdn.dummyjson.com/product-images/10/thumbnail.jpeg"
+        "https://cdn.dummyjson.com/product-images/10/3.jpg"
       ]
     },
     {
@@ -189,13 +245,18 @@
       "rating": 4.26,
       "stock": 65,
       "brand": "Impression of Acqua Di Gio",
-      "category": "fragrances",
+      "category": "perfume",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/11/thumbnail.jpg",
       "images": [
+        "https://cdn.dummyjson.com/product-images/11/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/11/1.jpg",
         "https://cdn.dummyjson.com/product-images/11/2.jpg",
-        "https://cdn.dummyjson.com/product-images/11/3.jpg",
-        "https://cdn.dummyjson.com/product-images/11/thumbnail.jpg"
+        "https://cdn.dummyjson.com/product-images/11/3.jpg"
       ]
     },
     {
@@ -207,14 +268,19 @@
       "rating": 4,
       "stock": 52,
       "brand": "Royal_Mirage",
-      "category": "fragrances",
+      "category": "perfume",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/12/thumbnail.jpg",
       "images": [
+        "https://cdn.dummyjson.com/product-images/12/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/12/1.jpg",
         "https://cdn.dummyjson.com/product-images/12/2.jpg",
         "https://cdn.dummyjson.com/product-images/12/3.png",
-        "https://cdn.dummyjson.com/product-images/12/4.jpg",
-        "https://cdn.dummyjson.com/product-images/12/thumbnail.jpg"
+        "https://cdn.dummyjson.com/product-images/12/4.jpg"
       ]
     },
     {
@@ -226,14 +292,19 @@
       "rating": 4.59,
       "stock": 61,
       "brand": "Fog Scent Xpressio",
-      "category": "fragrances",
+      "category": "perfume",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/13/thumbnail.webp",
       "images": [
+        "https://cdn.dummyjson.com/product-images/13/thumbnail.webp",
         "https://cdn.dummyjson.com/product-images/13/1.jpg",
         "https://cdn.dummyjson.com/product-images/13/2.png",
         "https://cdn.dummyjson.com/product-images/13/3.jpg",
-        "https://cdn.dummyjson.com/product-images/13/4.jpg",
-        "https://cdn.dummyjson.com/product-images/13/thumbnail.webp"
+        "https://cdn.dummyjson.com/product-images/13/4.jpg"
       ]
     },
     {
@@ -245,13 +316,18 @@
       "rating": 4.21,
       "stock": 114,
       "brand": "Al Munakh",
-      "category": "fragrances",
+      "category": "perfume",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/14/thumbnail.jpg",
       "images": [
+        "https://cdn.dummyjson.com/product-images/14/thumbnail.jpg",
         "https://cdn.dummyjson.com/product-images/14/1.jpg",
         "https://cdn.dummyjson.com/product-images/14/2.jpg",
-        "https://cdn.dummyjson.com/product-images/14/3.jpg",
-        "https://cdn.dummyjson.com/product-images/14/thumbnail.jpg"
+        "https://cdn.dummyjson.com/product-images/14/3.jpg"
       ]
     },
     {
@@ -263,8 +339,13 @@
       "rating": 4.7,
       "stock": 105,
       "brand": "Lord - Al-Rehab",
-      "category": "fragrances",
+      "category": "perfume",
       "thumbnail": "https://cdn.dummyjson.com/product-images/15/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/15/1.jpg",
         "https://cdn.dummyjson.com/product-images/15/2.jpg",
@@ -284,6 +365,11 @@
       "brand": "L'Oreal Paris",
       "category": "skincare",
       "thumbnail": "https://cdn.dummyjson.com/product-images/16/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/16/1.png",
         "https://cdn.dummyjson.com/product-images/16/2.webp",
@@ -302,6 +388,11 @@
       "stock": 78,
       "brand": "Hemani Tea",
       "category": "skincare",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/17/thumbnail.jpg",
       "images": [
         "https://cdn.dummyjson.com/product-images/17/1.jpg",
@@ -321,6 +412,11 @@
       "brand": "Dermive",
       "category": "skincare",
       "thumbnail": "https://cdn.dummyjson.com/product-images/18/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/18/1.jpg",
         "https://cdn.dummyjson.com/product-images/18/2.jpg",
@@ -340,6 +436,11 @@
       "brand": "ROREC White Rice",
       "category": "skincare",
       "thumbnail": "https://cdn.dummyjson.com/product-images/19/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/19/1.jpg",
         "https://cdn.dummyjson.com/product-images/19/2.jpg",
@@ -358,6 +459,11 @@
       "brand": "Fair & Clear",
       "category": "skincare",
       "thumbnail": "https://cdn.dummyjson.com/product-images/20/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/20/1.jpg",
         "https://cdn.dummyjson.com/product-images/20/2.jpg",
@@ -375,8 +481,13 @@
       "rating": 4.44,
       "stock": 133,
       "brand": "Saaf & Khaas",
-      "category": "groceries",
+      "category": "grocery",
       "thumbnail": "https://cdn.dummyjson.com/product-images/21/thumbnail.png",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/21/1.png",
         "https://cdn.dummyjson.com/product-images/21/2.jpg",
@@ -392,7 +503,12 @@
       "rating": 4.57,
       "stock": 146,
       "brand": "Bake Parlor Big",
-      "category": "groceries",
+      "category": "grocery",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/22/thumbnail.jpg",
       "images": [
         "https://cdn.dummyjson.com/product-images/22/1.jpg",
@@ -402,14 +518,19 @@
     },
     {
       "id": 23,
-      "title": "Orange Essence Food Flavou",
+      "title": "Orange Essence Food Flavour",
       "description": "Specifications of Orange Essence Food Flavour For Cakes and Baking Food Item",
       "price": 14,
       "discountPercentage": 8.04,
       "rating": 4.85,
       "stock": 26,
       "brand": "Baking Food Items",
-      "category": "groceries",
+      "category": "grocery",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/23/thumbnail.jpg",
       "images": [
         "https://cdn.dummyjson.com/product-images/23/1.jpg",
@@ -428,7 +549,12 @@
       "rating": 4.94,
       "stock": 113,
       "brand": "fauji",
-      "category": "groceries",
+      "category": "grocery",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": true
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/24/thumbnail.jpg",
       "images": [
         "https://cdn.dummyjson.com/product-images/24/1.jpg",
@@ -447,7 +573,12 @@
       "rating": 4.87,
       "stock": 47,
       "brand": "Dry Rose",
-      "category": "groceries",
+      "category": "grocery",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/25/thumbnail.jpg",
       "images": [
         "https://cdn.dummyjson.com/product-images/25/1.png",
@@ -466,7 +597,12 @@
       "rating": 4.08,
       "stock": 131,
       "brand": "Boho Decor",
-      "category": "home-decoration",
+      "category": "home decor",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/26/thumbnail.jpg",
       "images": [
         "https://cdn.dummyjson.com/product-images/26/1.jpg",
@@ -486,7 +622,12 @@
       "rating": 4.41,
       "stock": 17,
       "brand": "Flying Wooden",
-      "category": "home-decoration",
+      "category": "home decor",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "thumbnail": "https://cdn.dummyjson.com/product-images/27/thumbnail.webp",
       "images": [
         "https://cdn.dummyjson.com/product-images/27/1.jpg",
@@ -505,8 +646,13 @@
       "rating": 4.82,
       "stock": 54,
       "brand": "LED Lights",
-      "category": "home-decoration",
+      "category": "home decor",
       "thumbnail": "https://cdn.dummyjson.com/product-images/28/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/28/1.jpg",
         "https://cdn.dummyjson.com/product-images/28/2.jpg",
@@ -524,8 +670,13 @@
       "rating": 4.44,
       "stock": 7,
       "brand": "luxury palace",
-      "category": "home-decoration",
+      "category": "home decor",
       "thumbnail": "https://cdn.dummyjson.com/product-images/29/thumbnail.webp",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/29/1.jpg",
         "https://cdn.dummyjson.com/product-images/29/2.jpg",
@@ -543,8 +694,13 @@
       "rating": 4.92,
       "stock": 54,
       "brand": "Golden",
-      "category": "home-decoration",
+      "category": "home decor",
       "thumbnail": "https://cdn.dummyjson.com/product-images/30/thumbnail.jpg",
+      "ui": {
+        "isInCatalog": false,
+        "isFavorite": false,
+        "carousel": false
+      },
       "images": [
         "https://cdn.dummyjson.com/product-images/30/1.jpg",
         "https://cdn.dummyjson.com/product-images/30/2.jpg",

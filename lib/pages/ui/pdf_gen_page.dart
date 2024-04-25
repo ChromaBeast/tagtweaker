@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tag_tweaker/pages/ui/pdf_preview_page.dart';
-import 'package:tag_tweaker/pages/ui/product_page.dart';
 
 import '../../models/catalog_items.dart';
 import '../../models/favourite_products.dart';
@@ -22,8 +21,9 @@ class _PDFGenPageState extends State<PDFGenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.grey[900],
         centerTitle: true,
         title: const Text('PDF Generation'),
       ),
@@ -33,11 +33,13 @@ class _PDFGenPageState extends State<PDFGenPage> {
           itemBuilder: (context, index) {
             return Container(
               margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ClipRRect(
@@ -59,23 +61,11 @@ class _PDFGenPageState extends State<PDFGenPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductPage(
-                                product: FavouriteProducts.products[index],
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          '\$${FavouriteProducts.products[index]['price']}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        "${FavouriteProducts.products[index]['price'].toString()}\$",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
                       Row(

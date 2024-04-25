@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../widgets/homepage/category_row_4.dart';
 import '../../widgets/homepage/circular_row_1.dart';
@@ -18,9 +19,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[900],
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.grey[900],
         title: const Text(
           'Tag Tweaker',
           style: TextStyle(fontFamily: 'Lobster'),
@@ -49,7 +51,14 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       icon: const Icon(Icons.logout),
                       onPressed: () async {
-                        await FirebaseAuth.instance.signOut();
+                        if (FirebaseAuth.instance.currentUser != null) {
+                          if (FirebaseAuth.instance.currentUser!.isAnonymous) {
+                            await FirebaseAuth.instance.currentUser!.delete();
+                          } else {
+                            await GoogleSignIn().signOut();
+                            await FirebaseAuth.instance.signOut();
+                          }
+                        }
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -65,12 +74,13 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            circularRow(),
+            circularRow(context),
+            const SizedBox(height: 10),
             carouselSlider(context),
             const SizedBox(height: 10),
             imageBanner(),
             const SizedBox(height: 10),
-            categoryRow("Trending", "Now"),
+            categoryRow("Trending", "Now", context),
           ],
         ),
       ),

@@ -14,8 +14,9 @@ class _FavouritesPageState extends State<FavouritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.grey[900],
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.grey[900],
           centerTitle: true,
           title: const Text(
             'Favourite Products',
@@ -27,8 +28,9 @@ class _FavouritesPageState extends State<FavouritesPage> {
           itemBuilder: (context, index) {
             return Container(
               margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Column(
