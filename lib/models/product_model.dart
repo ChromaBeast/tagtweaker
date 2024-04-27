@@ -18,7 +18,7 @@ class Product {
         "isTrending": true
       },
       "thumbnail":
-          "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_cc5lmd.png?tr=w-640", // Placeholder, find a better image when leaks appear
+          "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_cc5lmd.png?tr=w-640",
       "images": [
         "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1705640892/Croma%20Assets/Communication/Mobiles/Images/303817_cc5lmd.png?tr=w-640",
         "https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1706712983/Croma%20Assets/Communication/Mobiles/Images/303817_2_uil61o.png?tr=w-640",
