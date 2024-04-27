@@ -19,29 +19,32 @@ class SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[900],
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(16.0),
-            bottomRight: Radius.circular(16.0),
-          ),
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                backgroundColor: Colors.grey[900],
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16.0),
+                    bottomRight: Radius.circular(16.0),
+                  ),
+                ),
+                leadingWidth: MediaQuery.of(context).size.width,
+                leading: _buildSearchTextField(),
+              ),
+            ];
+          },
+          body: _buildProductList(),
         ),
-        centerTitle: true,
-        title: const Text('Search Products'),
-      ),
-      body: Column(
-        children: [
-          _buildSearchTextField(),
-          _buildProductList(),
-        ],
       ),
     );
   }
 
   Widget _buildSearchTextField() {
     return Container(
-      margin: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: TextField(
         controller: searchController,
         onChanged: (query) {
@@ -63,55 +66,111 @@ class SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildProductList() {
-    return Expanded(
-      child: Scrollbar(
-        interactive: true,
-        radius: const Radius.circular(16.0),
-        thickness: 5.0,
-        trackVisibility: false,
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          child: GridView.builder(
-            itemCount: SearchedProduct.products.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        Future.delayed(const Duration(milliseconds: 100), () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductPage(
-                                product: SearchedProduct.products[index],
-                              ),
+    return Scrollbar(
+      interactive: true,
+      radius: const Radius.circular(16.0),
+      thickness: 5.0,
+      trackVisibility: false,
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        child: GridView.builder(
+          itemCount: SearchedProduct.products.length,
+          itemBuilder: (context, index) {
+            return Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductPage(
+                              product: SearchedProduct.products[index],
                             ),
-                          );
-                        });
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: Hero(
-                          tag: SearchedProduct.products[index]['thumbnail'],
-                          child: Image.network(
-                            SearchedProduct.products[index]['thumbnail'],
-                            fit: BoxFit.contain,
-                            height: 150.0,
                           ),
+                        );
+                      });
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Hero(
+                        tag: SearchedProduct.products[index]['thumbnail'],
+                        child: Image.network(
+                          SearchedProduct.products[index]['thumbnail'],
+                          fit: BoxFit.contain,
+                          height: 150.0,
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.all(8.0),
-                      child: InkWell(
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductPage(
+                              product: SearchedProduct.products[index],
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        SearchedProduct.products[index]['title'],
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "By: ${SearchedProduct.products[index]['brand']}",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: ratingColors[SearchedProduct
+                                  .products[index]['rating']
+                                  .toInt()],
+                            ),
+                            Text(
+                              "${SearchedProduct.products[index]['rating'].toStringAsFixed(1)}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -123,92 +182,34 @@ class SearchPageState extends State<SearchPage> {
                           );
                         },
                         child: Text(
-                          SearchedProduct.products[index]['title'],
-                          overflow: TextOverflow.ellipsis,
+                          '\$${SearchedProduct.products[index]['price']}',
                           style: const TextStyle(
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "By: ${SearchedProduct.products[index]['brand']}",
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.grey[400],
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      IconButton(
+                        onPressed: () {
+                          genPDF(context, SearchedProduct.products[index]);
+                        },
+                        icon: const Icon(
+                          Icons.share,
+                          color: Colors.blue,
                         ),
-                        Container(
-                          margin: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                color: ratingColors[SearchedProduct
-                                    .products[index]['rating']
-                                    .toInt()],
-                              ),
-                              Text(
-                                "${SearchedProduct.products[index]['rating'].toStringAsFixed(1)}",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductPage(
-                                  product: SearchedProduct.products[index],
-                                ),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            '\$${SearchedProduct.products[index]['price']}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            genPDF(context, SearchedProduct.products[index]);
-                          },
-                          icon: const Icon(
-                            Icons.share,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              childAspectRatio: 0.7,
-              mainAxisExtent: 300.0,
-            ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+            childAspectRatio: 0.7,
+            mainAxisExtent: 300.0,
           ),
         ),
       ),

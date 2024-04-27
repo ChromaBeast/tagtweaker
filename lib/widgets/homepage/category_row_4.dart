@@ -29,7 +29,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
               Text(
                 "$text $leading",
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -50,113 +50,106 @@ Widget categoryRow(String text, String leading, BuildContext context) {
             ],
           ),
         ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.4,
+        Container(
+          margin: const EdgeInsets.only(left: 6, right: 6),
+          height: MediaQuery.of(context).size.height * 0.32,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             itemCount: len,
             itemBuilder: (BuildContext context, int index) {
               final img = products[index]['thumbnail'];
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductPage(
-                            product: products[index],
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductPage(
+                        product: products[index],
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(10),
+                        height: MediaQuery.of(context).size.height * 0.18,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Hero(
+                          tag: products[index]['thumbnail'],
+                          child: Image.network(
+                            img,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      );
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.32,
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
                       ),
-                      child: Column(
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                        child: Text(products[index]['title'],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: Colors.white, // High contrast text
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      Text(
+                        "${products[index]['category']}",
+                        style: TextStyle(
+                          color: Colors.grey[50], //  Lighter text
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      Row(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            height: MediaQuery.of(context).size.height * 0.18,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Hero(
-                              tag: products[index]['thumbnail'],
-                              child: Image.network(
-                                img,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(products[index]['title'],
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                    color: Colors.white, // High contrast text
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
-                          ),
                           Text(
-                            "${products[index]['category']}",
+                            "by ${products[index]['brand']}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: Colors.grey[50], //  Lighter text
-                              fontSize: 16,
-                              fontWeight: FontWeight.w300,
+                              color: Colors
+                                  .grey[400], // Slightly lighter 'by' text
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Row(
                             children: [
-                              Text(
-                                "by ${products[index]['brand']}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors
-                                      .grey[400], // Slightly lighter 'by' text
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Icon(
+                                Icons.star,
+                                color: ratingColors[
+                                    products[index]['rating'].toInt()],
                               ),
-                              Container(
-                                margin: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.star,
-                                      color: ratingColors[
-                                          products[index]['rating'].toInt()],
-                                    ),
-                                    Text(
-                                      "${products[index]['rating'].toStringAsFixed(1)}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                              Text(
+                                "${products[index]['rating'].toStringAsFixed(1)}",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               );
             },
           ),
