@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../models/product_model.dart';
 import '../../pages/ui/product_page.dart';
+import '../../themes/colors.dart';
 
 Widget categoryRow(String text, String leading, BuildContext context) {
   List products = Product.products
@@ -17,6 +17,10 @@ Widget categoryRow(String text, String leading, BuildContext context) {
     child: Column(
       children: [
         Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(30),
+          ),
           padding: const EdgeInsets.all(10.0),
           margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
           child: Row(
@@ -46,9 +50,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
             ],
           ),
         ),
-        Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(10.0),
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.4,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -57,6 +59,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
             itemBuilder: (BuildContext context, int index) {
               final img = products[index]['thumbnail'];
               return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   InkWell(
                     onTap: () {
@@ -70,9 +73,8 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                       );
                     },
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      margin: const EdgeInsets.all(10),
+                      height: MediaQuery.of(context).size.height * 0.32,
+                      margin: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(20),
@@ -88,8 +90,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                         children: [
                           Container(
                             margin: const EdgeInsets.all(10),
-                            width: MediaQuery.of(context).size.width * 0.35,
-                            height: MediaQuery.of(context).size.height * 0.2,
+                            height: MediaQuery.of(context).size.height * 0.18,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -101,9 +102,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
                           Expanded(
-                            flex: 1,
                             child: Text(products[index]['title'],
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -111,21 +110,6 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                                     color: Colors.white, // High contrast text
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold)),
-                          ),
-                          RatingBar.builder(
-                            initialRating: products[index]['rating'],
-                            minRating: 0,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            updateOnDrag: false,
-                            itemCount: 5,
-                            itemSize: 20, // Adjust the size of the stars
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.circle,
-                              color: Colors.amber,
-                            ),
-                            onRatingUpdate: (double value) {},
-                            ignoreGestures: true,
                           ),
                           Text(
                             "${products[index]['category']}",
@@ -135,14 +119,38 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                               fontWeight: FontWeight.w300,
                             ),
                           ),
-                          Text(
-                            "by ${products[index]['brand']}",
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors
-                                  .grey[400], // Slightly lighter 'by' text
-                              fontSize: 16,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                "by ${products[index]['brand']}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors
+                                      .grey[400], // Slightly lighter 'by' text
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: ratingColors[
+                                          products[index]['rating'].toInt()],
+                                    ),
+                                    Text(
+                                      "${products[index]['rating'].toStringAsFixed(1)}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
