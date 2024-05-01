@@ -84,11 +84,39 @@ class FavouritesPage extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              '\$${snapshot.data?[index]['price']}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.zero,
+                                  margin: EdgeInsets.zero,
+                                  width: 100,
+                                  child: TextField(
+                                    onChanged: (value) {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(auth.currentUser?.uid)
+                                          .collection('favourites')
+                                          .doc(snapshot.data![index]['id']
+                                              .toString())
+                                          .update({'price': value});
+                                    },
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                      hintText: snapshot.data![index]['price']
+                                          .toString(),
+                                    ),
+                                  ),
+                                ),
+                                const Text(" \$ ",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    )),
+                              ],
                             ),
                             Row(
                               children: [
@@ -118,6 +146,7 @@ class FavouritesPage extends StatelessWidget {
                                                             ['id']
                                                         .toString())
                                                     .delete();
+                                                Navigator.pop(context);
                                                 Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
