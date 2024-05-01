@@ -190,13 +190,17 @@ class FavouritesPage extends StatelessWidget {
           } else {
             return Container(
               alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text("Please wait while we load your favourites"),
-                  Image.asset('assets/animations/splash_screen.gif',
-                      height: 200, width: 200),
+                  Image.asset(
+                    'assets/animations/splash_screen.gif',
+                  ),
                 ],
               ),
             );
