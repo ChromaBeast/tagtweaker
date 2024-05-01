@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 
-import '../../models/searched_product_model.dart';
-import '../../themes/colors.dart';
-import '../../widgets/functions/share_individual.dart';
+import '../../../models/searched_product_model.dart';
+import '../../../themes/colors.dart';
+import '../../../widgets/functions/share_individual.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

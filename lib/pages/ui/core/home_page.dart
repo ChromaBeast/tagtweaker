@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../widgets/homepage/category_row_4.dart';
-import '../../widgets/homepage/circular_row_1.dart';
-import '../../widgets/homepage/corousel_2.dart';
-import '../../widgets/homepage/image_banner_3.dart';
-import '../auth/login_page.dart';
+import '../../../widgets/homepage/category_row_4.dart';
+import '../../../widgets/homepage/circular_row_1.dart';
+import '../../../widgets/homepage/corousel_2.dart';
+import '../../../widgets/homepage/image_banner_3.dart';
+import '../../auth/login_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

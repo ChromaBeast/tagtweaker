@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/product_model.dart';
 import '../../pages/ui/product_page.dart';
+import '../../pages/ui/trending_now_page.dart';
 import '../../themes/colors.dart';
 
 Widget categoryRow(String text, String leading, BuildContext context) {
@@ -34,7 +35,16 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TrendingNowPage(
+                        products: products,
+                      ),
+                    ),
+                  );
+                },
                 child: const Row(
                   children: [
                     Text(
@@ -56,7 +66,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-            itemCount: len,
+            itemCount: len < 5 ? len : 5,
             itemBuilder: (BuildContext context, int index) {
               final img = products[index]['thumbnail'];
               return InkWell(
