@@ -1,54 +1,31 @@
-import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class ProductEvent {}
 
-class ProductAddedToFavourites extends ProductEvent {
-  final Map<String, dynamic> product;
-  ProductAddedToFavourites(this.product);
+class FetchProducts extends ProductEvent {}
+
+abstract class ProductState {}
+
+class ProductsLoading extends ProductState {}
+
+class ProductsLoaded extends ProductState {
+  final List<DocumentSnapshot> products;
+  ProductsLoaded(this.products);
 }
 
-class ProductRemovedFromFavourites extends ProductEvent {
-  final Map<String, dynamic> product;
-  ProductRemovedFromFavourites(this.product);
-}
-
-class ProductPriceUpdated extends ProductEvent {
-  final Map<String, dynamic> product;
-  ProductPriceUpdated(this.product);
-}
-
-class ProductState {
-  final List<Map<String, dynamic>> favourites;
-  const ProductState(this.favourites);
-}
-
-class CatalogProductState {
-  final List<Map<String, dynamic>> catalog;
-  const CatalogProductState(this.catalog);
-}
+class ProductsError extends ProductState {}
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  ProductBloc() : super(const ProductState([])) {
-    on<ProductAddedToFavourites>((event, emit) {
-      final updatedFavourites =
-          List<Map<String, dynamic>>.from(state.favourites)..add(event.product);
-      emit(ProductState(updatedFavourites));
-    });
-    on<ProductRemovedFromFavourites>((event, emit) {
-      final updatedFavourites =
-          List<Map<String, dynamic>>.from(state.favourites)
-            ..remove(event.product);
-      emit(ProductState(updatedFavourites));
-    });
-    on<ProductPriceUpdated>((event, emit) {
-      final catalog = List<Map<String, dynamic>>.from(state.favourites);
-      final updatedCatalog = catalog.map((product) {
-        if (product["id"] == event.product["id"]) {
-          return event.product;
-        }
-        return product;
-      }).toList();
-      emit(ProductState(updatedCatalog));
+  ProductBloc() : super(ProductsLoading()) {
+    on<FetchProducts>((event, emit) async {
+      try {
+        QuerySnapshot productsSnapshot =
+            await FirebaseFirestore.instance.collection('products').get();
+        emit(ProductsLoaded(productsSnapshot.docs));
+      } catch (e) {
+        emit(ProductsError());
+      }
     });
   }
 }

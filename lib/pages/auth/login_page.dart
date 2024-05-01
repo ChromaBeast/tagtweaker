@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: const BoxDecoration(
                     color: Colors.black,
                     image: DecorationImage(
-                      image: AssetImage('assets/animations/splash_screen.gif'),
+                      image: AssetImage('assets/animations/animation.gif'),
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -71,17 +71,23 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const Text(
-                        'Please login to Continue',
+                        'Sign in to Tag Tweaker using',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildGoogleSignInButton(),
+                          const Text(
+                            'or',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
                           _buildAnonymousSignInButton(),
                         ],
                       ),
@@ -106,9 +112,9 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          shape: BoxShape.circle,
         ),
         child: Image.asset(
           'assets/images/google.png',
@@ -126,9 +132,9 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          shape: BoxShape.circle,
         ),
         child: Image.asset(
           'assets/images/guest.png',
