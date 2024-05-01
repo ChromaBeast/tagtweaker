@@ -1,19 +1,19 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tag_tweaker/models/favourite_products.dart';
 
-class ProductPage extends StatefulWidget {
+import '../../widgets/functions/share_individual.dart';
+
+class ProductPage extends StatelessWidget {
   final Map<String, dynamic> product;
-  const ProductPage({
+  ProductPage({
     super.key,
     required this.product,
   });
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  @override
-  State<ProductPage> createState() => _ProductPageState();
-}
-
-class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +45,7 @@ class _ProductPageState extends State<ProductPage> {
                 enlargeCenterPage: true,
                 scrollDirection: Axis.horizontal,
               ),
-              items: widget.product['images'].map<Widget>((image) {
+              items: product['images'].map<Widget>((image) {
                 return Builder(
                   builder: (BuildContext context) {
                     return Hero(
@@ -68,11 +68,11 @@ class _ProductPageState extends State<ProductPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Hero(
-                tag: widget.product['title'],
+                tag: product['title'],
                 child: Material(
                   color: Colors.transparent,
                   child: Text(
-                    widget.product['title'],
+                    product['title'],
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class _ProductPageState extends State<ProductPage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  '\$${widget.product['price']}',
+                  '\$${product['price']}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -94,24 +94,60 @@ class _ProductPageState extends State<ProductPage> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {
-                        setState(() {
-                          FavouriteProducts.toggleWishlist(
-                              widget.product["id"]);
-                        });
-                      },
-                      icon: widget.product["ui"]['isFavorite']
-                          ? const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            )
-                          : const Icon(
-                              Icons.favorite_border,
-                              color: Colors.grey,
+                      onPressed: () async {
+                        User? user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          final check = FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(user.uid)
+                              .collection('favourites')
+                              .doc(product['id'].toString())
+                              .get();
+                          if ((await check).exists) {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .collection('favourites')
+                                .doc(product['id'].toString())
+                                .delete();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Removed from Favourites'),
+                                  duration: Duration(seconds: 1)),
+                            );
+                          } else {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .collection('favourites')
+                                .doc(product['id'].toString())
+                                .set(product);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Added to Favourites'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Please Login to add to Favourites'),
+                              duration: Duration(seconds: 1),
                             ),
+                          );
+                        }
+                      },
+                      icon: Icon(
+                        Icons.favorite_rounded,
+                        color: Colors.red,
+                      ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        genPDF(context, product);
+                      },
                       icon: const Icon(
                         Icons.share,
                         color: Colors.blue,
@@ -137,7 +173,7 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ),
                   Text(
-                    widget.product['description'],
+                    product['description'],
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,

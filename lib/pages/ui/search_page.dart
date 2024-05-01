@@ -46,10 +46,19 @@ class SearchPageState extends State<SearchPage> {
     return Container(
       margin: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: TextField(
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
         controller: searchController,
         onChanged: (query) {
           setState(() {
-            SearchedProduct.search(query);
+            if (query.isEmpty) {
+              SearchedProduct.products = [];
+            } else {
+              SearchedProduct searchedProduct = SearchedProduct();
+              searchedProduct.search(query);
+            }
           });
         },
         decoration: const InputDecoration(

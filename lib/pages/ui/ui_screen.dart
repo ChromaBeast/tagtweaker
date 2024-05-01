@@ -4,27 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/favourites_page.dart';
 import 'package:tag_tweaker/pages/ui/home_page.dart';
-import 'package:tag_tweaker/pages/ui/pdf_gen_page.dart';
 import 'package:tag_tweaker/pages/ui/search_page.dart';
 
 import '../../blocs/navigation_bloc.dart';
 
-class UIPage extends StatefulWidget {
-  const UIPage({super.key});
+class UIPage extends StatelessWidget {
+  final int selectedIndex;
 
-  @override
-  State<UIPage> createState() => _UIPageState();
-}
+  UIPage({super.key, required this.selectedIndex});
 
-class _UIPageState extends State<UIPage> {
-  final int _selectedIndex = 0;
-  List<Product> products = [];
-  List<Product> favProducts = [];
+  final List<Product> products = [];
+
+  final List<Product> favProducts = [];
+
   final List _widgetOptions = [
     const HomePage(),
     const SearchPage(),
     const FavouritesPage(),
-    const PDFGenPage(),
   ];
 
   @override
@@ -44,9 +40,8 @@ class _UIPageState extends State<UIPage> {
           TabItem(icon: Icons.home, title: 'Home'),
           TabItem(icon: Icons.search, title: 'Search'),
           TabItem(icon: Icons.favorite, title: 'Favourites'),
-          TabItem(icon: Icons.picture_as_pdf, title: 'PDF'),
         ],
-        initialActiveIndex: _selectedIndex, // Set initial index
+        initialActiveIndex: selectedIndex, // Set initial index
         onTap: (index) =>
             BlocProvider.of<NavigationBloc>(context).add(TabTapped(index)),
       ),
