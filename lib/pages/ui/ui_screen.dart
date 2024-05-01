@@ -2,9 +2,9 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tag_tweaker/models/product_model.dart';
-import 'package:tag_tweaker/pages/ui/favourites_page.dart';
-import 'package:tag_tweaker/pages/ui/home_page.dart';
-import 'package:tag_tweaker/pages/ui/search_page.dart';
+import 'package:tag_tweaker/pages/ui/core/favourites_page.dart';
+import 'package:tag_tweaker/pages/ui/core/home_page.dart';
+import 'package:tag_tweaker/pages/ui/core/search_page.dart';
 
 import '../../blocs/navigation_bloc.dart';
 

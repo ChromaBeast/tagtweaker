@@ -11,7 +11,7 @@ import 'package:tag_tweaker/pages/ui/pdf_preview_page.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 
-import '../../widgets/functions/share_individual.dart';
+import '../../../widgets/functions/share_individual.dart';
 
 class FavouritesPage extends StatelessWidget {
   const FavouritesPage({super.key});
