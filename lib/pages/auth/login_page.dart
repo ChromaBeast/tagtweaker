@@ -54,26 +54,26 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   height: MediaQuery.of(context).size.height * 0.2,
                   padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    border: Border(
+                  decoration: BoxDecoration(
+                    border: const Border(
                       top: BorderSide(
                         color: Colors.black,
                       ),
                     ),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
                     ),
-                    color: Colors.white,
+                    color: Colors.grey[900],
                   ),
                   alignment: Alignment.center,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const Text(
-                        'Welcome to Tag Tweaker',
+                        'Please login to Continue',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
@@ -107,17 +107,12 @@ class _LoginPageState extends State<LoginPage> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
-          children: [
-            const Text('Sign in with'),
-            Image.asset(
-              'assets/images/google.png',
-              height: 30,
-            ),
-          ],
+        child: Image.asset(
+          'assets/images/google.png',
+          height: 30,
         ),
       ),
     );
@@ -130,21 +125,16 @@ class _LoginPageState extends State<LoginPage> {
             .add(AnonymousSignInRequested());
       },
       child: Container(
-        height: 40,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 1,
-              offset: const Offset(0, 1),
-            ),
-          ],
-          color: Colors.black,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Text('Sign in anonymously'),
+        child: Image.asset(
+          'assets/images/guest.png',
+          height: 30,
+          color: Colors.black,
+        ),
       ),
     );
   }
