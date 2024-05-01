@@ -12,8 +12,7 @@ class SplashScreen extends StatelessWidget {
       create: (context) => SplashScreenBloc()..add(SplashScreenStarted()),
       child: BlocListener<SplashScreenBloc, SplashScreenState>(
           listener: (context, state) {
-            if (state is SplashScreenLoading) {
-            } else if (state is SplashScreenComplete) {
+            if (state is SplashScreenComplete) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => state.destination),
