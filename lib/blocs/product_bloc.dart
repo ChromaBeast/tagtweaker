@@ -17,9 +17,9 @@ class ProductPriceUpdated extends ProductEvent {
   ProductPriceUpdated(this.product);
 }
 
-class FavouriteProductState {
+class ProductState {
   final List<Map<String, dynamic>> favourites;
-  const FavouriteProductState(this.favourites);
+  const ProductState(this.favourites);
 }
 
 class CatalogProductState {
@@ -27,18 +27,18 @@ class CatalogProductState {
   const CatalogProductState(this.catalog);
 }
 
-class ProductBloc extends Bloc<ProductEvent, FavouriteProductState> {
-  ProductBloc() : super(const FavouriteProductState([])) {
+class ProductBloc extends Bloc<ProductEvent, ProductState> {
+  ProductBloc() : super(const ProductState([])) {
     on<ProductAddedToFavourites>((event, emit) {
       final updatedFavourites =
           List<Map<String, dynamic>>.from(state.favourites)..add(event.product);
-      emit(FavouriteProductState(updatedFavourites));
+      emit(ProductState(updatedFavourites));
     });
     on<ProductRemovedFromFavourites>((event, emit) {
       final updatedFavourites =
           List<Map<String, dynamic>>.from(state.favourites)
             ..remove(event.product);
-      emit(FavouriteProductState(updatedFavourites));
+      emit(ProductState(updatedFavourites));
     });
     on<ProductPriceUpdated>((event, emit) {
       final catalog = List<Map<String, dynamic>>.from(state.favourites);
@@ -48,7 +48,7 @@ class ProductBloc extends Bloc<ProductEvent, FavouriteProductState> {
         }
         return product;
       }).toList();
-      emit(FavouriteProductState(updatedCatalog));
+      emit(ProductState(updatedCatalog));
     });
   }
 }

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:tag_tweaker/pages/auth/login_page.dart';
 import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 
+import '../models/product_model.dart';
+
 // Events
 abstract class SplashScreenEvent {}
 
@@ -23,12 +25,14 @@ class SplashScreenComplete extends SplashScreenState {
 class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
   SplashScreenBloc() : super(SplashScreenState()) {
     on<SplashScreenStarted>((event, emit) async {
+      Product product = Product();
+      product.fetchProducts();
       emit(SplashScreenLoading());
       final user = FirebaseAuth.instance.currentUser;
       final isLoggedIn = user != null;
       await Future.delayed(const Duration(seconds: 6));
       if (isLoggedIn) {
-        emit(SplashScreenComplete(destination: const UIPage()));
+        emit(SplashScreenComplete(destination: UIPage(selectedIndex: 0)));
       } else {
         emit(SplashScreenComplete(destination: const LoginPage()));
       }

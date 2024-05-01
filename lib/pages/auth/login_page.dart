@@ -27,7 +27,9 @@ class _LoginPageState extends State<LoginPage> {
             if (state == AuthenticationState.authenticated) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => const UIPage(),
+                  builder: (context) => UIPage(
+                    selectedIndex: 0,
+                  ),
                 ),
               );
             }
