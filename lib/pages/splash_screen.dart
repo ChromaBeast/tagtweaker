@@ -13,7 +13,6 @@ class SplashScreen extends StatelessWidget {
       child: BlocListener<SplashScreenBloc, SplashScreenState>(
           listener: (context, state) {
             if (state is SplashScreenLoading) {
-              // play splash screen animation
             } else if (state is SplashScreenComplete) {
               Navigator.pushReplacement(
                 context,
@@ -22,7 +21,6 @@ class SplashScreen extends StatelessWidget {
             }
           },
           child: Center(
-            // Your existing Lottie animation
             child: Image.asset('assets/animations/splash_screen.gif'),
           )),
     );

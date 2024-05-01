@@ -139,7 +139,7 @@ class ProductPage extends StatelessWidget {
                           );
                         }
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.favorite_rounded,
                         color: Colors.red,
                       ),
