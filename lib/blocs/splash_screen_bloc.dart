@@ -28,8 +28,7 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
       Product product = Product();
       product.fetchProducts();
       emit(SplashScreenLoading());
-      final user = FirebaseAuth.instance.currentUser;
-      final isLoggedIn = user != null;
+      final isLoggedIn = FirebaseAuth.instance.currentUser != null;
       await Future.delayed(const Duration(seconds: 3));
       if (isLoggedIn) {
         emit(SplashScreenComplete(destination: UIPage(selectedIndex: 0)));
