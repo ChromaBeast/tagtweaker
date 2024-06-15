@@ -7,7 +7,7 @@ import '../../pages/ui/product_page.dart';
 Widget carouselSlider(context) {
   List<Widget> items = Product.products
       .where((product) => product["ui"]['carousel'] == true)
-      .map((product) => InkWell(
+      .map((product) => GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
