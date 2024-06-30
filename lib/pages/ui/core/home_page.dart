@@ -51,7 +51,7 @@ class HomePage extends StatelessWidget {
                       CircleAvatar(
                         backgroundImage: NetworkImage(
                           FirebaseAuth.instance.currentUser?.photoURL ??
-                              'https://via.placeholder.com/150',
+                              'https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?w=740&t=st=1719513439~exp=1719514039~hmac=5efd9918b6b74e119a89b55650072b39f6e2a284debb52d862b8f6b0f3dafec4',
                         ),
                       ),
                       IconButton(
