@@ -10,17 +10,19 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthenticationController authCtrl =
         Get.find<AuthenticationController>();
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       body: Center(
         child: Obx(() {
-          // Show loading indicator when authenticating
           if (authCtrl.isLoading.value) {
-            return const CircularProgressIndicator();
+            return CircularProgressIndicator(
+              color: colorScheme.primary,
+            );
           }
 
           if (authCtrl.user.value != null) {
-            // User is authenticated, navigate to UIPage
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Get.offAll(() => UIPage(selectedIndex: 0));
             });
@@ -28,48 +30,56 @@ class LoginPage extends StatelessWidget {
           }
           return Column(
             children: [
+              // Hero animation section
               Container(
-                height: MediaQuery.of(context).size.height * 0.8,
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  image: DecorationImage(
+                height: MediaQuery.of(context).size.height * 0.75,
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  image: const DecorationImage(
                     image: AssetImage('assets/animations/animation.gif'),
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.2,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: const Border(
-                    top: BorderSide(color: Colors.black),
-                  ),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-                  color: Colors.grey[900],
-                ),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text(
-                      'Sign in to Tag Tweaker using',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+              // Bottom login card with M3 styling
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildGoogleSignInButton(authCtrl),
-                        const Text('or',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20)),
-                        _buildAnonymousSignInButton(authCtrl),
-                      ],
-                    ),
-                  ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Sign in to Tag Tweaker',
+                        style: textTheme.titleLarge?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildGoogleSignInButton(authCtrl, colorScheme),
+                          const SizedBox(width: 24),
+                          Text(
+                            'or',
+                            style: textTheme.bodyLarge?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(width: 24),
+                          _buildAnonymousSignInButton(authCtrl, colorScheme),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -79,27 +89,52 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGoogleSignInButton(AuthenticationController ctrl) {
-    return InkWell(
-      onTap: ctrl.signInWithGoogle,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration:
-            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-        child: Image.asset('assets/images/google.png', height: 30),
+  Widget _buildGoogleSignInButton(
+      AuthenticationController ctrl, ColorScheme colorScheme) {
+    return Material(
+      elevation: 2,
+      shape: const CircleBorder(),
+      color: colorScheme.surface,
+      surfaceTintColor: colorScheme.surfaceTint,
+      child: InkWell(
+        onTap: ctrl.signInWithGoogle,
+        customBorder: const CircleBorder(),
+        splashColor: colorScheme.primary.withOpacity(0.12),
+        highlightColor: colorScheme.primary.withOpacity(0.08),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: colorScheme.outlineVariant,
+              width: 1,
+            ),
+          ),
+          child: Image.asset('assets/images/google.png', height: 32),
+        ),
       ),
     );
   }
 
-  Widget _buildAnonymousSignInButton(AuthenticationController ctrl) {
-    return InkWell(
-      onTap: ctrl.signInAnonymously,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration:
-            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-        child: Image.asset('assets/images/guest.png',
-            height: 30, color: Colors.black),
+  Widget _buildAnonymousSignInButton(
+      AuthenticationController ctrl, ColorScheme colorScheme) {
+    return Material(
+      elevation: 2,
+      shape: const CircleBorder(),
+      color: colorScheme.primaryContainer,
+      child: InkWell(
+        onTap: ctrl.signInAnonymously,
+        customBorder: const CircleBorder(),
+        splashColor: colorScheme.primary.withOpacity(0.12),
+        highlightColor: colorScheme.primary.withOpacity(0.08),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Icon(
+            Icons.person_outline_rounded,
+            size: 32,
+            color: colorScheme.onPrimaryContainer,
+          ),
+        ),
       ),
     );
   }

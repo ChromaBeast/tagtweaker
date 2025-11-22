@@ -17,208 +17,274 @@ class SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
-                backgroundColor: Colors.grey[900],
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16.0),
-                    bottomRight: Radius.circular(16.0),
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+                toolbarHeight: 72,
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
+                  child: _buildSearchTextField(colorScheme),
                 ),
-                leadingWidth: MediaQuery.of(context).size.width,
-                leading: _buildSearchTextField(),
               ),
             ];
           },
-          body: _buildProductList(),
+          body: _buildProductList(colorScheme),
         ),
       ),
     );
   }
 
-  Widget _buildSearchTextField() {
-    return Container(
-      margin: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: TextField(
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        controller: searchController,
-        onChanged: (query) {
-          setState(() {
-            if (query.isEmpty) {
-              SearchedProduct.products = [];
-            } else {
-              SearchedProduct searchedProduct = SearchedProduct();
-              searchedProduct.search(query);
-            }
-          });
-        },
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.all(10.0),
-          hintText: 'Search Products',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30.0)),
-          ),
-        ),
-        cursorColor: Colors.white,
+  Widget _buildSearchTextField(ColorScheme colorScheme) {
+    return SearchBar(
+      controller: searchController,
+      hintText: 'Search Products',
+      leading: Icon(
+        Icons.search_rounded,
+        color: colorScheme.onSurfaceVariant,
       ),
+      trailing: searchController.text.isNotEmpty
+          ? [
+              IconButton(
+                icon: Icon(
+                  Icons.clear_rounded,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                onPressed: () {
+                  setState(() {
+                    searchController.clear();
+                    SearchedProduct.products = [];
+                  });
+                },
+              ),
+            ]
+          : null,
+      elevation: WidgetStateProperty.all(1),
+      backgroundColor: WidgetStateProperty.all(
+        colorScheme.surfaceContainerHighest,
+      ),
+      surfaceTintColor: WidgetStateProperty.all(colorScheme.surfaceTint),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
+      ),
+      onChanged: (query) {
+        setState(() {
+          if (query.isEmpty) {
+            SearchedProduct.products = [];
+          } else {
+            SearchedProduct searchedProduct = SearchedProduct();
+            searchedProduct.search(query);
+          }
+        });
+      },
     );
   }
 
-  Widget _buildProductList() {
+  Widget _buildProductList(ColorScheme colorScheme) {
+    final textTheme = Theme.of(context).textTheme;
+
+    if (SearchedProduct.products.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_rounded,
+              size: 80,
+              color: colorScheme.outlineVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Search for products',
+              style: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Find what you\'re looking for',
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.outline,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scrollbar(
       interactive: true,
       radius: const Radius.circular(16.0),
-      thickness: 5.0,
-      trackVisibility: false,
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        child: GridView.builder(
-          itemCount: SearchedProduct.products.length,
-          itemBuilder: (context, index) {
-            return Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(10.0),
+      thickness: 4.0,
+      child: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: SearchedProduct.products.length,
+        itemBuilder: (context, index) {
+          return _buildProductCard(index, colorScheme, textTheme);
+        },
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12.0,
+          mainAxisSpacing: 12.0,
+          childAspectRatio: 0.65,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductCard(
+      int index, ColorScheme colorScheme, TextTheme textTheme) {
+    final product = SearchedProduct.products[index];
+
+    return Card(
+      elevation: 0,
+      color: colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: InkWell(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          Future.delayed(const Duration(milliseconds: 100), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductPage(product: product),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+            );
+          });
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product Image
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Hero(
+                      tag: product['thumbnail'],
+                      child: Image.network(
+                        product['thumbnail'],
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Product Title
+              Text(
+                product['title'],
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: textTheme.titleSmall?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              // Brand
+              Text(
+                "By: ${product['brand']}",
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Rating and Price Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      Future.delayed(const Duration(milliseconds: 100), () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductPage(
-                              product: SearchedProduct.products[index],
-                            ),
-                          ),
-                        );
-                      });
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Hero(
-                        tag: SearchedProduct.products[index]['thumbnail'],
-                        child: Image.network(
-                          SearchedProduct.products[index]['thumbnail'],
-                          fit: BoxFit.contain,
-                          height: 150.0,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Rating
                   Container(
-                    margin: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductPage(
-                              product: SearchedProduct.products[index],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        SearchedProduct.products[index]['title'],
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          size: 16,
+                          color: ratingColors[product['rating'].toInt()],
                         ),
-                      ),
+                        const SizedBox(width: 4),
+                        Text(
+                          product['rating'].toStringAsFixed(1),
+                          style: textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onSurface,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "By: ${SearchedProduct.products[index]['brand']}",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: ratingColors[SearchedProduct
-                                  .products[index]['rating']
-                                  .toInt()],
-                            ),
-                            Text(
-                              "${SearchedProduct.products[index]['rating'].toStringAsFixed(1)}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductPage(
-                                product: SearchedProduct.products[index],
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          '\$${SearchedProduct.products[index]['price']}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          genPDF(context, SearchedProduct.products[index]);
-                        },
-                        icon: const Icon(
-                          Icons.share,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
+                  // Price
+                  Text(
+                    '\$${product['price']}',
+                    style: textTheme.titleMedium?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
-            );
-          },
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
-            childAspectRatio: 0.7,
-            mainAxisExtent: 300.0,
+              const SizedBox(height: 8),
+              // Share Button
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.tonal(
+                  onPressed: () {
+                    genPDF(context, product);
+                  },
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.share_rounded,
+                        size: 16,
+                        color: colorScheme.onSecondaryContainer,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Share',
+                        style: textTheme.labelMedium?.copyWith(
+                          color: colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

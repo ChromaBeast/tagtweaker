@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:tag_tweaker/pages/ui/core/home_page.dart';
 import 'package:tag_tweaker/pages/ui/core/search_page.dart';
 import 'package:tag_tweaker/pages/ui/core/favourites_page.dart';
@@ -12,31 +11,64 @@ class UIPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ensure the NavigationController is available
     final NavigationController navCtrl = Get.find<NavigationController>();
-    // Set the initial selected index
     navCtrl.selectedIndex.value = selectedIndex;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    const List<Widget> _widgetOptions = [
+    const List<Widget> widgetOptions = [
       HomePage(),
       SearchPage(),
       FavouritesPage(),
     ];
 
     return Scaffold(
-      body: Obx(() => _widgetOptions.elementAt(navCtrl.selectedIndex.value)),
-      bottomNavigationBar: ConvexAppBar(
-        style: TabStyle.titled,
-        backgroundColor: Colors.black,
-        color: Colors.grey.shade400,
-        activeColor: Colors.white,
-        items: const [
-          TabItem(icon: Icons.home, title: 'Home'),
-          TabItem(icon: Icons.search, title: 'Search'),
-          TabItem(icon: Icons.favorite, title: 'Favourites'),
-        ],
-        initialActiveIndex: selectedIndex,
-        onTap: (index) => navCtrl.changeTab(index),
+      body: Obx(() => widgetOptions.elementAt(navCtrl.selectedIndex.value)),
+      bottomNavigationBar: Obx(
+        () => NavigationBar(
+          elevation: 3,
+          backgroundColor: colorScheme.surface,
+          surfaceTintColor: colorScheme.surfaceTint,
+          indicatorColor: colorScheme.primaryContainer,
+          selectedIndex: navCtrl.selectedIndex.value,
+          onDestinationSelected: (index) => navCtrl.changeTab(index),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          animationDuration: const Duration(milliseconds: 500),
+          destinations: [
+            NavigationDestination(
+              icon: Icon(
+                Icons.home_outlined,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              selectedIcon: Icon(
+                Icons.home_rounded,
+                color: colorScheme.onPrimaryContainer,
+              ),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(
+                Icons.search_outlined,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              selectedIcon: Icon(
+                Icons.search_rounded,
+                color: colorScheme.onPrimaryContainer,
+              ),
+              label: 'Search',
+            ),
+            NavigationDestination(
+              icon: Icon(
+                Icons.favorite_outline_rounded,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              selectedIcon: Icon(
+                Icons.favorite_rounded,
+                color: colorScheme.onPrimaryContainer,
+              ),
+              label: 'Favourites',
+            ),
+          ],
+        ),
       ),
     );
   }

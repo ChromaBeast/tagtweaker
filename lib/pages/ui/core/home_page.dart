@@ -17,51 +17,85 @@ class HomePage extends StatelessWidget {
     final ProductController controller = Get.find<ProductController>();
     final AuthenticationController authController =
         Get.find<AuthenticationController>();
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        forceMaterialTransparency: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(16.0),
-            bottomRight: Radius.circular(16.0),
+        scrolledUnderElevation: 2,
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Tag Tweaker',
+          style: textTheme.headlineSmall?.copyWith(
+            fontFamily: 'Lobster',
+            color: colorScheme.primary,
           ),
         ),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.grey[900],
-        title: const Text(
-          'Tag Tweaker',
-          style: TextStyle(fontFamily: 'Lobster'),
-        ),
+        centerTitle: false,
         actions: [
           Obx(() {
             final user = authController.user.value;
             if (user == null) {
-              return IconButton(
-                icon: const Icon(Icons.person),
+              return FilledButton.tonal(
                 onPressed: () {
                   Get.to(() => const LoginPage());
                 },
+                style: FilledButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.login_rounded,
+                      size: 18,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Sign In',
+                      style: textTheme.labelLarge?.copyWith(
+                        color: colorScheme.onSecondaryContainer,
+                      ),
+                    ),
+                  ],
+                ),
               );
             }
             return Row(
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    user.photoURL ??
-                        'https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?w=740&t=st=1719513439~exp=1719514039~hmac=5efd9918b6b74e119a89b55650072b39f6e2a284debb52d862b8f6b0f3dafec4',
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: colorScheme.primary,
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundImage: NetworkImage(
+                      user.photoURL ??
+                          'https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?w=740&t=st=1719513439~exp=1719514039~hmac=5efd9918b6b74e119a89b55650072b39f6e2a284debb52d862b8f6b0f3dafec4',
+                    ),
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.logout),
+                  icon: Icon(
+                    Icons.logout_rounded,
+                    color: colorScheme.error,
+                  ),
                   onPressed: () async {
                     await authController.signOut();
                     Get.offAll(() => const LoginPage());
                   },
+                  tooltip: 'Sign Out',
                 ),
               ],
             );
           }),
+          const SizedBox(width: 8),
         ],
       ),
       body: Obx(() {
@@ -69,20 +103,41 @@ class HomePage extends StatelessWidget {
           return const CustomHomePageShimmer();
         } else if (controller.products.isNotEmpty) {
           return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
+                const SizedBox(height: 8),
                 circularRow(context),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 carouselSlider(context),
-                const SizedBox(height: 10),
-                imageBanner(),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
+                imageBanner(context),
+                const SizedBox(height: 16),
                 categoryRow("Trending", "Now", context),
+                const SizedBox(height: 16),
               ],
             ),
           );
         } else {
-          return const Center(child: Text('Error loading products'));
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 64,
+                  color: colorScheme.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Error loading products',
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
       }),
     );
