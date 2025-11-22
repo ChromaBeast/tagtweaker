@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/product_model.dart';
+import '../../app/data/models/product_model.dart';
 import '../../pages/ui/product_page.dart';
 import '../../pages/ui/trending_now_page.dart';
 import '../../themes/colors.dart';

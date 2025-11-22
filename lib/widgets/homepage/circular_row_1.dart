@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/product_model.dart';
+import '../../app/data/models/product_model.dart';
 import '../../pages/ui/category_page.dart';
 
 Widget circularRow(BuildContext context) {

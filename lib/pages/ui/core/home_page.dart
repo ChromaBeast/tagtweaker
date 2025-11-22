@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
 import 'package:tag_tweaker/app/controllers/product_controller.dart';
 import '../../../widgets/homepage/category_row_4.dart';
 import '../../../widgets/homepage/circular_row_1.dart';
@@ -16,6 +15,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ProductController controller = Get.find<ProductController>();
+    final AuthenticationController authController =
+        Get.find<AuthenticationController>();
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
@@ -33,47 +34,34 @@ class HomePage extends StatelessWidget {
           style: TextStyle(fontFamily: 'Lobster'),
         ),
         actions: [
-          FirebaseAuth.instance.currentUser == null
-              ? IconButton(
-                  icon: const Icon(Icons.person),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                    );
-                  },
-                )
-              : Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        FirebaseAuth.instance.currentUser?.photoURL ??
-                            'https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?w=740&t=st=1719513439~exp=1719514039~hmac=5efd9918b6b74e119a89b55650072b39f6e2a284debb52d862b8f6b0f3dafec4',
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.logout),
-                      onPressed: () async {
-                        if (FirebaseAuth.instance.currentUser != null) {
-                          if (FirebaseAuth.instance.currentUser!.isAnonymous) {
-                            await FirebaseAuth.instance.currentUser!.delete();
-                          } else {
-                            await GoogleSignIn().signOut();
-                            await FirebaseAuth.instance.signOut();
-                          }
-                        }
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+          Obx(() {
+            final user = authController.user.value;
+            if (user == null) {
+              return IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () {
+                  Get.to(() => const LoginPage());
+                },
+              );
+            }
+            return Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    user.photoURL ??
+                        'https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?w=740&t=st=1719513439~exp=1719514039~hmac=5efd9918b6b74e119a89b55650072b39f6e2a284debb52d862b8f6b0f3dafec4',
+                  ),
                 ),
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () async {
+                    await authController.signOut();
+                    Get.offAll(() => const LoginPage());
+                  },
+                ),
+              ],
+            );
+          }),
         ],
       ),
       body: Obx(() {

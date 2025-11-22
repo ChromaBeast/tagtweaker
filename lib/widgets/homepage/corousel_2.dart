@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/product_model.dart';
+import '../../app/data/models/product_model.dart';
 import '../../pages/ui/product_page.dart';
 
 Widget carouselSlider(context) {

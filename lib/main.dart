@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
 import 'package:tag_tweaker/app/controllers/navigation_controller.dart';
+import 'package:tag_tweaker/app/controllers/product_controller.dart';
 import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/themes/dark_theme.dart';
 
@@ -20,6 +21,7 @@ Future<void> main() async {
   // Initialize GetX controllers
   Get.put(AuthenticationController());
   Get.put(NavigationController());
+  Get.put(ProductController());
   runApp(const MyApp());
 }
 
