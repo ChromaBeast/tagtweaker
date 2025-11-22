@@ -22,44 +22,87 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         scrolledUnderElevation: 2,
         automaticallyImplyLeading: false,
-        title: Text(
-          'Tag Tweaker',
-          style: textTheme.headlineSmall?.copyWith(
-            fontFamily: 'Lobster',
-            color: colorScheme.primary,
-          ),
+        toolbarHeight: 70,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ShaderMask(
+              shaderCallback: (bounds) => LinearGradient(
+                colors: [
+                  colorScheme.primary,
+                  colorScheme.secondary,
+                ],
+              ).createShader(bounds),
+              child: Text(
+                'Tag Tweaker',
+                style: textTheme.headlineMedium?.copyWith(
+                  fontFamily: 'Lobster',
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                ),
+              ),
+            ),
+            Obx(() {
+              final productCount = controller.products.length;
+              return Text(
+                '$productCount Products Available',
+                style: textTheme.labelMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 12,
+                ),
+              );
+            }),
+          ],
         ),
         centerTitle: false,
         actions: [
           Obx(() {
             final user = authController.user.value;
             if (user == null) {
-              return FilledButton.tonal(
-                onPressed: () {
-                  Get.to(() => const LoginPage());
-                },
-                style: FilledButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      colorScheme.primary,
+                      colorScheme.secondary,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.login_rounded,
-                      size: 18,
-                      color: colorScheme.onSecondaryContainer,
+                child: FilledButton.tonal(
+                  onPressed: () {
+                    Get.to(() => const LoginPage());
+                  },
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Sign In',
-                      style: textTheme.labelLarge?.copyWith(
-                        color: colorScheme.onSecondaryContainer,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.login_rounded,
+                        size: 20,
+                        color: Colors.white,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Text(
+                        'Sign In',
+                        style: textTheme.labelLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }
@@ -68,13 +111,23 @@ class HomePage extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: colorScheme.primary,
-                      width: 2,
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.secondary,
+                      ],
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
+                  padding: const EdgeInsets.all(2),
                   child: CircleAvatar(
-                    radius: 16,
+                    radius: 18,
                     backgroundImage: NetworkImage(
                       user.photoURL ??
                           'https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?w=740&t=st=1719513439~exp=1719514039~hmac=5efd9918b6b74e119a89b55650072b39f6e2a284debb52d862b8f6b0f3dafec4',
@@ -85,6 +138,7 @@ class HomePage extends StatelessWidget {
                   icon: Icon(
                     Icons.logout_rounded,
                     color: colorScheme.error,
+                    size: 22,
                   ),
                   onPressed: () async {
                     await authController.signOut();
@@ -95,7 +149,7 @@ class HomePage extends StatelessWidget {
               ],
             );
           }),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
         ],
       ),
       body: Obx(() {

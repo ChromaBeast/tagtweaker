@@ -70,7 +70,7 @@ ThemeData darkTheme = ThemeData(
   ),
 
   // Card Theme with M3 filled styling
-  cardTheme: CardTheme(
+  cardTheme: CardThemeData(
     elevation: 1,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
@@ -215,7 +215,7 @@ ThemeData darkTheme = ThemeData(
   ),
 
   // Dialog Theme
-  dialogTheme: DialogTheme(
+  dialogTheme: DialogThemeData(
     backgroundColor: darkColorScheme.surface,
     surfaceTintColor: darkColorScheme.surfaceTint,
     elevation: 6,
@@ -431,7 +431,7 @@ ThemeData darkTheme = ThemeData(
   ),
 
   // Tab Bar Theme
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     labelColor: darkColorScheme.primary,
     unselectedLabelColor: darkColorScheme.onSurfaceVariant,
     indicator: UnderlineTabIndicator(
