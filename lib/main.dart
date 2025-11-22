@@ -1,11 +1,9 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:tag_tweaker/blocs/authentication_bloc.dart';
-import 'package:tag_tweaker/blocs/navigation_bloc.dart';
+import 'package:get/get.dart';
+import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/app/controllers/navigation_controller.dart';
 import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/themes/dark_theme.dart';
 
@@ -19,6 +17,9 @@ Future<void> main() async {
     androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.appAttest,
   );
+  // Initialize GetX controllers
+  Get.put(AuthenticationController());
+  Get.put(NavigationController());
   runApp(const MyApp());
 }
 
@@ -27,23 +28,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              AuthenticationBloc(FirebaseAuth.instance, GoogleSignIn()),
-        ),
-        BlocProvider(
-          create: (context) => NavigationBloc(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Tag Tweaker",
-        themeMode: ThemeMode.dark,
-        darkTheme: darkTheme,
-        home: const SplashScreen(),
-      ),
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Tag Tweaker",
+      themeMode: ThemeMode.dark,
+      darkTheme: darkTheme,
+      home: const SplashScreen(),
     );
   }
 }
