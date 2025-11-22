@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
 import 'package:tag_tweaker/app/controllers/navigation_controller.dart';
 import 'package:tag_tweaker/app/controllers/product_controller.dart';
+import 'package:tag_tweaker/app/services/google_sign_in_service.dart';
 import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/themes/dark_theme.dart';
 
@@ -18,6 +19,10 @@ Future<void> main() async {
     androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.appAttest,
   );
+
+  // Initialize Google Sign-In service (v7.2.0+)
+  await GoogleSignInService.instance.initialize();
+
   // Initialize GetX controllers
   Get.put(AuthenticationController());
   Get.put(NavigationController());

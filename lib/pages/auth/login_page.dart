@@ -14,6 +14,11 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Obx(() {
+          // Show loading indicator when authenticating
+          if (authCtrl.isLoading.value) {
+            return const CircularProgressIndicator();
+          }
+
           if (authCtrl.user.value != null) {
             // User is authenticated, navigate to UIPage
             WidgetsBinding.instance.addPostFrameCallback((_) {
