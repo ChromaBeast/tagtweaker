@@ -6,12 +6,18 @@ import 'package:flutter/material.dart';
 import '../../themes/colors.dart';
 import '../../widgets/functions/share_individual.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   final Map<String, dynamic> product;
-  ProductPage({
+  const ProductPage({
     super.key,
     required this.product,
   });
+
+  @override
+  State<ProductPage> createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -22,37 +28,64 @@ class ProductPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Product Details',
-          style: textTheme.titleLarge?.copyWith(
+        elevation: 0,
+        scrolledUnderElevation: 2,
+        centerTitle: false,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back_rounded,
             color: colorScheme.onSurface,
           ),
+          tooltip: 'Back',
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Product Details',
+              style: textTheme.titleLarge?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              widget.product['brand'] ?? '',
+              style: textTheme.labelMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
+            ),
+          ],
         ),
         actions: [
-          IconButton.filled(
+          IconButton.filledTonal(
             onPressed: () => _toggleFavourite(context, colorScheme),
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.favoriteColor.withOpacity(0.2),
+              backgroundColor: AppColors.favoriteColor.withOpacity(0.15),
             ),
             icon: Icon(
               Icons.favorite_rounded,
               color: AppColors.favoriteColor,
+              size: 22,
             ),
             tooltip: 'Add to Favourites',
           ),
           const SizedBox(width: 8),
-          IconButton.filled(
-            onPressed: () => genPDF(context, product),
+          IconButton.filledTonal(
+            onPressed: () => genPDF(context, widget.product),
             style: IconButton.styleFrom(
-              backgroundColor: AppColors.shareColor.withOpacity(0.2),
+              backgroundColor: AppColors.shareColor.withOpacity(0.15),
             ),
             icon: Icon(
               Icons.share_rounded,
               color: AppColors.shareColor,
+              size: 22,
             ),
             tooltip: 'Share Product',
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 16),
         ],
       ),
       body: SingleChildScrollView(
@@ -77,7 +110,7 @@ class ProductPage extends StatelessWidget {
                 enlargeCenterPage: true,
                 scrollDirection: Axis.horizontal,
               ),
-              items: product['images'].map<Widget>((image) {
+              items: widget.product['images'].map<Widget>((image) {
                 return Builder(
                   builder: (BuildContext context) {
                     return Hero(
@@ -120,11 +153,11 @@ class ProductPage extends StatelessWidget {
                     children: [
                       // Title
                       Hero(
-                        tag: product['title'],
+                        tag: widget.product['title'],
                         child: Material(
                           color: Colors.transparent,
                           child: Text(
-                            product['title'],
+                            widget.product['title'],
                             style: textTheme.headlineSmall?.copyWith(
                               color: colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
@@ -148,7 +181,7 @@ class ProductPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Text(
-                              '\$${product['price']}',
+                              '₹${widget.product['price']}',
                               style: textTheme.headlineSmall?.copyWith(
                                 color: colorScheme.onPrimaryContainer,
                                 fontWeight: FontWeight.bold,
@@ -156,7 +189,7 @@ class ProductPage extends StatelessWidget {
                             ),
                           ),
                           // Rating
-                          if (product['rating'] != null)
+                          if (widget.product['rating'] != null)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -175,12 +208,13 @@ class ProductPage extends StatelessWidget {
                                   Icon(
                                     Icons.star_rounded,
                                     size: 20,
-                                    color: ratingColors[
-                                        product['rating'].toInt().clamp(0, 5)],
+                                    color: ratingColors[widget.product['rating']
+                                        .toInt()
+                                        .clamp(0, 5)],
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    product['rating'].toStringAsFixed(1),
+                                    widget.product['rating'].toStringAsFixed(1),
                                     style: textTheme.titleMedium?.copyWith(
                                       color: colorScheme.onSurface,
                                       fontWeight: FontWeight.w600,
@@ -210,7 +244,7 @@ class ProductPage extends StatelessWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: FilledButton.tonalIcon(
-                              onPressed: () => genPDF(context, product),
+                              onPressed: () => genPDF(context, widget.product),
                               icon: const Icon(Icons.share_rounded),
                               label: const Text('Share'),
                               style: FilledButton.styleFrom(
@@ -259,7 +293,7 @@ class ProductPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        product['description'],
+                        widget.product['description'],
                         style: textTheme.bodyLarge?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                           height: 1.6,
@@ -284,15 +318,19 @@ class ProductPage extends StatelessWidget {
           .collection('users')
           .doc(user.uid)
           .collection('favourites')
-          .doc(product['id'].toString())
+          .doc(widget.product['id'].toString())
           .get();
       if ((await check).exists) {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .collection('favourites')
-            .doc(product['id'].toString())
+            .doc(widget.product['id'].toString())
             .delete();
+
+        // Check if widget is still mounted before showing SnackBar
+        if (!mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Removed from Favourites'),
@@ -304,8 +342,8 @@ class ProductPage extends StatelessWidget {
                     .collection('users')
                     .doc(user.uid)
                     .collection('favourites')
-                    .doc(product['id'].toString())
-                    .set(product);
+                    .doc(widget.product['id'].toString())
+                    .set(widget.product);
               },
             ),
           ),
@@ -315,8 +353,12 @@ class ProductPage extends StatelessWidget {
             .collection('users')
             .doc(user.uid)
             .collection('favourites')
-            .doc(product['id'].toString())
-            .set(product);
+            .doc(widget.product['id'].toString())
+            .set(widget.product);
+
+        // Check if widget is still mounted before showing SnackBar
+        if (!mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Added to Favourites'),
@@ -325,6 +367,9 @@ class ProductPage extends StatelessWidget {
         );
       }
     } else {
+      // Check if widget is still mounted before showing SnackBar
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Please Login to add to Favourites'),

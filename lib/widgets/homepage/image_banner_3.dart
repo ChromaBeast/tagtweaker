@@ -17,7 +17,7 @@ Widget imageBanner(BuildContext context) {
         width: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/banner.png'),
+            image: AssetImage('assets/images/banner.jpg'),
             fit: BoxFit.cover,
           ),
         ),
