@@ -1,3 +1,16 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/pages/ui/ui_screen.dart';
+
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final AuthenticationController authCtrl =
+        Get.find<AuthenticationController>();
+
     return Scaffold(
       body: Center(
         child: Obx(() {

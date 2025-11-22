@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/app/data/models/product_model.dart';
 
 class SamplePage extends StatelessWidget {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
