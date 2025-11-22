@@ -1,49 +1,42 @@
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tag_tweaker/models/product_model.dart';
-import 'package:tag_tweaker/pages/ui/core/favourites_page.dart';
+import 'package:get/get.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:tag_tweaker/pages/ui/core/home_page.dart';
 import 'package:tag_tweaker/pages/ui/core/search_page.dart';
-
-import '../../blocs/navigation_bloc.dart';
+import 'package:tag_tweaker/pages/ui/core/favourites_page.dart';
+import 'package:tag_tweaker/app/controllers/navigation_controller.dart';
 
 class UIPage extends StatelessWidget {
   final int selectedIndex;
-
-  UIPage({super.key, required this.selectedIndex});
-
-  final List<Product> products = [];
-
-  final List<Product> favProducts = [];
-
-  final List _widgetOptions = [
-    const HomePage(),
-    const SearchPage(),
-    const FavouritesPage(),
-  ];
+  const UIPage({Key? key, required this.selectedIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Ensure the NavigationController is available
+    final NavigationController navCtrl = Get.find<NavigationController>();
+    // Set the initial selected index
+    navCtrl.selectedIndex.value = selectedIndex;
+
+    const List<Widget> _widgetOptions = [
+      HomePage(),
+      SearchPage(),
+      FavouritesPage(),
+    ];
+
     return Scaffold(
-      body: BlocBuilder<NavigationBloc, NavigationState>(
-        builder: (context, state) {
-          return _widgetOptions.elementAt(state.selectedIndex);
-        },
-      ),
+      body: Obx(() => _widgetOptions.elementAt(navCtrl.selectedIndex.value)),
       bottomNavigationBar: ConvexAppBar(
-        style: TabStyle.titled, // Choose a curved style
-        backgroundColor: Colors.black, // Background color
-        color: Colors.grey.shade400, // Inactive color
+        style: TabStyle.titled,
+        backgroundColor: Colors.black,
+        color: Colors.grey.shade400,
         activeColor: Colors.white,
         items: const [
           TabItem(icon: Icons.home, title: 'Home'),
           TabItem(icon: Icons.search, title: 'Search'),
           TabItem(icon: Icons.favorite, title: 'Favourites'),
         ],
-        initialActiveIndex: selectedIndex, // Set initial index
-        onTap: (index) =>
-            BlocProvider.of<NavigationBloc>(context).add(TabTapped(index)),
+        initialActiveIndex: selectedIndex,
+        onTap: (index) => navCtrl.changeTab(index),
       ),
     );
   }

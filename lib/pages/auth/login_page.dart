@@ -1,146 +1,87 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../blocs/authentication_bloc.dart';
-import '../ui/ui_screen.dart';
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationStarted());
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            if (state == AuthenticationState.authenticated) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => UIPage(
-                    selectedIndex: 0,
+        child: Obx(() {
+          if (authCtrl.user.value != null) {
+            // User is authenticated, navigate to UIPage
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Get.offAll(() => UIPage(selectedIndex: 0));
+            });
+            return const SizedBox.shrink();
+          }
+          return Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.8,
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  image: DecorationImage(
+                    image: AssetImage('assets/animations/animation.gif'),
+                    fit: BoxFit.contain,
                   ),
                 ),
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state == AuthenticationState.authenticating) {
-              return const CircularProgressIndicator();
-            }
-
-            return Column(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    image: DecorationImage(
-                      image: AssetImage('assets/animations/animation.gif'),
-                      fit: BoxFit.contain,
-                    ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.2,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: const Border(
+                    top: BorderSide(color: Colors.black),
                   ),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  color: Colors.grey[900],
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: const Border(
-                      top: BorderSide(
-                        color: Colors.black,
-                      ),
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      'Sign in to Tag Tweaker using',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildGoogleSignInButton(authCtrl),
+                        const Text('or',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
+                        _buildAnonymousSignInButton(authCtrl),
+                      ],
                     ),
-                    color: Colors.grey[900],
-                  ),
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text(
-                        'Sign in to Tag Tweaker using',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildGoogleSignInButton(),
-                          const Text(
-                            'or',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                          _buildAnonymousSignInButton(),
-                        ],
-                      ),
-                      //role based login
-                      // role selection
-                    ],
-                  ),
+                  ],
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildGoogleSignInButton() {
+  Widget _buildGoogleSignInButton(AuthenticationController ctrl) {
     return InkWell(
-      onTap: () {
-        BlocProvider.of<AuthenticationBloc>(context)
-            .add(GoogleSignInRequested());
-      },
+      onTap: ctrl.signInWithGoogle,
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        ),
-        child: Image.asset(
-          'assets/images/google.png',
-          height: 30,
-        ),
+        decoration:
+            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: Image.asset('assets/images/google.png', height: 30),
       ),
     );
   }
 
-  Widget _buildAnonymousSignInButton() {
+  Widget _buildAnonymousSignInButton(AuthenticationController ctrl) {
     return InkWell(
-      onTap: () {
-        BlocProvider.of<AuthenticationBloc>(context)
-            .add(AnonymousSignInRequested());
-      },
+      onTap: ctrl.signInAnonymously,
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        ),
-        child: Image.asset(
-          'assets/images/guest.png',
-          height: 30,
-          color: Colors.black,
-        ),
+        decoration:
+            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: Image.asset('assets/images/guest.png',
+            height: 30, color: Colors.black),
       ),
     );
   }
