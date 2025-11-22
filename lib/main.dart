@@ -21,7 +21,10 @@ Future<void> main() async {
   );
 
   // Initialize Google Sign-In service (v7.2.0+)
-  await GoogleSignInService.instance.initialize();
+  // serverClientId is required on Android - this is the Web Client ID from Firebase Console
+  await GoogleSignInService.instance.initialize(
+    serverClientId: '768847026435-1fapgf0eqqle6vds1sp4tjpi8ljibd31.apps.googleusercontent.com',
+  );
 
   // Initialize GetX controllers
   Get.put(AuthenticationController());
