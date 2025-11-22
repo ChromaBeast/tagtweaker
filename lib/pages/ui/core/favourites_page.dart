@@ -11,6 +11,7 @@ import 'package:tag_tweaker/pages/ui/pdf_preview_page.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 
+import '../../../themes/colors.dart';
 import '../../../widgets/functions/share_individual.dart';
 
 class FavouritesPage extends StatelessWidget {
@@ -20,23 +21,29 @@ class FavouritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(16.0),
-            bottomRight: Radius.circular(16.0),
+        centerTitle: true,
+        title: Text(
+          'Favourite Products',
+          style: textTheme.titleLarge?.copyWith(
+            color: colorScheme.onSurface,
           ),
         ),
-        backgroundColor: Colors.grey[900],
-        centerTitle: true,
-        title: const Text(
-          'Favourite Products',
-          style: TextStyle(color: Colors.white),
-        ),
+        actions: [
+          IconButton(
+            onPressed: () => _generatePDF(context, colorScheme),
+            icon: Icon(
+              Icons.picture_as_pdf_rounded,
+              color: colorScheme.primary,
+            ),
+            tooltip: 'Export All to PDF',
+          ),
+        ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: firestore
@@ -47,181 +54,269 @@ class FavouritesPage extends StatelessWidget {
             .then((value) => value.docs.map((doc) => doc.data()).toList()),
         builder: (BuildContext context,
             AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length, // Use snapshot.data!.length
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    goToProductPage(context, index);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(8.0),
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Image.network(
-                            snapshot.data![index]
-                                ['thumbnail'], // Access using index
-                            fit: BoxFit.cover,
-                            height: 200.0,
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          snapshot.data![index]['title'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.zero,
-                                  margin: EdgeInsets.zero,
-                                  width: 100,
-                                  child: TextField(
-                                    onChanged: (value) {
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(auth.currentUser?.uid)
-                                          .collection('favourites')
-                                          .doc(snapshot.data![index]['id']
-                                              .toString())
-                                          .update({'price': value});
-                                    },
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
-                                      hintText: snapshot.data![index]['price']
-                                          .toString(),
-                                    ),
-                                  ),
-                                ),
-                                const Text(" \$ ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    )),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => AlertDialog(
-                                          title: const Text(
-                                              'Remove from Favourites'),
-                                          content: const Text(
-                                              'Are you sure you want to remove this item from your favourites?'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Cancel'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .doc(auth.currentUser?.uid)
-                                                    .collection('favourites')
-                                                    .doc(snapshot.data![index]
-                                                            ['id']
-                                                        .toString())
-                                                    .delete();
-                                                Navigator.pop(context);
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        UIPage(
-                                                            selectedIndex: 2),
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text('Remove'),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.favorite_rounded,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    genPDF(context, snapshot.data![index]);
-                                  },
-                                  icon: const Icon(
-                                    Icons.share,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          } else {
-            return Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.grey[900],
-              ),
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text("Please wait while we load your favourites"),
-                  Image.asset(
-                    'assets/animations/splash_screen.gif',
+                  CircularProgressIndicator(
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Loading your favourites...',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
             );
           }
+
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return _buildFavouriteCard(
+                  context,
+                  snapshot.data![index],
+                  auth,
+                  colorScheme,
+                  textTheme,
+                  index,
+                );
+              },
+            );
+          }
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.favorite_outline_rounded,
+                  size: 80,
+                  color: colorScheme.outlineVariant,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No favourites yet',
+                  style: textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Add products to your favourites to see them here',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.outline,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        backgroundColor: Colors.grey[800],
-        onPressed: () {
-          _generatePDF(context);
-        },
-        child: const Icon(
-          Icons.picture_as_pdf,
-          color: Colors.white,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _generatePDF(context, colorScheme),
+        icon: Icon(
+          Icons.picture_as_pdf_rounded,
+          color: colorScheme.onPrimaryContainer,
+        ),
+        label: Text(
+          'Export PDF',
+          style: textTheme.labelLarge?.copyWith(
+            color: colorScheme.onPrimaryContainer,
+          ),
         ),
       ),
     );
   }
 
-  _generatePDF(BuildContext context) async {
+  Widget _buildFavouriteCard(
+    BuildContext context,
+    Map<String, dynamic> item,
+    FirebaseAuth auth,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    int index,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 0,
+      color: colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: InkWell(
+        onTap: () => goToProductPage(context, index),
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  item['thumbnail'],
+                  fit: BoxFit.cover,
+                  height: 180,
+                  width: double.infinity,
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Product Title
+              Text(
+                item['title'],
+                style: textTheme.titleMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 12),
+              // Price Input and Actions Row
+              Row(
+                children: [
+                  // Price Input
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.outlineVariant,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              onChanged: (value) {
+                                FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(auth.currentUser?.uid)
+                                    .collection('favourites')
+                                    .doc(item['id'].toString())
+                                    .update({'price': value});
+                              },
+                              style: textTheme.bodyLarge?.copyWith(
+                                color: colorScheme.onSurface,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                hintText: item['price'].toString(),
+                                hintStyle: textTheme.bodyLarge?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              '\$',
+                              style: textTheme.titleMedium?.copyWith(
+                                color: colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Action Buttons
+                  IconButton.filled(
+                    onPressed: () =>
+                        _showRemoveDialog(context, item, auth, colorScheme),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.favoriteColor.withOpacity(0.2),
+                    ),
+                    icon: Icon(
+                      Icons.favorite_rounded,
+                      color: AppColors.favoriteColor,
+                    ),
+                    tooltip: 'Remove from Favourites',
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton.filled(
+                    onPressed: () => genPDF(context, item),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.shareColor.withOpacity(0.2),
+                    ),
+                    icon: Icon(
+                      Icons.share_rounded,
+                      color: AppColors.shareColor,
+                    ),
+                    tooltip: 'Share Product',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showRemoveDialog(
+    BuildContext context,
+    Map<String, dynamic> item,
+    FirebaseAuth auth,
+    ColorScheme colorScheme,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove from Favourites'),
+        content: const Text(
+            'Are you sure you want to remove this item from your favourites?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(auth.currentUser?.uid)
+                  .collection('favourites')
+                  .doc(item['id'].toString())
+                  .delete();
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UIPage(selectedIndex: 2),
+                ),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: colorScheme.error,
+            ),
+            child: Text(
+              'Remove',
+              style: TextStyle(color: colorScheme.onError),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _generatePDF(BuildContext context, ColorScheme colorScheme) async {
     FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -232,18 +327,13 @@ class FavouritesPage extends StatelessWidget {
       if (snapshot.docs.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(16),
-            elevation: 0,
+            content: const Text('No items in the catalog to generate PDF.'),
             action: SnackBarAction(
               label: 'OK',
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
               },
             ),
-            content: const Text('No items in the catalog to generate PDF.'),
           ),
         );
         return;
@@ -336,7 +426,6 @@ class FavouritesPage extends StatelessWidget {
       final file = File('${output.path}/example.pdf');
       await file.writeAsBytes(await pdf.save());
       try {
-        // Navigate to a new screen to preview the PDF
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -344,19 +433,10 @@ class FavouritesPage extends StatelessWidget {
           ),
         );
       } catch (e) {
-        SnackBar(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error generating PDF.'),
           ),
-          padding: const EdgeInsets.all(16),
-          elevation: 0,
-          action: SnackBarAction(
-            label: 'OK',
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
-          content: const Text('Error generating PDF.'),
         );
       }
     });

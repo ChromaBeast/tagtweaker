@@ -6,165 +6,218 @@ import '../../pages/ui/trending_now_page.dart';
 import '../../themes/colors.dart';
 
 Widget categoryRow(String text, String leading, BuildContext context) {
+  final colorScheme = Theme.of(context).colorScheme;
+  final textTheme = Theme.of(context).textTheme;
+
   List products = Product.products
       .where((element) => element['ui']["is$text"] == true)
       .toList();
   int len = products.length;
+
   return Container(
-    decoration: BoxDecoration(
-      color: Colors.grey[900],
-      borderRadius: BorderRadius.circular(30),
-    ),
+    margin: const EdgeInsets.symmetric(horizontal: 16),
     child: Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(30),
+        // Header Card
+        Card(
+          elevation: 0,
+          color: colorScheme.surfaceContainerHighest,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          padding: const EdgeInsets.all(10.0),
-          margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "$text $leading",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TrendingNowPage(
-                        products: products,
-                      ),
-                    ),
-                  );
-                },
-                child: const Row(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
+                    Icon(
+                      Icons.trending_up_rounded,
+                      color: colorScheme.primary,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 8),
                     Text(
-                      'View All',
-                      style: TextStyle(
-                        fontSize: 16,
+                      "$text $leading",
+                      style: textTheme.titleMedium?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Icon(Icons.play_arrow_outlined),
                   ],
                 ),
-              ),
-            ],
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TrendingNowPage(
+                          products: products,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'View All',
+                        style: textTheme.labelLarge?.copyWith(
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(left: 6, right: 6),
-          height: MediaQuery.of(context).size.height * 0.32,
+        const SizedBox(height: 12),
+        // Products Row
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.30,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
             itemCount: len < 5 ? len : 5,
             itemBuilder: (BuildContext context, int index) {
-              final img = products[index]['thumbnail'];
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductPage(
-                        product: products[index],
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(10),
-                        height: MediaQuery.of(context).size.height * 0.18,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Hero(
-                          tag: products[index]['thumbnail'],
-                          child: Image.network(
-                            img,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                        child: Text(products[index]['title'],
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                color: Colors.white, // High contrast text
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                      Text(
-                        "${products[index]['category']}",
-                        style: TextStyle(
-                          color: Colors.grey[50], //  Lighter text
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "by ${products[index]['brand']}",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors
-                                  .grey[400], // Slightly lighter 'by' text
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                color: ratingColors[
-                                    products[index]['rating'].toInt()],
-                              ),
-                              Text(
-                                "${products[index]['rating'].toStringAsFixed(1)}",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+              return _buildProductCard(
+                context,
+                products[index],
+                colorScheme,
+                textTheme,
               );
             },
           ),
         ),
       ],
+    ),
+  );
+}
+
+Widget _buildProductCard(
+  BuildContext context,
+  dynamic product,
+  ColorScheme colorScheme,
+  TextTheme textTheme,
+) {
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.42,
+    margin: const EdgeInsets.only(right: 12),
+    child: Card(
+      elevation: 0,
+      color: colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductPage(product: product),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product Image
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Hero(
+                      tag: product['thumbnail'],
+                      child: Image.network(
+                        product['thumbnail'],
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Product Title
+              Text(
+                product['title'],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.titleSmall?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              // Category
+              Text(
+                product['category'],
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Brand and Rating Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      "by ${product['brand']}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colorScheme.outline,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          size: 12,
+                          color: ratingColors[product['rating'].toInt()],
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          product['rating'].toStringAsFixed(1),
+                          style: textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onSurface,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     ),
   );
 }

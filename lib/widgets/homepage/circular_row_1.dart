@@ -4,15 +4,16 @@ import '../../app/data/models/product_model.dart';
 import '../../pages/ui/category_page.dart';
 
 Widget circularRow(BuildContext context) {
+  final colorScheme = Theme.of(context).colorScheme;
+  final textTheme = Theme.of(context).textTheme;
+
   return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(30),
-    ),
-    padding: const EdgeInsets.all(10.0),
-    height: MediaQuery.of(context).size.height * 0.17,
+    padding: const EdgeInsets.symmetric(horizontal: 8),
+    height: MediaQuery.of(context).size.height * 0.15,
     child: ListView.builder(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
       itemCount: Product.categories.length,
       itemBuilder: (BuildContext context, int index) {
         final category = Product.categories[index].toLowerCase();
@@ -20,10 +21,15 @@ Widget circularRow(BuildContext context) {
         final categoryProducts = Product.products
             .where((element) => element['category'] == category)
             .toList();
-        return Row(
-          children: [
-            InkWell(
-              splashColor: Colors.transparent,
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashColor: colorScheme.primary.withOpacity(0.12),
+              highlightColor: colorScheme.primary.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(16),
               onTap: () {
                 Navigator.push(
                   context,
@@ -37,40 +43,46 @@ Widget circularRow(BuildContext context) {
                 );
               },
               child: Container(
-                padding: const EdgeInsets.all(5),
-                margin: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.all(5),
-                      width: MediaQuery.of(context).size.width * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.12,
+                      height: MediaQuery.of(context).size.width * 0.12,
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade400,
+                        color: colorScheme.primaryContainer,
                         shape: BoxShape.circle,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(img),
+                      child: Image.asset(
+                        img,
+                        color: colorScheme.onPrimaryContainer,
                       ),
                     ),
+                    const SizedBox(height: 8),
                     Hero(
                       tag: Product.categories[index].toLowerCase(),
                       child: Material(
                         color: Colors.transparent,
-                        child: Text(Product.categories[index],
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        child: Text(
+                          Product.categories[index],
+                          style: textTheme.labelMedium?.copyWith(
+                            color: colorScheme.onSurface,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          ],
+          ),
         );
       },
     ),
