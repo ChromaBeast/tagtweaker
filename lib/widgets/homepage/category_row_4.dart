@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app/data/models/product_model.dart';
+import '../../models/product_model.dart';
 import '../../pages/ui/product_page.dart';
 import '../../pages/ui/trending_now_page.dart';
 import '../../themes/colors.dart';
@@ -24,6 +24,7 @@ Widget categoryRow(String text, String leading, BuildContext context) {
           color: colorScheme.surfaceContainerHighest,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -118,6 +119,7 @@ Widget _buildProductCard(
       color: colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
       ),
       child: InkWell(
         onTap: () {

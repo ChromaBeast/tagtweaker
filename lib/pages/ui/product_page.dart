@@ -115,20 +115,12 @@ class _ProductPageState extends State<ProductPage> {
                   builder: (BuildContext context) {
                     return Hero(
                       tag: image,
-                      child: Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Container(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Image.network(
+                          image,
                           width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            image: DecorationImage(
-                              image: NetworkImage(image),
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     );
@@ -198,9 +190,6 @@ class _ProductPageState extends State<ProductPage> {
                               decoration: BoxDecoration(
                                 color: colorScheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: colorScheme.outlineVariant,
-                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,

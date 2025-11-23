@@ -2,10 +2,10 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
-import 'package:tag_tweaker/app/controllers/navigation_controller.dart';
-import 'package:tag_tweaker/app/controllers/product_controller.dart';
-import 'package:tag_tweaker/app/services/google_sign_in_service.dart';
+import 'package:tag_tweaker/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/controllers/navigation_controller.dart';
+import 'package:tag_tweaker/controllers/product_controller.dart';
+import 'package:tag_tweaker/services/google_sign_in_service.dart';
 import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/themes/dark_theme.dart';
 

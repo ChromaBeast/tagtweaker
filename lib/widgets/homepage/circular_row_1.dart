@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 
-import '../../app/data/models/product_model.dart';
+import '../../models/product_model.dart';
 import '../../pages/ui/category_page.dart';
 
 Widget circularRow(BuildContext context) {
   final colorScheme = Theme.of(context).colorScheme;
   final textTheme = Theme.of(context).textTheme;
 
-  // Define gradient colors for each category
+  // Define monochrome gradients for each category
   final categoryGradients = [
-    [const Color(0xFF667eea), const Color(0xFF764ba2)], // Smartphone - Purple
-    [const Color(0xFFf093fb), const Color(0xFFF5576C)], // Laptop - Pink
-    [const Color(0xFF4facfe), const Color(0xFF00f2fe)], // Controller - Blue
-    [const Color(0xFFfa709a), const Color(0xFFfee140)], // Audio - Orange
-    [const Color(0xFF30cfd0), const Color(0xFF330867)], // TV - Teal
-    [const Color(0xFFa8edea), const Color(0xFFfed6e3)], // Accessories - Mint
+    [const Color(0xFF757575), const Color(0xFF424242)], // Smartphone - Grey
+    [const Color(0xFF9E9E9E), const Color(0xFF616161)], // Laptop - Light Grey
+    [const Color(0xFF757575), const Color(0xFF424242)], // Controller - Grey
+    [const Color(0xFF9E9E9E), const Color(0xFF616161)], // Audio - Light Grey
+    [const Color(0xFF757575), const Color(0xFF424242)], // TV - Grey
+    [
+      const Color(0xFF9E9E9E),
+      const Color(0xFF616161)
+    ], // Accessories - Light Grey
   ];
 
   return Container(
@@ -69,17 +72,6 @@ Widget circularRow(BuildContext context) {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: gradient[0].withOpacity(0.3),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: gradient[0].withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

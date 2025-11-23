@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/controllers/authentication_controller.dart';
 import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 
 class LoginPage extends StatelessWidget {

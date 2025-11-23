@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tag_tweaker/app/controllers/authentication_controller.dart';
-import 'package:tag_tweaker/app/controllers/product_controller.dart';
+import 'package:tag_tweaker/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/controllers/product_controller.dart';
 import '../../../widgets/homepage/category_row_4.dart';
 import '../../../widgets/homepage/circular_row_1.dart';
 import '../../../widgets/homepage/corousel_2.dart';
@@ -21,9 +21,11 @@ class HomePage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        scrolledUnderElevation: 2,
+        scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
         toolbarHeight: 70,
         title: Column(
@@ -38,11 +40,12 @@ class HomePage extends StatelessWidget {
               ).createShader(bounds),
               child: Text(
                 'Tag Tweaker',
-                style: textTheme.headlineMedium?.copyWith(
-                  fontFamily: 'Lobster',
+                style: textTheme.displaySmall?.copyWith(
+                  // fontFamily: 'Rajdhani', // Already set in theme
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 26,
+                  fontSize: 32,
+                  letterSpacing: 2,
                 ),
               ),
             ),
@@ -67,11 +70,18 @@ class HomePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      colorScheme.primary,
-                      colorScheme.secondary,
+                      colorScheme.primary.withOpacity(0.8),
+                      colorScheme.secondary.withOpacity(0.8),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorScheme.primary.withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
                 child: FilledButton.tonal(
                   onPressed: () {
@@ -84,6 +94,8 @@ class HomePage extends StatelessWidget {
                     ),
                     backgroundColor: Colors.transparent,
                     elevation: 0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -99,6 +111,7 @@ class HomePage extends StatelessWidget {
                         style: textTheme.labelLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
                         ),
                       ),
                     ],
