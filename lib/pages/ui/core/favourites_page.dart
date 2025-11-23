@@ -13,6 +13,7 @@ import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 
 import '../../../themes/colors.dart';
 import '../../../widgets/functions/share_individual.dart';
+import '../../../widgets/pdf/product_pdf_widget.dart';
 
 class FavouritesPage extends StatelessWidget {
   const FavouritesPage({super.key});
@@ -341,89 +342,116 @@ class FavouritesPage extends StatelessWidget {
         );
         return;
       }
-      if (snapshot.docs.isNotEmpty) {
-        for (final doc in snapshot.docs) {
-          final item = doc.data();
-          final image = await _getImage(item['thumbnail']);
-          if (image != null) {
-            pdf.addPage(
-              pw.Page(
-                pageTheme: pw.PageTheme(
-                  pageFormat: PdfPageFormat.a4,
-                  buildBackground: (context) {
-                    return pw.FullPage(
-                      ignoreMargins: true,
-                      child: pw.Container(
-                        color: PdfColors.white,
-                      ),
-                    );
-                  },
-                ),
-                build: (pw.Context context) {
-                  return pw.ListView(
+
+      // Fetch all items and images
+      final items = snapshot.docs.map((doc) => doc.data()).toList();
+      final Map<String, pw.MemoryImage?> images = {};
+      for (final item in items) {
+        images[item['id'].toString()] = await _getImage(item['thumbnail']);
+      }
+
+      // Monochrome PDF colors
+      const accentColor = PdfColor.fromInt(0xFF000000); // Black
+      const darkGrey = PdfColor.fromInt(0xFF212121);
+      const lightGrey = PdfColor.fromInt(0xFF757575);
+      const veryLightGrey = PdfColor.fromInt(0xFFF5F5F5);
+
+      pdf.addPage(
+        pw.MultiPage(
+          pageTheme: pw.PageTheme(
+            pageFormat: PdfPageFormat.a4,
+            margin: const pw.EdgeInsets.all(40),
+            buildBackground: (context) => pw.FullPage(
+              ignoreMargins: true,
+              child: pw.Container(color: PdfColors.white),
+            ),
+          ),
+          header: (context) => pw.Column(
+            children: [
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.end,
+                children: [
+                  pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Container(
-                        margin: const pw.EdgeInsets.only(bottom: 10),
-                        padding: const pw.EdgeInsets.all(10),
-                        decoration: pw.BoxDecoration(
-                          color: const PdfColor.fromInt(0xFFE0E0E0),
-                          border: pw.Border.all(
-                            color: const PdfColor.fromInt(0xFF000000),
-                            width: 1,
-                          ),
-                          borderRadius: pw.BorderRadius.circular(16),
+                      pw.Text(
+                        'TAG TWEAKER',
+                        style: pw.TextStyle(
+                          fontSize: 24,
+                          fontWeight: pw.FontWeight.bold,
+                          color: accentColor,
                         ),
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.center,
-                          children: [
-                            pw.Image(image,
-                                height: 300, fit: pw.BoxFit.contain),
-                            pw.Row(
-                              children: [
-                                pw.Text(
-                                  item['title'],
-                                  style: pw.TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: pw.FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            pw.Row(
-                              children: [
-                                pw.Text(
-                                  'Price: ${item['price']}\$',
-                                  style: const pw.TextStyle(fontSize: 18),
-                                )
-                              ],
-                            ),
-                            pw.Column(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                children: [
-                                  pw.Text(
-                                    'Description:',
-                                    style: pw.TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: pw.FontWeight.bold,
-                                    ),
-                                  ),
-                                  pw.Text(
-                                    item['description'].toString(),
-                                    style: const pw.TextStyle(fontSize: 18),
-                                  ),
-                                  pw.SizedBox(height: 20),
-                                ])
-                          ],
+                      ),
+                      pw.Text(
+                        'PRODUCT CATALOG',
+                        style: pw.TextStyle(
+                          fontSize: 10,
+                          color: lightGrey,
+                          letterSpacing: 2,
                         ),
                       ),
                     ],
-                  );
-                },
+                  ),
+                  pw.Container(
+                    padding: const pw.EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: pw.BoxDecoration(
+                      color: accentColor,
+                      borderRadius: pw.BorderRadius.circular(4),
+                    ),
+                    child: pw.Text(
+                      'OFFICIAL DOCUMENT',
+                      style: pw.TextStyle(
+                        fontSize: 8,
+                        color: PdfColors.white,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          }
-        }
-      }
+              pw.SizedBox(height: 10),
+              pw.Divider(color: accentColor, thickness: 2),
+              pw.SizedBox(height: 30),
+            ],
+          ),
+          footer: (context) => pw.Column(
+            children: [
+              pw.Divider(color: lightGrey, thickness: 0.5),
+              pw.SizedBox(height: 10),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(
+                    'Tag Tweaker © ${DateTime.now().year}',
+                    style: pw.TextStyle(fontSize: 8, color: lightGrey),
+                  ),
+                  pw.Text(
+                    'Page ${context.pageNumber} of ${context.pagesCount}',
+                    style: pw.TextStyle(fontSize: 8, color: lightGrey),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          build: (pw.Context context) {
+            return [
+              ...items.map((map) {
+                final image = images[map['id'].toString()];
+                return buildProductPdfWidget(
+                  map,
+                  image,
+                  accentColor,
+                  darkGrey,
+                  lightGrey,
+                  veryLightGrey,
+                );
+              }),
+            ];
+          },
+        ),
+      );
 
       final output = await getTemporaryDirectory();
       final file = File('${output.path}/example.pdf');
