@@ -120,16 +120,19 @@ class FavouritesPage extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _generatePDF(context, colorScheme),
-        icon: Icon(
-          Icons.picture_as_pdf_rounded,
-          color: colorScheme.onPrimaryContainer,
-        ),
-        label: Text(
-          'Export PDF',
-          style: textTheme.labelLarge?.copyWith(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70),
+        child: FloatingActionButton.extended(
+          onPressed: () => _generatePDF(context, colorScheme),
+          icon: Icon(
+            Icons.picture_as_pdf_rounded,
             color: colorScheme.onPrimaryContainer,
+          ),
+          label: Text(
+            'Export PDF',
+            style: textTheme.labelLarge?.copyWith(
+              color: colorScheme.onPrimaryContainer,
+            ),
           ),
         ),
       ),

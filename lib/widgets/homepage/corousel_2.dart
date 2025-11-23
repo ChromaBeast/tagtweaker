@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-import '../../app/data/models/product_model.dart';
+import '../../models/product_model.dart';
 import '../../pages/ui/product_page.dart';
 
 Widget carouselSlider(context) {
@@ -22,7 +22,7 @@ Widget carouselSlider(context) {
               borderRadius: BorderRadius.circular(20.0),
               child: Image.network(
                 product['thumbnail'].toString(),
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
               ),
             ),
           ))

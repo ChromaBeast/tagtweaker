@@ -1,4 +1,4 @@
-import 'package:tag_tweaker/app/data/models/product_model.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 
 class SearchedProduct {
   Product product = Product();

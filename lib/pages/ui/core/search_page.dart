@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 
-import '../../../app/data/models/searched_product_model.dart';
+import '../../../models/searched_product_model.dart';
 import '../../../themes/colors.dart';
 import '../../../widgets/functions/share_individual.dart';
 
@@ -20,11 +20,13 @@ class SearchPageState extends State<SearchPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
+                backgroundColor: Colors.transparent,
                 floating: true,
                 snap: true,
                 automaticallyImplyLeading: false,
@@ -49,9 +51,15 @@ class SearchPageState extends State<SearchPage> {
     return SearchBar(
       controller: searchController,
       hintText: 'Search Products',
+      hintStyle: WidgetStateProperty.all(
+        Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: colorScheme.onSurfaceVariant),
+      ),
       leading: Icon(
         Icons.search_rounded,
-        color: colorScheme.onSurfaceVariant,
+        color: colorScheme.primary,
       ),
       trailing: searchController.text.isNotEmpty
           ? [
@@ -69,11 +77,13 @@ class SearchPageState extends State<SearchPage> {
               ),
             ]
           : null,
-      elevation: WidgetStateProperty.all(1),
+      elevation: WidgetStateProperty.all(0),
       backgroundColor: WidgetStateProperty.all(
-        colorScheme.surfaceContainerHighest,
+        colorScheme.surfaceContainerHighest.withOpacity(0.5),
       ),
-      surfaceTintColor: WidgetStateProperty.all(colorScheme.surfaceTint),
+      side: WidgetStateProperty.all(
+        BorderSide(color: colorScheme.outline.withOpacity(0.3)),
+      ),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28),
@@ -150,9 +160,10 @@ class SearchPageState extends State<SearchPage> {
 
     return Card(
       elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
+      // color: colorScheme.surfaceContainerHighest, // Use theme default (glassmorphic)
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
       ),
       child: InkWell(
         onTap: () {

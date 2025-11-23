@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tag_tweaker/app/services/google_sign_in_service.dart';
+import 'package:tag_tweaker/services/google_sign_in_service.dart';
 
 class AuthenticationController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
