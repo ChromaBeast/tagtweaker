@@ -44,6 +44,9 @@ class CustomSnackbar {
   }
 
   static void showError({required String title, required String message}) {
+    // Ensure we don't show duplicate identical snackbars if one is already open
+    if (Get.isSnackbarOpen) return;
+
     Get.snackbar(
       title,
       message,
