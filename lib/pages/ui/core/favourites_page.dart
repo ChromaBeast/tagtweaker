@@ -167,13 +167,9 @@ class FavouritesPage extends StatelessWidget {
           Text(
             'YOUR\nFAVOURITES',
             style: NeoBrutalTheme.heading.copyWith(
-              fontSize: 24,
-              height: 0.9,
+              fontSize: 32,
               shadows: [
-                const Shadow(
-                  offset: Offset(2, 2),
-                  color: NeoBrutalColors.lime,
-                ),
+                const Shadow(offset: Offset(2, 2), color: NeoBrutalColors.lime),
               ],
             ),
           ),
