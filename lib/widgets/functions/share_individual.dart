@@ -1,16 +1,30 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../controllers/pdf_preview_controller.dart';
 import '../../pages/ui/pdf_preview_page.dart';
-import '../../widgets/pdf/product_pdf_widget.dart';
 import '../../widgets/pdf/neo_brutal_pdf_theme.dart';
+import '../../widgets/pdf/product_pdf_widget.dart';
 
 Future<void> genPDF(BuildContext context, Map<String, dynamic> map) async {
+  // Navigate immediately to the preview page
+  Get.to(
+    () => const PdfPreviewPage(),
+    binding: BindingsBuilder(() {
+      Get.put(PdfPreviewController(
+        pdfGenerator: () => _generatePdfFile(map),
+      ));
+    }),
+  );
+}
+
+Future<String> _generatePdfFile(Map<String, dynamic> map) async {
   final pdf = pw.Document();
   final image = await _getImage(map['thumbnail']);
 
@@ -109,18 +123,8 @@ Future<void> genPDF(BuildContext context, Map<String, dynamic> map) async {
   final output = await getTemporaryDirectory();
   final file = File('${output.path}/${map['title']}_catalog.pdf');
   await file.writeAsBytes(await pdf.save());
-  try {
-    if (context.mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PdfPreviewScreen(pdfPath: file.path),
-        ),
-      );
-    }
-  } catch (e) {
-    debugPrint('Error navigating to PDF preview screen: $e');
-  }
+  
+  return file.path;
 }
 
 Future<pw.MemoryImage?> _getImage(String url) async {

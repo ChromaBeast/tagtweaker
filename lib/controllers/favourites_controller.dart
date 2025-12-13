@@ -9,6 +9,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../pages/ui/pdf_preview_page.dart';
+import '../controllers/pdf_preview_controller.dart';
 import '../widgets/pdf/product_pdf_widget.dart';
 import '../widgets/pdf/neo_brutal_pdf_theme.dart';
 import '../widgets/custom_snackbar.dart';
@@ -30,25 +31,41 @@ class FavouritesController extends GetxController {
   }
 
   Future<void> generatePDF(BuildContext context) async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('favourites')
-          .get();
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('favourites')
+        .get();
 
-      if (snapshot.docs.isEmpty) {
-        if (context.mounted) {
-          CustomSnackbar.showError(
-            title: 'EMPTY CATALOG',
-            message: 'No items in the catalog to generate PDF.',
-          );
-        }
-        return;
+    if (snapshot.docs.isEmpty) {
+      if (context.mounted) {
+        CustomSnackbar.showError(
+          title: 'EMPTY CATALOG',
+          message: 'No items in the catalog to generate PDF.',
+        );
       }
+      return;
+    }
 
+    // Navigate immediately to the preview page
+    Get.to(
+      () => const PdfPreviewPage(),
+      binding: BindingsBuilder(() {
+        Get.put(
+          PdfPreviewController(
+            pdfGenerator: () => _generatePdfFile(snapshot.docs),
+          ),
+        );
+      }),
+    );
+  }
+
+  Future<String> _generatePdfFile(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  ) async {
+    try {
       // Fetch all items and images
-      final items = snapshot.docs.map((doc) {
+      final items = docs.map((doc) {
         final data = doc.data();
         // Override price if modified locally
         final id = data['id'].toString();
@@ -68,6 +85,25 @@ class FavouritesController extends GetxController {
       }
 
       final pdf = pw.Document();
+
+      final List<pw.Widget> pdfContent = [];
+      for (int i = 0; i < items.length; i++) {
+        final item = items[i];
+        final image = images[item['id'].toString()];
+
+        pdfContent.add(buildProductPdfWidget(item, image));
+
+        // Add spacing between items, but not after the last one
+        if (i < items.length - 1) {
+          pdfContent.add(pw.SizedBox(height: 20));
+          pdfContent.add(
+            pw.Divider(color: NeoBrutalPdfColors.mediumGrey, thickness: 1),
+          );
+          pdfContent.add(pw.SizedBox(height: 20));
+        }
+      }
+
+      debugPrint('Generated PDF content for ${items.length} items.');
 
       pdf.addPage(
         pw.MultiPage(
@@ -158,35 +194,19 @@ class FavouritesController extends GetxController {
             ],
           ),
           build: (pw.Context context) {
-            return [
-              ...items.map((map) {
-                final image = images[map['id'].toString()];
-                return buildProductPdfWidget(map, image);
-              }),
-            ];
+            return pdfContent;
           },
         ),
       );
 
       final output = await getTemporaryDirectory();
-      final file = File('${output.path}/example.pdf');
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final file = File('${output.path}/tag_tweaker_catalog_$timestamp.pdf');
       await file.writeAsBytes(await pdf.save());
 
-      if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PdfPreviewScreen(pdfPath: file.path),
-          ),
-        );
-      }
+      return file.path;
     } catch (e) {
-      if (context.mounted) {
-        CustomSnackbar.showError(
-          title: 'ERROR',
-          message: 'Error generating PDF.',
-        );
-      }
+      throw Exception('Error generating PDF: $e');
     }
   }
 
