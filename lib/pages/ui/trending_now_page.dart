@@ -20,10 +20,7 @@ class TrendingNowPage extends StatelessWidget {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.trending_up_rounded,
-              color: colorScheme.primary,
-            ),
+            Icon(Icons.trending_up_rounded, color: colorScheme.primary),
             const SizedBox(width: 8),
             Text(
               'Trending Now',
@@ -64,9 +61,7 @@ class TrendingNowPage extends StatelessWidget {
     return Card(
       elevation: 0,
       color: colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: () {
           Navigator.push(

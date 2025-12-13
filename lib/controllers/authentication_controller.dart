@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tag_tweaker/services/google_sign_in_service.dart';
+import 'package:tag_tweaker/widgets/custom_snackbar.dart';
 
 class AuthenticationController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,35 +20,28 @@ class AuthenticationController extends GetxController {
     try {
       isLoading.value = true;
 
-      final UserCredential userCredential =
-          await GoogleSignInService.instance.signInWithGoogle();
+      final UserCredential userCredential = await GoogleSignInService.instance
+          .signInWithGoogle();
 
       final User? firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
-        Get.snackbar(
-          'Success',
-          'Signed in as ${firebaseUser.displayName ?? firebaseUser.email ?? 'User'}',
-          snackPosition: SnackPosition.BOTTOM,
+        CustomSnackbar.showSuccess(
+          title: 'SUCCESS',
+          message: 'Signed in as ${firebaseUser.displayName ?? firebaseUser.email ?? 'User'}',
         );
       }
     } on GoogleSignInException catch (e) {
-      Get.snackbar(
-        'Error',
-        e.message,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      CustomSnackbar.showError(title: 'ERROR', message: e.message);
     } on FirebaseAuthException catch (e) {
-      Get.snackbar(
-        'Error',
-        e.message ?? 'Authentication failed',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: e.message ?? 'Authentication failed',
       );
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'An unexpected error occurred: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: 'An unexpected error occurred: ${e.toString()}',
       );
     } finally {
       isLoading.value = false;
@@ -58,22 +52,19 @@ class AuthenticationController extends GetxController {
     try {
       isLoading.value = true;
       await _auth.signInAnonymously();
-      Get.snackbar(
-        'Success',
-        'Signed in as Guest',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.showSuccess(
+        title: 'SUCCESS',
+        message: 'Signed in as Guest',
       );
     } on FirebaseAuthException catch (e) {
-      Get.snackbar(
-        'Error',
-        e.message ?? 'Anonymous sign-in failed',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: e.message ?? 'Anonymous sign-in failed',
       );
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'An unexpected error occurred: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: 'An unexpected error occurred: ${e.toString()}',
       );
     } finally {
       isLoading.value = false;
@@ -91,10 +82,9 @@ class AuthenticationController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Sign out failed: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: 'Sign out failed: ${e.toString()}',
       );
     } finally {
       isLoading.value = false;

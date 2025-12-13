@@ -52,7 +52,7 @@ class CustomNetworkImage extends StatelessWidget {
                   strokeWidth: 2,
                   value: loadingProgress.expectedTotalBytes != null
                       ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
+                            loadingProgress.expectedTotalBytes!
                       : null,
                 ),
               ),

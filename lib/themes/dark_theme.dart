@@ -28,7 +28,7 @@ final ColorScheme darkColorScheme = ColorScheme(
   onTertiaryContainer: _pureWhite,
   error: const Color(0xFFCF6679),
   onError: _pureBlack,
-  surface: _neumorphicBackground, 
+  surface: _neumorphicBackground,
   onSurface: _pureWhite,
   surfaceContainerHighest: _mediumGrey,
   onSurfaceVariant: const Color(0xFFB0B0B0),
@@ -138,10 +138,7 @@ ThemeData darkTheme = ThemeData(
     elevation: 0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
-      side: BorderSide(
-        color: _lightGrey.withOpacity(0.3),
-        width: 1,
-      ),
+      side: BorderSide(color: _lightGrey.withOpacity(0.3), width: 1),
     ),
     margin: const EdgeInsets.all(8),
   ),
@@ -154,9 +151,7 @@ ThemeData darkTheme = ThemeData(
       elevation: 4,
       shadowColor: Colors.black.withOpacity(0.3),
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       textStyle: GoogleFonts.rajdhani(
         fontSize: 18,
         fontWeight: FontWeight.bold,
@@ -170,9 +165,7 @@ ThemeData darkTheme = ThemeData(
       foregroundColor: _pureWhite,
       side: const BorderSide(color: _pureWhite, width: 2),
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       textStyle: GoogleFonts.rajdhani(
         fontSize: 18,
         fontWeight: FontWeight.bold,
@@ -207,8 +200,5 @@ ThemeData darkTheme = ThemeData(
   ),
 
   // Icon Theme
-  iconTheme: const IconThemeData(
-    color: _pureWhite,
-    size: 24,
-  ),
+  iconTheme: const IconThemeData(color: _pureWhite, size: 24),
 );

@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '768847026435',
     projectId: 'tagtweaker-sheersh',
     storageBucket: 'tagtweaker-sheersh.appspot.com',
-    androidClientId: '768847026435-0cilj3eqem6l0h1icf1oqkg839e9dupn.apps.googleusercontent.com',
-    iosClientId: '768847026435-vqpcarcltvegdrqsehonm9ssjormr731.apps.googleusercontent.com',
+    androidClientId:
+        '768847026435-0cilj3eqem6l0h1icf1oqkg839e9dupn.apps.googleusercontent.com',
+    iosClientId:
+        '768847026435-vqpcarcltvegdrqsehonm9ssjormr731.apps.googleusercontent.com',
     iosBundleId: 'com.example.catalogueApp',
   );
 }

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/controllers/favourites_controller.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/widgets/favourites/favourite_product_card.dart';
 
@@ -16,7 +17,7 @@ class FavouritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initialize controller
     final controller = Get.put(FavouritesController());
-    
+
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     final colorScheme = Theme.of(context).colorScheme;
@@ -69,11 +70,10 @@ class FavouritesPage extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: docs.length,
                           itemBuilder: (context, index) {
-                            final data =
-                                docs[index].data() as Map<String, dynamic>;
+                            final product = Product.fromSnapshot(docs[index]);
                             return _buildFavouriteCard(
                               context,
-                              data,
+                              product,
                               auth,
                               colorScheme,
                               index,
@@ -164,40 +164,18 @@ class FavouritesPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: NeoBrutalTheme.brutalBox(
-                    color: NeoBrutalColors.white,
-                    borderColor: NeoBrutalColors.black,
-                    shadowColor: NeoBrutalColors.black,
-                    shadowOffset: 4,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: NeoBrutalColors.black,
-                  ),
+          Text(
+            'YOUR\nFAVOURITES',
+            style: NeoBrutalTheme.heading.copyWith(
+              fontSize: 24,
+              height: 0.9,
+              shadows: [
+                const Shadow(
+                  offset: Offset(2, 2),
+                  color: NeoBrutalColors.lime,
                 ),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                'YOUR\nFAVOURITES',
-                style: NeoBrutalTheme.heading.copyWith(
-                  fontSize: 24,
-                  height: 0.9,
-                  shadows: [
-                    const Shadow(
-                      offset: Offset(2, 2),
-                      color: NeoBrutalColors.lime,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -206,7 +184,7 @@ class FavouritesPage extends StatelessWidget {
 
   Widget _buildFavouriteCard(
     BuildContext context,
-    Map<String, dynamic> item,
+    Product item,
     FirebaseAuth auth,
     ColorScheme colorScheme,
     int index,
@@ -221,7 +199,7 @@ class FavouritesPage extends StatelessWidget {
 
   void _showRemoveDialog(
     BuildContext context,
-    Map<String, dynamic> item,
+    Product item,
     FirebaseAuth auth,
     ColorScheme colorScheme,
   ) {
@@ -285,7 +263,7 @@ class FavouritesPage extends StatelessWidget {
                           .collection('users')
                           .doc(auth.currentUser?.uid)
                           .collection('favourites')
-                          .doc(item['id'].toString())
+                          .doc(item.id)
                           .delete();
                       Navigator.pop(context);
                     },
@@ -318,7 +296,7 @@ class FavouritesPage extends StatelessWidget {
     );
   }
 
-  void goToProductPage(BuildContext context, Map<String, dynamic> item) {
+  void goToProductPage(BuildContext context, Product item) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ProductPage(product: item)),

@@ -10,6 +10,8 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../pages/ui/pdf_preview_page.dart';
 import '../widgets/pdf/product_pdf_widget.dart';
+import '../widgets/pdf/neo_brutal_pdf_theme.dart';
+import '../widgets/custom_snackbar.dart';
 
 class FavouritesController extends GetxController {
   // Map to store local price overrides: ProductID -> New Price
@@ -37,10 +39,9 @@ class FavouritesController extends GetxController {
 
       if (snapshot.docs.isEmpty) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No items in the catalog to generate PDF.'),
-            ),
+          CustomSnackbar.showError(
+            title: 'EMPTY CATALOG',
+            message: 'No items in the catalog to generate PDF.',
           );
         }
         return;
@@ -66,12 +67,6 @@ class FavouritesController extends GetxController {
         images[item['id'].toString()] = await _getImage(item['thumbnail']);
       }
 
-      // Monochrome PDF colors
-      const accentColor = PdfColor.fromInt(0xFF000000); // Black
-      const darkGrey = PdfColor.fromInt(0xFF212121);
-      const lightGrey = PdfColor.fromInt(0xFF757575);
-      const veryLightGrey = PdfColor.fromInt(0xFFF5F5F5);
-
       final pdf = pw.Document();
 
       pdf.addPage(
@@ -81,7 +76,7 @@ class FavouritesController extends GetxController {
             margin: const pw.EdgeInsets.all(40),
             buildBackground: (context) => pw.FullPage(
               ignoreMargins: true,
-              child: pw.Container(color: PdfColors.white),
+              child: pw.Container(color: NeoBrutalPdfColors.background),
             ),
           ),
           header: (context) => pw.Column(
@@ -98,15 +93,16 @@ class FavouritesController extends GetxController {
                         style: pw.TextStyle(
                           fontSize: 24,
                           fontWeight: pw.FontWeight.bold,
-                          color: accentColor,
+                          color: NeoBrutalPdfColors.white,
                         ),
                       ),
                       pw.Text(
                         'PRODUCT CATALOG',
                         style: pw.TextStyle(
                           fontSize: 10,
-                          color: lightGrey,
+                          color: NeoBrutalPdfColors.lime,
                           letterSpacing: 2,
+                          fontWeight: pw.FontWeight.bold,
                         ),
                       ),
                     ],
@@ -116,15 +112,15 @@ class FavouritesController extends GetxController {
                       horizontal: 12,
                       vertical: 6,
                     ),
-                    decoration: pw.BoxDecoration(
-                      color: accentColor,
-                      borderRadius: pw.BorderRadius.circular(4),
+                    decoration: NeoBrutalPdfTheme.brutalBox(
+                      color: NeoBrutalPdfColors.purple,
+                      borderColor: NeoBrutalPdfColors.white,
                     ),
                     child: pw.Text(
                       'OFFICIAL DOCUMENT',
                       style: pw.TextStyle(
                         fontSize: 8,
-                        color: PdfColors.white,
+                        color: NeoBrutalPdfColors.white,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
@@ -132,24 +128,30 @@ class FavouritesController extends GetxController {
                 ],
               ),
               pw.SizedBox(height: 10),
-              pw.Divider(color: accentColor, thickness: 2),
+              pw.Divider(color: NeoBrutalPdfColors.white, thickness: 2),
               pw.SizedBox(height: 30),
             ],
           ),
           footer: (context) => pw.Column(
             children: [
-              pw.Divider(color: lightGrey, thickness: 0.5),
+              pw.Divider(color: NeoBrutalPdfColors.lightGrey, thickness: 0.5),
               pw.SizedBox(height: 10),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pw.Text(
                     'Tag Tweaker © ${DateTime.now().year}',
-                    style: pw.TextStyle(fontSize: 8, color: lightGrey),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: NeoBrutalPdfColors.lightGrey,
+                    ),
                   ),
                   pw.Text(
                     'Page ${context.pageNumber} of ${context.pagesCount}',
-                    style: pw.TextStyle(fontSize: 8, color: lightGrey),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: NeoBrutalPdfColors.lightGrey,
+                    ),
                   ),
                 ],
               ),
@@ -159,14 +161,7 @@ class FavouritesController extends GetxController {
             return [
               ...items.map((map) {
                 final image = images[map['id'].toString()];
-                return buildProductPdfWidget(
-                  map,
-                  image,
-                  accentColor,
-                  darkGrey,
-                  lightGrey,
-                  veryLightGrey,
-                );
+                return buildProductPdfWidget(map, image);
               }),
             ];
           },
@@ -187,9 +182,10 @@ class FavouritesController extends GetxController {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Error generating PDF.')));
+        CustomSnackbar.showError(
+          title: 'ERROR',
+          message: 'Error generating PDF.',
+        );
       }
     }
   }

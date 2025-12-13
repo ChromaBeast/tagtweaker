@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/widgets/grid_painter.dart';
 import 'package:tag_tweaker/widgets/neo_brutal_search_bar.dart';
 import 'package:tag_tweaker/widgets/product_card.dart';
@@ -7,7 +8,7 @@ import 'package:tag_tweaker/widgets/product_card.dart';
 import '../../themes/neo_brutal_theme.dart';
 
 class CategoryPage extends StatelessWidget {
-  final List<Map<String, dynamic>> categoryList;
+  final List<Product> categoryList;
   final String category, text;
 
   const CategoryPage({

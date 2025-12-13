@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
+import 'package:tag_tweaker/widgets/custom_snackbar.dart';
 import 'package:tag_tweaker/widgets/functions/share_individual.dart';
 import 'package:tag_tweaker/widgets/grid_painter.dart';
 
 class ProductPage extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final Product product;
 
   const ProductPage({super.key, required this.product});
 
@@ -130,7 +132,7 @@ class ProductPage extends StatelessWidget {
                 shadowColor: NeoBrutalColors.white,
               ),
               child: Text(
-                product['brand']?.toString().toUpperCase() ?? 'BRAND',
+                product.brand.toUpperCase(),
                 style: NeoBrutalTheme.mono.copyWith(
                   color: NeoBrutalColors.black,
                   fontSize: 12,
@@ -145,7 +147,9 @@ class ProductPage extends StatelessWidget {
   }
 
   Widget _buildImageCarousel(BuildContext context) {
-    final List<dynamic> images = product['images'] ?? [product['thumbnail']];
+    final List<dynamic> images = product.images.isNotEmpty
+        ? product.images
+        : [product.thumbnail];
 
     return Container(
       width: double.infinity,
@@ -255,7 +259,7 @@ class ProductPage extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  product['title']?.toString().toUpperCase() ?? 'PRODUCT TITLE',
+                  product.title.toUpperCase(),
                   style: NeoBrutalTheme.heading.copyWith(
                     fontSize: 32,
                     height: 1,
@@ -285,7 +289,7 @@ class ProductPage extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        "${product['rating'] ?? 4.7}",
+                        "${product.rating}",
                         style: NeoBrutalTheme.heading.copyWith(
                           color: NeoBrutalColors.lime,
                           fontSize: 14,
@@ -322,7 +326,7 @@ class ProductPage extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      "₹${product['price']}",
+                      "₹${product.price.toStringAsFixed(0)}",
                       style: NeoBrutalTheme.mono.copyWith(
                         color: NeoBrutalColors.black,
                         fontSize: 40,
@@ -332,7 +336,7 @@ class ProductPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      "₹${(product['price'] * 1.2).toStringAsFixed(0)}", // Mock original price
+                      "₹${(product.price * 1.2).toStringAsFixed(0)}", // Mock original price
                       style: NeoBrutalTheme.mono.copyWith(
                         color: Colors.grey,
                         fontSize: 18,
@@ -394,7 +398,7 @@ class ProductPage extends StatelessWidget {
             textColor: NeoBrutalColors.black,
             shadowColor: NeoBrutalColors.black,
             hoverColor: Colors.grey.shade100,
-            onTap: () => genPDF(context, product),
+            onTap: () => genPDF(context, product.toMap()),
           ),
         ),
       ],
@@ -404,8 +408,9 @@ class ProductPage extends StatelessWidget {
   Future<void> _addToFavourites(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please login to save favourites')),
+      CustomSnackbar.showError(
+        title: 'LOGIN REQUIRED',
+        message: 'Please login to save favourites',
       );
       return;
     }
@@ -415,26 +420,21 @@ class ProductPage extends StatelessWidget {
           .collection('users')
           .doc(user.uid)
           .collection('favourites')
-          .doc(product['id'].toString())
-          .set(product); // Assuming product map is compatible
+          .doc(product.id)
+          .set(product.toMap());
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'ADDED TO FAVOURITES',
-              style: NeoBrutalTheme.mono.copyWith(color: NeoBrutalColors.white),
-            ),
-            backgroundColor: NeoBrutalColors.black,
-            shape: const RoundedRectangleBorder(),
-          ),
+        CustomSnackbar.showSuccess(
+          title: 'SUCCESS',
+          message: 'Product added to favourites',
         );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error saving favourite: $e')));
+        CustomSnackbar.showError(
+          title: 'ERROR',
+          message: 'Error saving favourite: $e',
+        );
       }
     }
   }
@@ -487,7 +487,7 @@ class ProductPage extends StatelessWidget {
           // Description
           const SizedBox(height: 16),
           Text(
-            product['description'] ?? '',
+            product.description,
             style: NeoBrutalTheme.mono.copyWith(
               color: NeoBrutalColors.black,
               fontSize: 14,

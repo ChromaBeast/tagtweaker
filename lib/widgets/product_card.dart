@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
 class ProductCard extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final Product product;
   final bool isNew;
   final bool isBestSeller;
   final VoidCallback? onTap;
@@ -21,7 +22,8 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ??
+      onTap:
+          onTap ??
           () {
             Get.to(() => ProductPage(product: product));
           },
@@ -52,7 +54,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.all(16),
                     child: CustomNetworkImage(
-                      product['thumbnail'] ?? '',
+                      product.thumbnail,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -66,7 +68,7 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product['title'] ?? 'Unknown',
+                          product.title,
                           style: NeoBrutalTheme.heading.copyWith(
                             fontSize: 16,
                             height: 1.1,
@@ -74,17 +76,25 @@ class ProductCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Text(
-                          (product['category'] ?? '').toString().toUpperCase(),
+                          product.category.toUpperCase(),
                           style: NeoBrutalTheme.mono.copyWith(
                             color: Colors.grey,
                             fontSize: 10,
                           ),
                         ),
+                        const SizedBox(height: 2), // Further reduced from 4
+                        Text(
+                          "₹${product.price.toStringAsFixed(0)}",
+                          style: NeoBrutalTheme.heading.copyWith(
+                            fontSize: 14,
+                            color: NeoBrutalColors.lime,
+                          ),
+                        ),
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.only(top: 4),
                           decoration: const BoxDecoration(
                             border: Border(
                               top: BorderSide(
@@ -105,7 +115,7 @@ class ProductCard extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    "${product['rating'] ?? 0.0}",
+                                    "${product.rating}",
                                     style: NeoBrutalTheme.heading.copyWith(
                                       fontSize: 12,
                                     ),
@@ -119,7 +129,7 @@ class ProductCard extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 child: Text(
-                                  "BY ${product['brand'].toString().toUpperCase()}",
+                                  "BY ${product.brand.toUpperCase()}",
                                   style: NeoBrutalTheme.heading.copyWith(
                                     fontSize: 8,
                                     color: NeoBrutalColors.white,

@@ -1,13 +1,11 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import 'neo_brutal_pdf_theme.dart';
+
 pw.Widget buildProductPdfWidget(
   Map<String, dynamic> map,
   pw.MemoryImage? image,
-  PdfColor accentColor,
-  PdfColor darkGrey,
-  PdfColor lightGrey,
-  PdfColor veryLightGrey,
 ) {
   return pw.Column(
     children: [
@@ -22,18 +20,21 @@ pw.Widget buildProductPdfWidget(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Container(
-                  padding:
-                      const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: pw.BoxDecoration(
-                    color: veryLightGrey,
-                    borderRadius: pw.BorderRadius.circular(4),
+                  padding: const pw.EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: NeoBrutalPdfTheme.brutalBox(
+                    color: NeoBrutalPdfColors.lime,
+                    borderColor: NeoBrutalPdfColors.black,
+                    borderWidth: 2,
                   ),
                   child: pw.Text(
                     map['brand']?.toString().toUpperCase() ?? 'BRAND',
                     style: pw.TextStyle(
                       fontSize: 10,
                       fontWeight: pw.FontWeight.bold,
-                      color: accentColor,
+                      color: NeoBrutalPdfColors.black,
                       letterSpacing: 1,
                     ),
                   ),
@@ -44,7 +45,7 @@ pw.Widget buildProductPdfWidget(
                   style: pw.TextStyle(
                     fontSize: 28,
                     fontWeight: pw.FontWeight.bold,
-                    color: darkGrey,
+                    color: NeoBrutalPdfColors.white,
                     lineSpacing: 1.2,
                   ),
                 ),
@@ -57,20 +58,27 @@ pw.Widget buildProductPdfWidget(
                       style: pw.TextStyle(
                         fontSize: 32,
                         fontWeight: pw.FontWeight.bold,
-                        color: accentColor,
+                        color: NeoBrutalPdfColors.lime,
                       ),
                     ),
                     if (map['discountPercentage'] != null &&
                         map['discountPercentage'] > 0) ...[
                       pw.SizedBox(width: 10),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.only(bottom: 6),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: NeoBrutalPdfTheme.brutalBox(
+                          color: NeoBrutalPdfColors.purple,
+                          borderColor: NeoBrutalPdfColors.white,
+                        ),
                         child: pw.Text(
                           '${map['discountPercentage']}% OFF',
                           style: pw.TextStyle(
                             fontSize: 12,
                             fontWeight: pw.FontWeight.bold,
-                            color: PdfColors.redAccent,
+                            color: NeoBrutalPdfColors.white,
                           ),
                         ),
                       ),
@@ -83,10 +91,12 @@ pw.Widget buildProductPdfWidget(
                     children: [
                       pw.Container(
                         padding: const pw.EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: pw.BoxDecoration(
-                          border: pw.Border.all(color: lightGrey),
-                          borderRadius: pw.BorderRadius.circular(4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: NeoBrutalPdfTheme.brutalBox(
+                          color: NeoBrutalPdfColors.darkGrey,
+                          borderColor: NeoBrutalPdfColors.white,
                         ),
                         child: pw.Row(
                           children: [
@@ -95,7 +105,7 @@ pw.Widget buildProductPdfWidget(
                               style: pw.TextStyle(
                                 fontSize: 8,
                                 fontWeight: pw.FontWeight.bold,
-                                color: lightGrey,
+                                color: NeoBrutalPdfColors.white,
                               ),
                             ),
                             pw.SizedBox(width: 6),
@@ -104,7 +114,7 @@ pw.Widget buildProductPdfWidget(
                               style: pw.TextStyle(
                                 fontSize: 12,
                                 fontWeight: pw.FontWeight.bold,
-                                color: darkGrey,
+                                color: NeoBrutalPdfColors.lime,
                               ),
                             ),
                           ],
@@ -121,20 +131,19 @@ pw.Widget buildProductPdfWidget(
             flex: 2,
             child: pw.Container(
               height: 200,
-              decoration: pw.BoxDecoration(
-                color: veryLightGrey,
-                borderRadius: pw.BorderRadius.circular(8),
+              decoration: NeoBrutalPdfTheme.brutalBox(
+                color: NeoBrutalPdfColors.darkGrey,
+                borderColor: NeoBrutalPdfColors.white,
               ),
               child: image != null
-                  ? pw.ClipRRect(
-                      horizontalRadius: 8,
-                      verticalRadius: 8,
+                  ? pw.ClipRect(
                       child: pw.Image(image, fit: pw.BoxFit.contain),
                     )
                   : pw.Center(
                       child: pw.Text(
                         'No Image',
-                        style: const pw.TextStyle(color: PdfColors.grey500),
+                        style: const pw.TextStyle(
+                            color: NeoBrutalPdfColors.lightGrey),
                       ),
                     ),
             ),
@@ -152,7 +161,7 @@ pw.Widget buildProductPdfWidget(
           style: pw.TextStyle(
             fontSize: 12,
             fontWeight: pw.FontWeight.bold,
-            color: accentColor,
+            color: NeoBrutalPdfColors.lime,
             letterSpacing: 1,
           ),
         ),
@@ -161,19 +170,31 @@ pw.Widget buildProductPdfWidget(
       pw.Container(
         decoration: pw.BoxDecoration(
           border: pw.Border(
-            top: pw.BorderSide(color: lightGrey, width: 0.5),
-            bottom: pw.BorderSide(color: lightGrey, width: 0.5),
+            top: pw.BorderSide(color: NeoBrutalPdfColors.white, width: 2),
+            bottom: pw.BorderSide(color: NeoBrutalPdfColors.white, width: 2),
           ),
         ),
         child: pw.Column(
           children: [
             _buildModernSpecRow(
-                'Product ID', '#${map['id']}', darkGrey, lightGrey),
+              'Product ID',
+              '#${map['id']}',
+              NeoBrutalPdfColors.lime,
+              NeoBrutalPdfColors.white,
+            ),
             _buildModernSpecRow(
-                'Category', map['category'] ?? 'N/A', darkGrey, lightGrey),
+              'Category',
+              map['category'] ?? 'N/A',
+              NeoBrutalPdfColors.white,
+              NeoBrutalPdfColors.white,
+            ),
             if (map['stock'] != null)
-              _buildModernSpecRow('Stock Status',
-                  '${map['stock']} units available', darkGrey, lightGrey),
+              _buildModernSpecRow(
+                'Stock Status',
+                '${map['stock']} units available',
+                NeoBrutalPdfColors.lime,
+                NeoBrutalPdfColors.white,
+              ),
           ],
         ),
       ),
@@ -188,7 +209,7 @@ pw.Widget buildProductPdfWidget(
           style: pw.TextStyle(
             fontSize: 12,
             fontWeight: pw.FontWeight.bold,
-            color: accentColor,
+            color: NeoBrutalPdfColors.lime,
             letterSpacing: 1,
           ),
         ),
@@ -197,39 +218,34 @@ pw.Widget buildProductPdfWidget(
       pw.Text(
         map['description']?.toString() ?? 'No description available.',
         style: pw.TextStyle(
-          fontSize: 11,
-          color: darkGrey,
-          lineSpacing: 1.6,
-        ),
+            fontSize: 11, color: NeoBrutalPdfColors.white, lineSpacing: 1.6),
         textAlign: pw.TextAlign.justify,
       ),
 
       pw.SizedBox(height: 40),
-      pw.Divider(color: lightGrey, thickness: 0.5),
+      pw.Divider(color: NeoBrutalPdfColors.white, thickness: 0.5),
       pw.SizedBox(height: 40),
     ],
   );
 }
 
 pw.Widget _buildModernSpecRow(
-    String label, String value, PdfColor valueColor, PdfColor labelColor) {
+  String label,
+  String value,
+  PdfColor valueColor,
+  PdfColor labelColor,
+) {
   return pw.Container(
     padding: const pw.EdgeInsets.symmetric(vertical: 12),
     decoration: const pw.BoxDecoration(
       border: pw.Border(
-        bottom: pw.BorderSide(color: PdfColors.grey200, width: 0.5),
+        bottom: pw.BorderSide(color: NeoBrutalPdfColors.mediumGrey, width: 0.5),
       ),
     ),
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        pw.Text(
-          label,
-          style: pw.TextStyle(
-            fontSize: 10,
-            color: labelColor,
-          ),
-        ),
+        pw.Text(label, style: pw.TextStyle(fontSize: 10, color: labelColor)),
         pw.Text(
           value,
           style: pw.TextStyle(
