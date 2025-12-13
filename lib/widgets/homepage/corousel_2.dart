@@ -1,49 +1,139 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-
-import '../../models/product_model.dart';
-import '../../pages/ui/product_page.dart';
+import 'package:get/get.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/pages/ui/product_page.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
-Widget carouselSlider(context) {
-  List<Widget> items = Product.products
-      .where((product) => product["ui"]['carousel'] == true)
-      .map((product) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductPage(
-                    product: product,
+class NeoBrutalCarousel extends StatelessWidget {
+  const NeoBrutalCarousel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Filter products for carousel
+    final carouselProducts = Product.products
+        .where((product) => product["ui"]?['carousel'] == true)
+        .toList();
+
+    if (carouselProducts.isEmpty) {
+        return const SizedBox.shrink();
+    }
+
+    return CarouselSlider(
+      items: carouselProducts.map((product) {
+        return GestureDetector(
+          onTap: () {
+             Get.to(() => ProductPage(product: product));
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  decoration: NeoBrutalTheme.brutalBox(
+                    color: NeoBrutalColors.white,
+                    borderColor: NeoBrutalColors.black,
+                    shadowColor: NeoBrutalColors.lime,
+                    shadowOffset: 6,
+                  ),
+                  child: ClipRRect(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CustomNetworkImage(
+                          product['thumbnail'].toString(),
+                          fit: BoxFit.cover,
+                        ),
+                        // Gradient layer for text legibility
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                              stops: const [0.6, 1.0],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                               Container(
+                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                 color: NeoBrutalColors.lime,
+                                 child: Text(
+                                   product['title']?.toString().toUpperCase() ?? '',
+                                   style: NeoBrutalTheme.heading.copyWith(
+                                     color: NeoBrutalColors.black,
+                                     fontSize: 16, 
+                                   ),
+                                   maxLines: 1,
+                                   overflow: TextOverflow.ellipsis,
+                                 ),
+                               ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: CustomNetworkImage(
-                product['thumbnail'].toString(),
-                fit: BoxFit.cover,
-              ),
+                // "FEATURED" Badge
+                Positioned(
+                  top: -6,
+                  right: -6,
+                  child: Transform.rotate(
+                    angle: 0.1,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: NeoBrutalColors.lime,
+                        border: Border.all(color: NeoBrutalColors.black, width: 2),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: NeoBrutalColors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "FEATURED",
+                        style: NeoBrutalTheme.heading.copyWith(
+                          color: NeoBrutalColors.black, 
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ))
-      .toList();
-
-  return CarouselSlider(
-      items: items,
+          ),
+        );
+      }).toList(),
       options: CarouselOptions(
         scrollPhysics: const BouncingScrollPhysics(),
-        height: 250,
+        height: 220, 
         aspectRatio: 16 / 9,
-        viewportFraction: 0.8,
+        viewportFraction: 0.9,
         initialPage: 0,
         enableInfiniteScroll: true,
         reverse: false,
         autoPlay: true,
-        autoPlayInterval: const Duration(seconds: 3),
-        autoPlayAnimationDuration: const Duration(milliseconds: 1000),
-        autoPlayCurve: Curves.easeInOutCubicEmphasized,
+        autoPlayInterval: const Duration(seconds: 4),
+        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+        autoPlayCurve: Curves.fastOutSlowIn,
         enlargeCenterPage: true,
         scrollDirection: Axis.horizontal,
-      ));
+      ),
+    );
+  }
 }
