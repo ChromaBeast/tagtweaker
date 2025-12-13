@@ -10,8 +10,10 @@ import 'package:tag_tweaker/widgets/grid_painter.dart';
 import 'package:tag_tweaker/widgets/homepage/corousel_2.dart';
 import 'package:tag_tweaker/widgets/neo_brutal_search_bar.dart';
 import 'package:tag_tweaker/widgets/product_card.dart';
+import 'package:tag_tweaker/pages/ui/core/profile_page.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import '../../auth/login_page.dart';
-import '../../../models/product_model.dart';
+import 'package:tag_tweaker/controllers/navigation_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -145,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               if (authController.user.value == null) {
                 Get.to(() => const LoginPage());
               } else {
-                authController.signOut();
+                Get.to(() => const ProfilePage());
               }
             },
             child: Stack(
@@ -238,9 +240,7 @@ class _HomePageState extends State<HomePage> {
           ),
           itemCount: controller.filteredProducts.length,
           itemBuilder: (context, index) {
-            final product =
-                controller.filteredProducts[index].data()
-                    as Map<String, dynamic>;
+            final product = controller.filteredProducts[index];
             return ProductCard(product: product);
           },
         );
@@ -308,8 +308,9 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               final controller = Get.find<ProductController>();
               final categoryProducts = controller.products
-                  .map((doc) => doc.data() as Map<String, dynamic>)
-                  .where((p) => p['category'] == category.toLowerCase())
+                  .where(
+                    (p) => p.category.toLowerCase() == category.toLowerCase(),
+                  )
                   .toList();
 
               Get.to(
@@ -383,22 +384,13 @@ class _HomePageState extends State<HomePage> {
           }
 
           // Filter for trending products based on FILTERED list
-          // Assuming 'isTrending' field exists, otherwise use a fallback or first 6
-          final allFilteredProducts = controller.filteredProducts
-              .map((doc) => doc.data() as Map<String, dynamic>)
-              .toList();
+          final allFilteredProducts = controller.filteredProducts;
 
           final trendingProducts = allFilteredProducts
-              .where((p) => p['isTrending'] == true)
+              .where((p) => p.isTrending)
               .toList();
 
-          // Fallback if no trending products found (or query is active, maybe show all matches?)
-          // If searching, show matches. If not searching, show trending/all.
-          // For now, let's just show filtered results directly if search is active?
-          // Or keep "trending" logic?
-          // User asked for "search", so assume they want to search ALL products.
-
-          List<Map<String, dynamic>> displayProducts;
+          List<Product> displayProducts;
 
           if (searchController.text.isNotEmpty) {
             displayProducts = allFilteredProducts;
@@ -425,10 +417,7 @@ class _HomePageState extends State<HomePage> {
             itemCount: displayProducts.length,
             itemBuilder: (context, index) {
               final product = displayProducts[index];
-              return ProductCard(
-                product: product,
-                isNew: product['isNew'] == true, // Optional: if data has it
-              );
+              return ProductCard(product: product, isNew: product.isNew);
             },
           );
         }),

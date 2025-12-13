@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../../themes/neo_brutal_theme.dart';
+import 'package:get/get.dart';
+import 'package:tag_tweaker/controllers/favourites_controller.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
 import '../functions/share_individual.dart';
-import '../../widgets/custom_network_image.dart';
 
 class FavouriteProductCard extends StatefulWidget {
-  final Map<String, dynamic> item;
+  final Product item;
   final FirebaseAuth auth;
   final VoidCallback onTap;
   final VoidCallback onRemove;
@@ -32,9 +33,15 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
   @override
   void initState() {
     super.initState();
-    final price = widget.item['price']?.toString();
+    final controller = Get.find<FavouritesController>();
+    final productId = widget.item.id;
+    final price = controller.getPrice(
+      productId,
+      widget.item.price.toStringAsFixed(0),
+    );
+
     _priceController = TextEditingController(
-      text: (price != null && price.isNotEmpty) ? price : '0',
+      text: (price.isNotEmpty) ? price : '0',
     );
   }
 
@@ -68,7 +75,7 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
             ),
             padding: const EdgeInsets.all(16),
             child: CustomNetworkImage(
-              widget.item['thumbnail'] ?? '',
+              widget.item.thumbnail,
               fit: BoxFit.contain,
             ),
           ),
@@ -80,7 +87,7 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.item['title'] ?? 'Unknown',
+                  widget.item.title,
                   style: NeoBrutalTheme.heading.copyWith(
                     fontSize: 16,
                     height: 1.1,
@@ -144,14 +151,10 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
                                     _debounce!.cancel();
                                   }
                                   _debounce = Timer(
-                                    const Duration(milliseconds: 1500),
+                                    const Duration(milliseconds: 500),
                                     () {
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(widget.auth.currentUser?.uid)
-                                          .collection('favourites')
-                                          .doc(widget.item['id'].toString())
-                                          .update({'price': value});
+                                      Get.find<FavouritesController>()
+                                          .updatePrice(widget.item.id, value);
                                     },
                                   );
                                 },
@@ -170,8 +173,9 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
                                     horizontal: 12,
                                     vertical: 14,
                                   ),
-                                  hintText:
-                                      widget.item['price']?.toString() ?? '',
+                                  hintText: widget.item.price.toStringAsFixed(
+                                    0,
+                                  ),
                                   hintStyle: NeoBrutalTheme.mono.copyWith(
                                     fontSize: 14,
                                     color: NeoBrutalColors.mediumGrey,
@@ -198,7 +202,7 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
                     _buildActionButton(
                       icon: Icons.share_outlined,
                       color: NeoBrutalColors.lime,
-                      onTap: () => genPDF(context, widget.item),
+                      onTap: () => genPDF(context, widget.item.toMap()),
                       tooltip: 'Share',
                     ),
                   ],

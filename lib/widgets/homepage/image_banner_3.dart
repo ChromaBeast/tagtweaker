@@ -10,10 +10,7 @@ Widget imageBanner(BuildContext context) {
       color: colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-          color: colorScheme.primary.withOpacity(0.5),
-          width: 1,
-        ),
+        side: BorderSide(color: colorScheme.primary.withOpacity(0.5), width: 1),
       ),
       clipBehavior: Clip.antiAlias,
       child: Container(

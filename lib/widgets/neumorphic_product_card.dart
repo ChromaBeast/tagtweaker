@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/themes/colors.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
 import 'package:tag_tweaker/widgets/functions/share_individual.dart';
 
 class NeumorphicProductCard extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final Product product;
   final bool showPrice;
   final bool showShareButton;
   final bool showCategory;
@@ -17,7 +18,7 @@ class NeumorphicProductCard extends StatelessWidget {
     this.showPrice = false,
     this.showShareButton = false,
     this.showCategory = false,
-    this.showBrandInRow = false, 
+    this.showBrandInRow = false,
   });
 
   @override
@@ -72,9 +73,9 @@ class NeumorphicProductCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Hero(
-                        tag: product['thumbnail'],
+                        tag: product.thumbnail,
                         child: CustomNetworkImage(
-                          product['thumbnail'],
+                          product.thumbnail,
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -84,7 +85,7 @@ class NeumorphicProductCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 // Product Title
                 Text(
-                  product['title'],
+                  product.title,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: textTheme.titleSmall?.copyWith(
@@ -93,19 +94,19 @@ class NeumorphicProductCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                
+
                 if (showCategory) ...[
-                   Text(
-                    product['category'],
+                  Text(
+                    product.category,
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
                 ] else ...[
-                   // Brand
+                  // Brand
                   Text(
-                    "By: ${product['brand']}",
+                    "By: ${product.brand}",
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
@@ -120,8 +121,10 @@ class NeumorphicProductCard extends StatelessWidget {
                   children: [
                     // Rating Badge
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: colorScheme.primaryContainer.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
@@ -132,11 +135,11 @@ class NeumorphicProductCard extends StatelessWidget {
                           Icon(
                             Icons.star_rounded,
                             size: 16,
-                            color: ratingColors[product['rating'].toInt()],
+                            color: ratingColors[product.rating.toInt()],
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            product['rating'].toStringAsFixed(1),
+                            product.rating.toStringAsFixed(1),
                             style: textTheme.labelSmall?.copyWith(
                               color: colorScheme.onSurface,
                               fontWeight: FontWeight.w600,
@@ -145,10 +148,10 @@ class NeumorphicProductCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    
+
                     if (showPrice)
                       Text(
-                        '\$${product['price']}',
+                        '\$${product.price.toStringAsFixed(0)}',
                         style: textTheme.titleMedium?.copyWith(
                           color: colorScheme.primary,
                           fontWeight: FontWeight.bold,
@@ -157,7 +160,7 @@ class NeumorphicProductCard extends StatelessWidget {
                     else if (showBrandInRow)
                       Expanded(
                         child: Text(
-                          " by ${product['brand']}",
+                          " by ${product.brand}",
                           textAlign: TextAlign.end,
                           overflow: TextOverflow.ellipsis,
                           style: textTheme.labelSmall?.copyWith(
@@ -167,14 +170,14 @@ class NeumorphicProductCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                
+
                 if (showShareButton) ...[
                   const SizedBox(height: 8),
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.tonal(
                       onPressed: () {
-                        genPDF(context, product);
+                        genPDF(context, product.toMap());
                       },
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 8),

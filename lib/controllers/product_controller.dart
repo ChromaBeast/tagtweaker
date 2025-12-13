@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product_model.dart';
 
 class ProductController extends GetxController {
-  var products = RxList<DocumentSnapshot>();
-  var filteredProducts = RxList<DocumentSnapshot>();
+  var products = <Product>[].obs;
+  var filteredProducts = <Product>[].obs;
   var isLoading = true.obs;
   var isError = false.obs;
 
@@ -26,28 +26,17 @@ class ProductController extends GetxController {
       print('✅ DEBUG: Products fetched successfully!');
       print('📦 DEBUG: Total products count: ${snapshot.docs.length}');
 
-      if (snapshot.docs.isNotEmpty) {
-        print('📋 DEBUG: First product data: ${snapshot.docs.first.data()}');
-        print(
-          '📋 DEBUG: Product IDs: ${snapshot.docs.map((doc) => doc.id).toList()}',
-        );
-      } else {
-        print('⚠️ DEBUG: No products found in Firestore collection!');
-      }
-
-      products.assignAll(snapshot.docs);
-      filteredProducts.assignAll(snapshot.docs);
-
-      // IMPORTANT: Also populate the static Product.products list for UI widgets
-      print('🔄 DEBUG: Populating Product.products static list...');
-      Product.products = snapshot.docs
-          .where((doc) => doc.data() is Map<String, dynamic>)
-          .map((doc) => doc.data() as Map<String, dynamic>)
+      final loadedProducts = snapshot.docs
+          .map((doc) => Product.fromSnapshot(doc))
           .toList();
-      Product.products.sort((a, b) => b['rating'].compareTo(a['rating']));
-      print(
-        '✨ DEBUG: Product.products now has ${Product.products.length} items',
-      );
+
+      // Sort by rating desc
+      loadedProducts.sort((a, b) => b.rating.compareTo(a.rating));
+
+      products.assignAll(loadedProducts);
+      filteredProducts.assignAll(loadedProducts);
+      
+      print('✨ DEBUG: Loaded ${products.length} products');
 
       isError.value = false;
     } catch (e) {
@@ -67,9 +56,8 @@ class ProductController extends GetxController {
       filteredProducts.assignAll(products);
     } else {
       filteredProducts.assignAll(
-        products.where((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          final title = data['title'].toString().toLowerCase();
+        products.where((product) {
+          final title = product.title.toLowerCase();
           return title.contains(query.toLowerCase());
         }).toList(),
       );

@@ -1,39 +1,74 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class Product {
-  static List<Map<String, dynamic>> products = [];
+  final String id;
+  final String title;
+  final double price;
+  final double rating;
+  final String thumbnail;
+  final List<String> images;
+  final String category;
+  final String brand;
+  final String description;
+  final bool isTrending;
+  final bool isNew;
+  final bool showInCarousel;
 
-  fetchProducts() async {
-    print('🔄 DEBUG [Product Model]: Starting fetchProducts...');
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('products').get();
+  Product({
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.rating,
+    required this.thumbnail,
+    required this.images,
+    required this.category,
+    required this.brand,
+    required this.description,
+    this.isTrending = false,
+    this.isNew = false,
+    this.showInCarousel = false,
+  });
 
-    print(
-        '📥 DEBUG [Product Model]: Received ${querySnapshot.docs.length} documents from Firestore');
-
-    // Update the 'products' list with the retrieved data
-    products = querySnapshot.docs
-        .where((doc) =>
-            doc.data() is Map<String, dynamic>) // Filter for valid maps
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList();
-
-    print(
-        '✨ DEBUG [Product Model]: Filtered to ${products.length} valid products');
-
-    products.sort((a, b) => b['rating'].compareTo(a['rating']));
-
-    print('✅ DEBUG [Product Model]: Products sorted and ready!');
-    print(
-        '📋 DEBUG [Product Model]: Product.products now has ${products.length} items');
-    if (products.isNotEmpty) {
-      print(
-          '🎯 DEBUG [Product Model]: First product title: ${products.first['title']}');
-    }
+  factory Product.fromSnapshot(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Product(
+      id: doc.id,
+      title: data['title']?.toString() ?? 'Unknown',
+      price: double.tryParse(data['price']?.toString() ?? '0') ?? 0.0,
+      rating: double.tryParse(data['rating']?.toString() ?? '0') ?? 0.0,
+      thumbnail: data['thumbnail']?.toString() ?? '',
+      images:
+          (data['images'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      category: data['category']?.toString() ?? 'General',
+      brand: data['brand']?.toString() ?? 'Generic',
+      description: data['description']?.toString() ?? '',
+      isTrending: data['isTrending'] == true,
+      isNew: data['isNew'] == true,
+      showInCarousel: data['ui']?['carousel'] == true,
+    );
   }
 
-  static List categories = [
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'price': price,
+      'rating': rating,
+      'thumbnail': thumbnail,
+      'images': images,
+      'category': category,
+      'brand': brand,
+      'description': description,
+      'isTrending': isTrending,
+      'isNew': isNew,
+      'ui': {'carousel': showInCarousel},
+    };
+  }
+
+  static const List<String> categories = [
     "Smartphone",
     "Laptop",
     "Controller",
@@ -41,32 +76,4 @@ class Product {
     "TV",
     "Accessories",
   ];
-
-  List search(String query) {
-    return products
-        .where((product) => product['title']
-            .toString()
-            .toLowerCase()
-            .contains(query.toLowerCase()))
-        .toList();
-  }
-
-  List filterByCategory(String category) {
-    return products
-        .where((product) => product['category'] == category)
-        .toList();
-  }
-
-  static Future<List> getFavorites() async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('favourites')
-        .get()
-        .then((value) {
-      print(value.docs.map((doc) => doc.data()).toList());
-      return value.docs.map((doc) => doc.data()).toList();
-    });
-    return [];
-  }
 }

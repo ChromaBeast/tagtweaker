@@ -1,4 +1,3 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,16 +13,17 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.playIntegrity,
-    appleProvider: AppleProvider.appAttest,
-  );
+  // await FirebaseAppCheck.instance.activate(
+  //   webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+  //   androidProvider: AndroidProvider.playIntegrity,
+  //   appleProvider: AppleProvider.appAttest,
+  // );
 
   // Initialize Google Sign-In service (v7.2.0+)
   // serverClientId is required on Android - this is the Web Client ID from Firebase Console
   await GoogleSignInService.instance.initialize(
-    serverClientId: '768847026435-1fapgf0eqqle6vds1sp4tjpi8ljibd31.apps.googleusercontent.com',
+    serverClientId:
+        '768847026435-1fapgf0eqqle6vds1sp4tjpi8ljibd31.apps.googleusercontent.com',
   );
 
   // Initialize GetX controllers

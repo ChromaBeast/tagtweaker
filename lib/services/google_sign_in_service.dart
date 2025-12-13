@@ -98,12 +98,13 @@ class GoogleSignInService {
     final googleAuthentication = user!.authentication;
 
     // Get authorization (accessToken)
-    final googleAuthorization =
-        await user.authorizationClient.authorizationForScopes(scopes);
+    final googleAuthorization = await user.authorizationClient
+        .authorizationForScopes(scopes);
 
     if (googleAuthorization == null) {
       throw GoogleSignInException(
-          "Failed to get access token. Authorization not granted.");
+        "Failed to get access token. Authorization not granted.",
+      );
     }
 
     final credential = GoogleAuthProvider.credential(

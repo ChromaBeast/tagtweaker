@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tag_tweaker/controllers/authentication_controller.dart';
-import 'package:tag_tweaker/pages/ui/ui_screen.dart';
+import '../../controllers/authentication_controller.dart';
+import '../../themes/neo_brutal_theme.dart';
+import '../ui/ui_screen.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -10,15 +11,15 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthenticationController authCtrl =
         Get.find<AuthenticationController>();
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
+      backgroundColor: NeoBrutalColors.background,
       body: Center(
         child: Obx(() {
           if (authCtrl.isLoading.value) {
-            return CircularProgressIndicator(
-              color: colorScheme.primary,
+            return const CircularProgressIndicator(
+              color: NeoBrutalColors.lime,
+              backgroundColor: NeoBrutalColors.darkGrey,
             );
           }
 
@@ -28,112 +29,166 @@ class LoginPage extends StatelessWidget {
             });
             return const SizedBox.shrink();
           }
-          return Column(
-            children: [
-              // Hero animation section
-              Container(
-                height: MediaQuery.of(context).size.height * 0.75,
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  image: const DecorationImage(
-                    image: AssetImage('assets/animations/animation.gif'),
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              // Bottom login card with M3 styling
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(28),
-                      topRight: Radius.circular(28),
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Hero animation section
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    width: double.infinity,
+                    decoration: NeoBrutalTheme.brutalBox(
+                      color: NeoBrutalColors.white,
+                      shadowColor: NeoBrutalColors.lime,
+                      borderColor: NeoBrutalColors.black,
+                    ),
+                    child: ClipRect(
+                      child: Image.asset(
+                        'assets/animations/animation.gif',
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Sign in to Tag Tweaker',
-                        style: textTheme.titleLarge?.copyWith(
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildGoogleSignInButton(authCtrl, colorScheme),
-                          const SizedBox(width: 24),
-                          Text(
-                            'or',
-                            style: textTheme.bodyLarge?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+
+                  const SizedBox(height: 40),
+
+                  // Login Section
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: NeoBrutalTheme.brutalBox(
+                      color: NeoBrutalColors.darkGrey,
+                      borderColor: NeoBrutalColors.white,
+                      shadowColor: NeoBrutalColors.purple,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'WELCOME BACK',
+                          textAlign: TextAlign.center,
+                          style: NeoBrutalTheme.heading.copyWith(
+                            fontSize: 24,
+                            letterSpacing: 1,
                           ),
-                          const SizedBox(width: 24),
-                          _buildAnonymousSignInButton(authCtrl, colorScheme),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 8),
+                         Text(
+                          'Sign in to access your dashboard',
+                          textAlign: TextAlign.center,
+                          style: NeoBrutalTheme.body.copyWith(
+                            fontSize: 14,
+                            color: NeoBrutalColors.white.withOpacity(0.7),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Google Sign In
+                        _buildNeoBrutalButton(
+                          onTap: authCtrl.signInWithGoogle,
+                          text: 'Sign in with Google',
+                          icon: 'assets/images/google.png',
+                          isAssetIcon: true,
+                          bgColor: NeoBrutalColors.white,
+                          textColor: NeoBrutalColors.black,
+                          shadowColor: NeoBrutalColors.lime,
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        Row(
+                          children: [
+                            const Expanded(
+                              child: Divider(
+                                color: NeoBrutalColors.white,
+                                thickness: 2,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                'OR',
+                                style: NeoBrutalTheme.mono.copyWith(
+                                  color: NeoBrutalColors.white,
+                                ),
+                              ),
+                            ),
+                            const Expanded(
+                              child: Divider(
+                                color: NeoBrutalColors.white,
+                                thickness: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Anonymous Sign In
+                        _buildNeoBrutalButton(
+                          onTap: authCtrl.signInAnonymously,
+                          text: 'Continue as Guest',
+                          iconData: Icons.person_outline_rounded,
+                          bgColor: NeoBrutalColors.lime,
+                          textColor: NeoBrutalColors.black,
+                          shadowColor: NeoBrutalColors.white,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           );
         }),
       ),
     );
   }
 
-  Widget _buildGoogleSignInButton(
-      AuthenticationController ctrl, ColorScheme colorScheme) {
-    return Material(
-      elevation: 2,
-      shape: const CircleBorder(),
-      color: colorScheme.surface,
-      surfaceTintColor: colorScheme.surfaceTint,
-      child: InkWell(
-        onTap: ctrl.signInWithGoogle,
-        customBorder: const CircleBorder(),
-        splashColor: colorScheme.primary.withOpacity(0.12),
-        highlightColor: colorScheme.primary.withOpacity(0.08),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: colorScheme.outlineVariant,
-              width: 1,
-            ),
-          ),
-          child: Image.asset('assets/images/google.png', height: 32),
+  Widget _buildNeoBrutalButton({
+    required VoidCallback onTap,
+    required String text,
+    String? icon,
+    IconData? iconData,
+    bool isAssetIcon = false,
+    required Color bgColor,
+    required Color textColor,
+    Color shadowColor = NeoBrutalColors.black,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: NeoBrutalTheme.brutalBox(
+          color: bgColor,
+          borderColor: NeoBrutalColors.black, // Always black border for buttons
+          shadowColor: shadowColor,
+          shadowOffset: 4,
+          borderWidth: 2, // Thinner border for buttons
         ),
-      ),
-    );
-  }
-
-  Widget _buildAnonymousSignInButton(
-      AuthenticationController ctrl, ColorScheme colorScheme) {
-    return Material(
-      elevation: 2,
-      shape: const CircleBorder(),
-      color: colorScheme.primaryContainer,
-      child: InkWell(
-        onTap: ctrl.signInAnonymously,
-        customBorder: const CircleBorder(),
-        splashColor: colorScheme.primary.withOpacity(0.12),
-        highlightColor: colorScheme.primary.withOpacity(0.08),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Icon(
-            Icons.person_outline_rounded,
-            size: 32,
-            color: colorScheme.onPrimaryContainer,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isAssetIcon && icon != null)
+              Image.asset(icon, height: 24)
+            else if (iconData != null)
+              Icon(iconData, color: textColor, size: 24),
+            
+            if (icon != null || iconData != null)
+              const SizedBox(width: 12),
+            
+            Text(
+              text.toUpperCase(),
+              style: NeoBrutalTheme.heading.copyWith(
+                color: textColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );

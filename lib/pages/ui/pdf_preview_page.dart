@@ -18,9 +18,7 @@ class PdfPreviewScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'PDF Preview',
-          style: textTheme.titleLarge?.copyWith(
-            color: colorScheme.onSurface,
-          ),
+          style: textTheme.titleLarge?.copyWith(color: colorScheme.onSurface),
         ),
         actions: [
           FilledButton.tonal(
@@ -57,10 +55,7 @@ class PdfPreviewScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _shareFile(pdfPath),
-        icon: Icon(
-          Icons.share_rounded,
-          color: colorScheme.onPrimaryContainer,
-        ),
+        icon: Icon(Icons.share_rounded, color: colorScheme.onPrimaryContainer),
         label: Text(
           'Share PDF',
           style: textTheme.labelLarge?.copyWith(

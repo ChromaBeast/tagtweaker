@@ -18,49 +18,63 @@ class BackgroundContainer extends StatelessWidget {
       body: Stack(
         children: [
           // Deep Void Background
-          Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF050510),
-            ),
-          ),
-          
+          Container(decoration: const BoxDecoration(color: Color(0xFF050510))),
+
           // Ambient Glows
           if (withGlow) ...[
             Positioned(
               top: -100,
               left: -100,
-              child: Container(
-                width: 400,
-                height: 400,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFF00F0FF).withOpacity(0.15),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-               .scale(duration: 4.seconds, begin: const Offset(1, 1), end: const Offset(1.2, 1.2)),
+              child:
+                  Container(
+                        width: 400,
+                        height: 400,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              const Color(0xFF00F0FF).withOpacity(0.15),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                      )
+                      .animate(
+                        onPlay: (controller) =>
+                            controller.repeat(reverse: true),
+                      )
+                      .scale(
+                        duration: 4.seconds,
+                        begin: const Offset(1, 1),
+                        end: const Offset(1.2, 1.2),
+                      ),
             ),
             Positioned(
               bottom: -100,
               right: -100,
-              child: Container(
-                width: 400,
-                height: 400,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFFBC13FE).withOpacity(0.15),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-               .scale(duration: 5.seconds, begin: const Offset(1, 1), end: const Offset(1.3, 1.3)),
+              child:
+                  Container(
+                        width: 400,
+                        height: 400,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              const Color(0xFFBC13FE).withOpacity(0.15),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                      )
+                      .animate(
+                        onPlay: (controller) =>
+                            controller.repeat(reverse: true),
+                      )
+                      .scale(
+                        duration: 5.seconds,
+                        begin: const Offset(1, 1),
+                        end: const Offset(1.3, 1.3),
+                      ),
             ),
           ],
 
@@ -68,9 +82,7 @@ class BackgroundContainer extends StatelessWidget {
           Positioned.fill(
             child: Opacity(
               opacity: 0.03,
-              child: CustomPaint(
-                painter: GridPainter(),
-              ),
+              child: CustomPaint(painter: GridPainter()),
             ),
           ),
 
