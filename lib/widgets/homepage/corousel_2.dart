@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/product_model.dart';
 import '../../pages/ui/product_page.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
 Widget carouselSlider(context) {
   List<Widget> items = Product.products
@@ -20,7 +21,7 @@ Widget carouselSlider(context) {
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
-              child: Image.network(
+              child: CustomNetworkImage(
                 product['thumbnail'].toString(),
                 fit: BoxFit.cover,
               ),

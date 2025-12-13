@@ -8,6 +8,9 @@ const Color _mediumGrey = Color(0xFF2D2D2D); // Surface variant
 const Color _lightGrey = Color(0xFF757575); // Outline
 const Color _pureWhite = Color(0xFFFFFFFF); // Primary/Text
 
+// Neumorphic Palette
+const Color _neumorphicBackground = Color(0xFF2E3239);
+
 // Monochrome dark color scheme
 final ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
@@ -25,7 +28,7 @@ final ColorScheme darkColorScheme = ColorScheme(
   onTertiaryContainer: _pureWhite,
   error: const Color(0xFFCF6679),
   onError: _pureBlack,
-  surface: _darkGrey,
+  surface: _neumorphicBackground, 
   onSurface: _pureWhite,
   surfaceContainerHighest: _mediumGrey,
   onSurfaceVariant: const Color(0xFFB0B0B0),
@@ -38,7 +41,7 @@ ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
   colorScheme: darkColorScheme,
-  scaffoldBackgroundColor: _pureBlack,
+  scaffoldBackgroundColor: _neumorphicBackground,
 
   // Typography
   textTheme: TextTheme(

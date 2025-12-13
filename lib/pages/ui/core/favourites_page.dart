@@ -14,6 +14,7 @@ import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 import '../../../themes/colors.dart';
 import '../../../widgets/functions/share_individual.dart';
 import '../../../widgets/pdf/product_pdf_widget.dart';
+import '../../../widgets/custom_network_image.dart';
 
 class FavouritesPage extends StatelessWidget {
   const FavouritesPage({super.key});
@@ -166,7 +167,7 @@ class FavouritesPage extends StatelessWidget {
               // Product Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.network(
+                child: CustomNetworkImage(
                   item['thumbnail'],
                   fit: BoxFit.cover,
                   height: 180,

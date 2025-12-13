@@ -51,4 +51,9 @@ class AppColors {
   static const Color shareColor = Color(0xFFFFFFFF); // White
   static const Color successColor = Color(0xFFB0B0B0); // Light Grey
   static const Color warningColor = Color(0xFF757575); // Light Grey
+
+  // Neumorphism Palette
+  static const Color neumorphicBackground = Color(0xFF2E3239);
+  static const Color neumorphicLightShadow = Color(0xFF353941);
+  static const Color neumorphicDarkShadow = Color(0xFF23262B);
 }
