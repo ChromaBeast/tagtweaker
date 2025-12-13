@@ -8,9 +8,25 @@ import '../../../widgets/homepage/corousel_2.dart';
 import '../../../widgets/homepage/custom_home_page_shimmer.dart';
 import '../../../widgets/homepage/image_banner_3.dart';
 import '../../auth/login_page.dart';
+import 'package:tag_tweaker/pages/ui/product_page.dart';
 
-class HomePage extends StatelessWidget {
+import '../../../themes/colors.dart';
+import '../../../models/searched_product_model.dart';
+// import '../../../widgets/functions/share_individual.dart'; // No longer needed here directly
+// import '../../../../widgets/custom_network_image.dart'; // No longer needed here directly
+
+import '../../../widgets/neumorphic_search_bar.dart';
+import '../../../widgets/neumorphic_product_card.dart';
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +37,7 @@ class HomePage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.neumorphicBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -33,15 +49,11 @@ class HomePage extends StatelessWidget {
           children: [
             ShaderMask(
               shaderCallback: (bounds) => LinearGradient(
-                colors: [
-                  colorScheme.primary,
-                  colorScheme.secondary,
-                ],
+                colors: [colorScheme.primary, colorScheme.secondary],
               ).createShader(bounds),
               child: Text(
                 'Tag Tweaker',
                 style: textTheme.displaySmall?.copyWith(
-                  // fontFamily: 'Rajdhani', // Already set in theme
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 32,
@@ -68,16 +80,18 @@ class HomePage extends StatelessWidget {
             if (user == null) {
               return Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      colorScheme.primary.withOpacity(0.8),
-                      colorScheme.secondary.withOpacity(0.8),
-                    ],
-                  ),
+                  color: AppColors.neumorphicBackground,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.primary.withOpacity(0.3),
+                    const BoxShadow(
+                      color: AppColors.neumorphicLightShadow,
+                      offset: Offset(-4, -4),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                    const BoxShadow(
+                      color: AppColors.neumorphicDarkShadow,
+                      offset: Offset(4, 4),
                       blurRadius: 10,
                       spreadRadius: 1,
                     ),
@@ -95,16 +109,13 @@ class HomePage extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.login_rounded,
-                        size: 20,
-                        color: Colors.white,
-                      ),
+                      Icon(Icons.login_rounded, size: 20, color: Colors.white),
                       const SizedBox(width: 8),
                       Text(
                         'Sign In',
@@ -124,21 +135,23 @@ class HomePage extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        colorScheme.primary,
-                        colorScheme.secondary,
-                      ],
-                    ),
+                    color: AppColors.neumorphicBackground,
                     boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.primary.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                      const BoxShadow(
+                        color: AppColors.neumorphicLightShadow,
+                        offset: Offset(-4, -4),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                      const BoxShadow(
+                        color: AppColors.neumorphicDarkShadow,
+                        offset: Offset(4, 4),
+                        blurRadius: 10,
+                        spreadRadius: 1,
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(4),
                   child: CircleAvatar(
                     radius: 18,
                     backgroundImage: NetworkImage(
@@ -165,48 +178,145 @@ class HomePage extends StatelessWidget {
           const SizedBox(width: 12),
         ],
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const CustomHomePageShimmer();
-        } else if (controller.products.isNotEmpty) {
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                const SizedBox(height: 8),
-                circularRow(context),
-                const SizedBox(height: 16),
-                carouselSlider(context),
-                const SizedBox(height: 16),
-                imageBanner(context),
-                const SizedBox(height: 16),
-                categoryRow("Trending", "Now", context),
-                const SizedBox(height: 16),
-              ],
+      body: Column(
+        children: [
+          // Search Field
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: NeumorphicSearchBar(
+              controller: searchController,
+              onClear: () {
+                setState(() {
+                  searchController.clear();
+                  SearchedProduct.products = [];
+                });
+              },
+              onChanged: (query) {
+                setState(() {
+                  if (query.isEmpty) {
+                    SearchedProduct.products = [];
+                  } else {
+                    SearchedProduct searchedProduct = SearchedProduct();
+                    searchedProduct.search(query);
+                  }
+                });
+              },
             ),
-          );
-        } else {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline_rounded,
-                  size: 64,
-                  color: colorScheme.error,
+          ),
+
+          // Main Content
+          Expanded(
+            child: searchController.text.isEmpty
+                ? _buildHomeContent(controller, context, colorScheme, textTheme)
+                : _buildProductList(colorScheme),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeContent(
+    ProductController controller,
+    BuildContext context,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const CustomHomePageShimmer();
+      } else if (controller.products.isNotEmpty) {
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              circularRow(context),
+              const SizedBox(height: 16),
+              carouselSlider(context),
+              const SizedBox(height: 16),
+              imageBanner(context),
+              const SizedBox(height: 16),
+              categoryRow("Trending", "Now", context),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      } else {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                size: 64,
+                color: colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Error loading products',
+                style: textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Error loading products',
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+        );
+      }
+    });
+  }
+
+  Widget _buildProductList(ColorScheme colorScheme) {
+    final textTheme = Theme.of(context).textTheme;
+
+    if (SearchedProduct.products.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_rounded,
+              size: 80,
+              color: colorScheme.outlineVariant,
             ),
+            const SizedBox(height: 16),
+            Text(
+              'Search for products',
+              style: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Find what you\'re looking for',
+              style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Scrollbar(
+      interactive: true,
+      radius: const Radius.circular(16.0),
+      thickness: 4.0,
+      child: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: SearchedProduct.products.length,
+        itemBuilder: (context, index) {
+          final product = SearchedProduct.products[index];
+          return NeumorphicProductCard(
+            product: product,
+            showPrice: true,
+            showShareButton: true,
           );
-        }
-      }),
+        },
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12.0,
+          mainAxisSpacing: 12.0,
+          childAspectRatio: 0.65,
+        ),
+      ),
     );
   }
 }

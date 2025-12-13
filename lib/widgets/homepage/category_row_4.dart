@@ -4,6 +4,7 @@ import '../../models/product_model.dart';
 import '../../pages/ui/product_page.dart';
 import '../../pages/ui/trending_now_page.dart';
 import '../../themes/colors.dart';
+import 'package:tag_tweaker/widgets/neumorphic_product_card.dart';
 
 Widget categoryRow(String text, String leading, BuildContext context) {
   final colorScheme = Theme.of(context).colorScheme;
@@ -18,13 +19,25 @@ Widget categoryRow(String text, String leading, BuildContext context) {
     margin: const EdgeInsets.symmetric(horizontal: 16),
     child: Column(
       children: [
-        // Header Card
-        Card(
-          elevation: 0,
-          color: colorScheme.surfaceContainerHighest,
-          shape: RoundedRectangleBorder(
+        // Header Container - Neumorphic
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.neumorphicBackground,
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+            boxShadow: const [
+              BoxShadow(
+                color: AppColors.neumorphicLightShadow,
+                offset: Offset(-4, -4),
+                blurRadius: 10,
+                spreadRadius: 1,
+              ),
+              BoxShadow(
+                color: AppColors.neumorphicDarkShadow,
+                offset: Offset(4, 4),
+                blurRadius: 10,
+                spreadRadius: 1,
+              ),
+            ],
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -53,9 +66,8 @@ Widget categoryRow(String text, String leading, BuildContext context) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TrendingNowPage(
-                          products: products,
-                        ),
+                        builder: (context) =>
+                            TrendingNowPage(products: products),
                       ),
                     );
                   },
@@ -91,135 +103,21 @@ Widget categoryRow(String text, String leading, BuildContext context) {
             physics: const BouncingScrollPhysics(),
             itemCount: len < 5 ? len : 5,
             itemBuilder: (BuildContext context, int index) {
-              return _buildProductCard(
-                context,
-                products[index],
-                colorScheme,
-                textTheme,
+              return SizedBox(
+                width: MediaQuery.of(context).size.width * 0.42,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12, bottom: 8, top: 8), // Added padding for shadow
+                  child: NeumorphicProductCard(
+                    product: products[index],
+                    showCategory: true,
+                    showBrandInRow: true,
+                  ),
+                ),
               );
             },
           ),
         ),
       ],
-    ),
-  );
-}
-
-Widget _buildProductCard(
-  BuildContext context,
-  dynamic product,
-  ColorScheme colorScheme,
-  TextTheme textTheme,
-) {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.42,
-    margin: const EdgeInsets.only(right: 12),
-    child: Card(
-      elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
-      ),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProductPage(product: product),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Product Image
-              Expanded(
-                flex: 3,
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Hero(
-                      tag: product['thumbnail'],
-                      child: Image.network(
-                        product['thumbnail'],
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Product Title
-              Text(
-                product['title'],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.titleSmall?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 4),
-              // Category
-              Text(
-                product['category'],
-                style: textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Brand and Rating Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "by ${product['brand']}",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colorScheme.outline,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.star_rounded,
-                          size: 12,
-                          color: ratingColors[product['rating'].toInt()],
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          product['rating'].toStringAsFixed(1),
-                          style: textTheme.labelSmall?.copyWith(
-                            color: colorScheme.onSurface,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
     ),
   );
 }

@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.1 <4.0.0'
+  sdk: ^3.10.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -38,7 +38,7 @@ dependencies:
   carousel_slider: ^5.1.1
   http: ^1.6.0
   pdf: ^3.11.3
-  get: ^4.7.2
+  get: ^4.7.3
   path_provider: ^2.1.5
   flutter_pdfview: ^1.4.3
   file_picker: ^10.3.7
@@ -54,7 +54,7 @@ dependencies:
   convex_bottom_bar: ^3.2.0
   flutter_launcher_icons: ^0.14.4
   shimmer: ^3.0.0
-  google_fonts: ^6.3.2
+  google_fonts: ^6.3.3
   flutter_animate: ^4.5.2
 
 flutter_launcher_icons:

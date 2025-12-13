@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/pages/ui/core/home_page.dart';
-import 'package:tag_tweaker/pages/ui/core/search_page.dart';
+// import 'package:tag_tweaker/pages/ui/core/search_page.dart'; // No longer needed
 import 'package:tag_tweaker/pages/ui/core/favourites_page.dart';
 import 'package:tag_tweaker/controllers/navigation_controller.dart';
 import 'package:tag_tweaker/widgets/background_container.dart';
@@ -15,9 +15,10 @@ class UIPage extends StatelessWidget {
     final NavigationController navCtrl = Get.find<NavigationController>();
     navCtrl.selectedIndex.value = selectedIndex;
 
+    // Remove SearchPage from widget options
     const List<Widget> widgetOptions = [
       HomePage(),
-      SearchPage(),
+      // SearchPage(),
       FavouritesPage(),
     ];
 
@@ -32,8 +33,8 @@ class UIPage extends StatelessWidget {
 
             // Floating navbar
             Positioned(
-              left: 32,
-              right: 32,
+              left: 48,
+              right: 48, // Increased margin since fewer items
               bottom: 24,
               child: Obx(
                 () => Container(
@@ -61,18 +62,11 @@ class UIPage extends StatelessWidget {
                         Icons.home_rounded,
                         'Home',
                       ),
+                      // Search Item Removed
                       _buildNavItem(
                         context,
                         navCtrl,
-                        1,
-                        Icons.search_outlined,
-                        Icons.search_rounded,
-                        'Search',
-                      ),
-                      _buildNavItem(
-                        context,
-                        navCtrl,
-                        2,
+                        1, // Adjusted index for Favourites
                         Icons.favorite_outline_rounded,
                         Icons.favorite_rounded,
                         'Favourites',

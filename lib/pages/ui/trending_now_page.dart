@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 
 import '../../themes/colors.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
 class TrendingNowPage extends StatelessWidget {
   final List products;
@@ -89,7 +90,7 @@ class TrendingNowPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     child: Hero(
                       tag: product['thumbnail'],
-                      child: Image.network(
+                      child: CustomNetworkImage(
                         product['thumbnail'],
                         fit: BoxFit.cover,
                       ),

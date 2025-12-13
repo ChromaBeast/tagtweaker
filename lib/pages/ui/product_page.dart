@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../themes/colors.dart';
 import '../../widgets/functions/share_individual.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
 class ProductPage extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -117,7 +118,7 @@ class _ProductPageState extends State<ProductPage> {
                       tag: image,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(24),
-                        child: Image.network(
+                        child: CustomNetworkImage(
                           image,
                           width: MediaQuery.of(context).size.width,
                           fit: BoxFit.cover,
