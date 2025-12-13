@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
+import 'package:tag_tweaker/widgets/functions/share_individual.dart';
 import 'package:tag_tweaker/widgets/grid_painter.dart';
 
 class ProductPage extends StatelessWidget {
@@ -46,7 +49,7 @@ class ProductPage extends StatelessWidget {
                         const SizedBox(height: 32),
                         _buildProductDetails(),
                         const SizedBox(height: 32),
-                        _buildActionButtons(),
+                        _buildActionButtons(context),
                         const SizedBox(height: 32),
                         _buildSpecsSheet(),
                         const SizedBox(height: 48),
@@ -319,7 +322,7 @@ class ProductPage extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      "\$${product['price']}",
+                      "₹${product['price']}",
                       style: NeoBrutalTheme.mono.copyWith(
                         color: NeoBrutalColors.black,
                         fontSize: 40,
@@ -329,7 +332,7 @@ class ProductPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      "\$${(product['price'] * 1.2).toStringAsFixed(0)}k", // Mock original price
+                      "₹${(product['price'] * 1.2).toStringAsFixed(0)}", // Mock original price
                       style: NeoBrutalTheme.mono.copyWith(
                         color: Colors.grey,
                         fontSize: 18,
@@ -368,7 +371,7 @@ class ProductPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -379,6 +382,7 @@ class ProductPage extends StatelessWidget {
             textColor: NeoBrutalColors.white,
             shadowColor: NeoBrutalColors.lime,
             hoverColor: NeoBrutalColors.lime,
+            onTap: () => _addToFavourites(context),
           ),
         ),
         const SizedBox(width: 16),
@@ -390,10 +394,49 @@ class ProductPage extends StatelessWidget {
             textColor: NeoBrutalColors.black,
             shadowColor: NeoBrutalColors.black,
             hoverColor: Colors.grey.shade100,
+            onTap: () => genPDF(context, product),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _addToFavourites(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please login to save favourites')),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('favourites')
+          .doc(product['id'].toString())
+          .set(product); // Assuming product map is compatible
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'ADDED TO FAVOURITES',
+              style: NeoBrutalTheme.mono.copyWith(color: NeoBrutalColors.white),
+            ),
+            backgroundColor: NeoBrutalColors.black,
+            shape: const RoundedRectangleBorder(),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error saving favourite: $e')));
+      }
+    }
   }
 
   Widget _buildSpecsSheet() {
@@ -472,12 +515,15 @@ class _NeoButton extends StatelessWidget {
     required this.textColor,
     required this.shadowColor,
     required this.hoverColor,
+    required this.onTap,
   });
+
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         height: 64, // roughly matching py-4
         decoration: NeoBrutalTheme.brutalBox(

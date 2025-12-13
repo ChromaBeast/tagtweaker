@@ -10,6 +10,7 @@ class NeoBrutalColors {
   static const Color mediumGrey = Color(0xFF333333);
   static const Color lightGrey = Color(0xFF4A4A4A);
   static const Color purple = Color(0xFF9333EA); // From HTML bg-purple-500
+  static const Color orange = Color(0xFFF97316);
 }
 
 class NeoBrutalTheme {

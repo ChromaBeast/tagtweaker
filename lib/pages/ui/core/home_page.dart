@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/controllers/authentication_controller.dart';
@@ -21,6 +22,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    searchController.dispose();
+    super.dispose();
+  }
 
   final Map<String, String> categoryImages = {
     'Smartphone': 'assets/categories/smartphone.png',
@@ -64,15 +73,19 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 24),
                   _buildSearchBar(),
                   const SizedBox(height: 24),
-                  _buildCategoriesRow(),
-                  const SizedBox(height: 32),
-                  const NeoBrutalCarousel(),
-                  const SizedBox(height: 32),
-                  const SizedBox(height: 32),
-                  _buildInventoryHeader(controller),
+                  if (searchController.text.isNotEmpty)
+                    _buildSearchResults(controller)
+                  else ...[
+                    _buildCategoriesRow(),
+                    const SizedBox(height: 32),
+                    const NeoBrutalCarousel(),
+                    const SizedBox(height: 32),
+                    const SizedBox(height: 32),
+                    _buildInventoryHeader(controller),
 
-                  const SizedBox(height: 32),
-                  _buildTrendingProductsGrid(controller),
+                    const SizedBox(height: 32),
+                    _buildTrendingProductsGrid(controller),
+                  ],
                   const SizedBox(height: 100), // Spacing for bottom nav
                 ],
               ),
@@ -188,8 +201,50 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: NeoBrutalSearchBar(
         controller: searchController,
+        onChanged: (value) {
+          if (_debounce?.isActive ?? false) _debounce!.cancel();
+          _debounce = Timer(const Duration(milliseconds: 500), () {
+            Get.find<ProductController>().filterProducts(value);
+            setState(() {}); // Trigger rebuild to switch views
+          });
+        },
         hintText: 'SEARCH_PRODUCTS...',
       ),
+    );
+  }
+
+  Widget _buildSearchResults(ProductController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Obx(() {
+        if (controller.filteredProducts.isEmpty) {
+          return Center(
+            child: Text(
+              "NO PRODUCTS FOUND",
+              style: NeoBrutalTheme.heading.copyWith(
+                color: NeoBrutalColors.white,
+              ),
+            ),
+          );
+        }
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 24,
+            childAspectRatio: 0.60,
+          ),
+          itemCount: controller.filteredProducts.length,
+          itemBuilder: (context, index) {
+            final product =
+                controller.filteredProducts[index].data()
+                    as Map<String, dynamic>;
+            return ProductCard(product: product);
+          },
+        );
+      }),
     );
   }
 
@@ -327,20 +382,31 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Filter for trending products
+          // Filter for trending products based on FILTERED list
           // Assuming 'isTrending' field exists, otherwise use a fallback or first 6
-          final allProducts = controller.products
+          final allFilteredProducts = controller.filteredProducts
               .map((doc) => doc.data() as Map<String, dynamic>)
               .toList();
 
-          final trendingProducts = allProducts
+          final trendingProducts = allFilteredProducts
               .where((p) => p['isTrending'] == true)
               .toList();
 
-          // Fallback if no trending products found (or field missing/false)
-          final displayProducts = trendingProducts.isNotEmpty
-              ? trendingProducts.take(6).toList()
-              : allProducts.take(6).toList();
+          // Fallback if no trending products found (or query is active, maybe show all matches?)
+          // If searching, show matches. If not searching, show trending/all.
+          // For now, let's just show filtered results directly if search is active?
+          // Or keep "trending" logic?
+          // User asked for "search", so assume they want to search ALL products.
+
+          List<Map<String, dynamic>> displayProducts;
+
+          if (searchController.text.isNotEmpty) {
+            displayProducts = allFilteredProducts;
+          } else {
+            displayProducts = trendingProducts.isNotEmpty
+                ? trendingProducts.take(6).toList()
+                : allFilteredProducts.take(6).toList();
+          }
 
           if (displayProducts.isEmpty) {
             return const SizedBox.shrink();
