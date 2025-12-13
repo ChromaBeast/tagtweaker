@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../themes/colors.dart';
+import '../../themes/neo_brutal_theme.dart';
 import '../functions/share_individual.dart';
 import '../../widgets/custom_network_image.dart';
 
-class FavouriteProductCard extends StatelessWidget {
+class FavouriteProductCard extends StatefulWidget {
   final Map<String, dynamic> item;
   final FirebaseAuth auth;
   final VoidCallback onTap;
@@ -21,131 +22,214 @@ class FavouriteProductCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+  State<FavouriteProductCard> createState() => _FavouriteProductCardState();
+}
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+class _FavouriteProductCardState extends State<FavouriteProductCard> {
+  late TextEditingController _priceController;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    final price = widget.item['price']?.toString();
+    _priceController = TextEditingController(
+      text: (price != null && price.isNotEmpty) ? price : '0',
+    );
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
+      decoration: NeoBrutalTheme.brutalBox(
+        color: NeoBrutalColors.darkGrey,
+        shadowColor: NeoBrutalColors.lime,
+        shadowOffset: 4,
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Product Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: CustomNetworkImage(
-                  item['thumbnail'],
-                  fit: BoxFit.cover,
-                  height: 180,
-                  width: double.infinity,
-                ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Image
+          Container(
+            height: 180,
+            decoration: const BoxDecoration(
+              color: NeoBrutalColors.white,
+              border: Border(
+                bottom: BorderSide(color: NeoBrutalColors.white, width: 4),
               ),
-              const SizedBox(height: 16),
-              // Product Title
-              Text(
-                item['title'],
-                style: textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
+            ),
+            padding: const EdgeInsets.all(16),
+            child: CustomNetworkImage(
+              widget.item['thumbnail'] ?? '',
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          Container(
+            color: NeoBrutalColors.white,
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.item['title'] ?? 'Unknown',
+                  style: NeoBrutalTheme.heading.copyWith(
+                    fontSize: 16,
+                    height: 1.1,
+                    color: NeoBrutalColors.black,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 12),
-              // Price Input and Actions Row
-              Row(
-                children: [
-                  // Price Input
-                  Expanded(
-                    child: Container(
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: colorScheme.outlineVariant,
+                const SizedBox(height: 16),
+
+                // Price Input and Actions
+                Row(
+                  children: [
+                    // Price Input
+                    Expanded(
+                      child: Container(
+                        // height: 48, // Removed fixed height to avoid clipping
+                        constraints: const BoxConstraints(minHeight: 48),
+                        decoration: BoxDecoration(
+                          color: NeoBrutalColors.white,
+                          border: Border.all(
+                            color: NeoBrutalColors.black,
+                            width: 2,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: NeoBrutalColors.black,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              onChanged: (value) {
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(auth.currentUser?.uid)
-                                    .collection('favourites')
-                                    .doc(item['id'].toString())
-                                    .update({'price': value});
-                              },
-                              style: textTheme.bodyLarge?.copyWith(
-                                color: colorScheme.onSurface,
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12, // Added vertical padding
                               ),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                hintText: item['price'].toString(),
-                                hintStyle: textTheme.bodyLarge?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  right: BorderSide(
+                                    color: NeoBrutalColors.black,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                '₹',
+                                style: NeoBrutalTheme.heading.copyWith(
+                                  fontSize: 14,
+                                  color: NeoBrutalColors.black,
                                 ),
                               ),
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              '\$',
-                              style: textTheme.titleMedium?.copyWith(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: TextField(
+                                controller: _priceController,
+                                onChanged: (value) {
+                                  if (_debounce?.isActive ?? false) {
+                                    _debounce!.cancel();
+                                  }
+                                  _debounce = Timer(
+                                    const Duration(milliseconds: 1500),
+                                    () {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(widget.auth.currentUser?.uid)
+                                          .collection('favourites')
+                                          .doc(widget.item['id'].toString())
+                                          .update({'price': value});
+                                    },
+                                  );
+                                },
+                                style: NeoBrutalTheme.mono.copyWith(
+                                  fontSize: 14,
+                                  color: NeoBrutalColors.black,
+                                ),
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  filled: false,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 14,
+                                  ),
+                                  hintText:
+                                      widget.item['price']?.toString() ?? '',
+                                  hintStyle: NeoBrutalTheme.mono.copyWith(
+                                    fontSize: 14,
+                                    color: NeoBrutalColors.mediumGrey,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Action Buttons
-                  IconButton.filled(
-                    onPressed: onRemove,
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppColors.favoriteColor.withOpacity(0.2),
+                    const SizedBox(width: 12),
+
+                    // Remove Button
+                    _buildActionButton(
+                      icon: Icons.delete_outline,
+                      color: NeoBrutalColors.orange,
+                      onTap: widget.onRemove,
+                      tooltip: 'Remove',
                     ),
-                    icon: Icon(
-                      Icons.favorite_rounded,
-                      color: AppColors.favoriteColor,
+                    const SizedBox(width: 8),
+
+                    // Share Button
+                    _buildActionButton(
+                      icon: Icons.share_outlined,
+                      color: NeoBrutalColors.lime,
+                      onTap: () => genPDF(context, widget.item),
+                      tooltip: 'Share',
                     ),
-                    tooltip: 'Remove from Favourites',
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton.filled(
-                    onPressed: () => genPDF(context, item),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppColors.shareColor.withOpacity(0.2),
-                    ),
-                    icon: Icon(
-                      Icons.share_rounded,
-                      color: AppColors.shareColor,
-                    ),
-                    tooltip: 'Share Product',
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    required String tooltip,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: color,
+          border: Border.all(color: NeoBrutalColors.black, width: 2),
+          boxShadow: const [
+            BoxShadow(color: NeoBrutalColors.black, offset: Offset(2, 2)),
+          ],
         ),
+        child: Icon(icon, color: NeoBrutalColors.black, size: 24),
       ),
     );
   }

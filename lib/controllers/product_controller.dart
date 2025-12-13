@@ -4,6 +4,7 @@ import '../models/product_model.dart';
 
 class ProductController extends GetxController {
   var products = RxList<DocumentSnapshot>();
+  var filteredProducts = RxList<DocumentSnapshot>();
   var isLoading = true.obs;
   var isError = false.obs;
 
@@ -18,8 +19,9 @@ class ProductController extends GetxController {
       print('🔍 DEBUG: Starting to fetch products...');
       isLoading.value = true;
 
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('products').get();
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .get();
 
       print('✅ DEBUG: Products fetched successfully!');
       print('📦 DEBUG: Total products count: ${snapshot.docs.length}');
@@ -27,12 +29,14 @@ class ProductController extends GetxController {
       if (snapshot.docs.isNotEmpty) {
         print('📋 DEBUG: First product data: ${snapshot.docs.first.data()}');
         print(
-            '📋 DEBUG: Product IDs: ${snapshot.docs.map((doc) => doc.id).toList()}');
+          '📋 DEBUG: Product IDs: ${snapshot.docs.map((doc) => doc.id).toList()}',
+        );
       } else {
         print('⚠️ DEBUG: No products found in Firestore collection!');
       }
 
       products.assignAll(snapshot.docs);
+      filteredProducts.assignAll(snapshot.docs);
 
       // IMPORTANT: Also populate the static Product.products list for UI widgets
       print('🔄 DEBUG: Populating Product.products static list...');
@@ -42,7 +46,8 @@ class ProductController extends GetxController {
           .toList();
       Product.products.sort((a, b) => b['rating'].compareTo(a['rating']));
       print(
-          '✨ DEBUG: Product.products now has ${Product.products.length} items');
+        '✨ DEBUG: Product.products now has ${Product.products.length} items',
+      );
 
       isError.value = false;
     } catch (e) {
@@ -52,7 +57,22 @@ class ProductController extends GetxController {
     } finally {
       isLoading.value = false;
       print(
-          '🏁 DEBUG: Fetch products completed. isLoading: ${isLoading.value}, isError: ${isError.value}');
+        '🏁 DEBUG: Fetch products completed. isLoading: ${isLoading.value}, isError: ${isError.value}',
+      );
+    }
+  }
+
+  void filterProducts(String query) {
+    if (query.isEmpty) {
+      filteredProducts.assignAll(products);
+    } else {
+      filteredProducts.assignAll(
+        products.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final title = data['title'].toString().toLowerCase();
+          return title.contains(query.toLowerCase());
+        }).toList(),
+      );
     }
   }
 }

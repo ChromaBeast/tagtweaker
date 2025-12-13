@@ -13,17 +13,22 @@ class NeoBrutalSearchBar extends StatelessWidget {
     this.hintText = 'SEARCH...',
     this.onChanged,
     this.isRotated = true,
+    this.hasBorder = true,
   });
+
+  final bool hasBorder;
 
   @override
   Widget build(BuildContext context) {
     Widget searchBar = Container(
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: NeoBrutalTheme.brutalBox(
-        color: NeoBrutalColors.darkGrey,
-        shadowColor: NeoBrutalColors.white,
-      ),
+      decoration: hasBorder
+          ? NeoBrutalTheme.brutalBox(
+              color: NeoBrutalColors.darkGrey,
+              shadowColor: NeoBrutalColors.white,
+            )
+          : null,
       child: Row(
         children: [
           const Icon(Icons.search, color: NeoBrutalColors.lime, size: 32),
@@ -34,13 +39,23 @@ class NeoBrutalSearchBar extends StatelessWidget {
               onChanged: onChanged,
               cursorColor: NeoBrutalColors.lime,
               style: NeoBrutalTheme.mono.copyWith(
-                color: NeoBrutalColors.white,
+                color: hasBorder
+                    ? NeoBrutalColors.white
+                    : NeoBrutalColors.black,
                 fontSize: 18,
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                filled: false,
+                contentPadding: EdgeInsets.zero,
                 hintText: hintText,
-                hintStyle: NeoBrutalTheme.mono.copyWith(color: Colors.grey),
+                hintStyle: NeoBrutalTheme.mono.copyWith(
+                  color: hasBorder ? Colors.grey : NeoBrutalColors.mediumGrey,
+                ),
               ),
             ),
           ),
@@ -49,10 +64,7 @@ class NeoBrutalSearchBar extends StatelessWidget {
     );
 
     if (isRotated) {
-      return Transform.rotate(
-        angle: -0.02, 
-        child: searchBar,
-      );
+      return Transform.rotate(angle: -0.02, child: searchBar);
     }
 
     return searchBar;
