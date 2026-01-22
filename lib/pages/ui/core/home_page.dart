@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:tag_tweaker/controllers/authentication_controller.dart';
 import 'package:tag_tweaker/controllers/product_controller.dart';
 import 'package:tag_tweaker/pages/ui/category_page.dart';
+import 'package:tag_tweaker/services/product_repository.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
 import 'package:tag_tweaker/widgets/grid_painter.dart';
@@ -13,7 +14,6 @@ import 'package:tag_tweaker/widgets/product_card.dart';
 import 'package:tag_tweaker/pages/ui/core/profile_page.dart';
 import 'package:tag_tweaker/models/product_model.dart';
 import '../../auth/login_page.dart';
-import 'package:tag_tweaker/controllers/navigation_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,6 +25,34 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
   Timer? _debounce;
+
+  // Search state
+  final RxBool _isSearching = false.obs;
+  final RxBool _isSearchMode = false.obs; // Tracks if search text is present
+  final RxList<Product> _searchResults = <Product>[].obs;
+
+  // Trending products state
+  late Future<List<Product>> _trendingProductsFuture;
+
+  final ProductRepository _repository = Get.find<ProductRepository>();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTrendingProducts();
+  }
+
+  void _loadTrendingProducts() {
+    _trendingProductsFuture = _repository.fetchTrendingProducts(limit: 6).then((
+      trendingProducts,
+    ) async {
+      // Fallback to top-rated if no trending products
+      if (trendingProducts.isEmpty) {
+        return await _repository.fetchTopRatedProducts(limit: 6);
+      }
+      return trendingProducts;
+    });
+  }
 
   @override
   void dispose() {
@@ -75,26 +103,28 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 24),
                   _buildSearchBar(),
                   const SizedBox(height: 24),
-                  if (searchController.text.isNotEmpty)
-                    _buildSearchResults(controller)
-                  else ...[
-                    _buildCategoriesRow(),
-                    const SizedBox(height: 32),
-                    const NeoBrutalCarousel(),
-                    const SizedBox(height: 32),
-                    const SizedBox(height: 32),
-                    _buildInventoryHeader(controller),
-
-                    const SizedBox(height: 32),
-                    _buildTrendingProductsGrid(controller),
-                  ],
+                  Obx(() {
+                    if (_isSearchMode.value) {
+                      return _buildSearchResults();
+                    }
+                    return Column(
+                      children: [
+                        _buildCategoriesRow(),
+                        const SizedBox(height: 32),
+                        const NeoBrutalCarousel(),
+                        const SizedBox(height: 32),
+                        const SizedBox(height: 32),
+                        _buildInventoryHeader(controller),
+                        const SizedBox(height: 32),
+                        _buildTrendingProductsGrid(),
+                      ],
+                    );
+                  }),
                   const SizedBox(height: 100), // Spacing for bottom nav
                 ],
               ),
             ),
           ),
-
-          // Bottom Nav Removed (Hosted in UIPage)
         ],
       ),
     );
@@ -133,7 +163,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 4),
               Obx(
                 () => Text(
-                  '${controller.products.length} PRODUCTS AVAILABLE',
+                  '${controller.productCount.value} PRODUCTS AVAILABLE',
                   style: NeoBrutalTheme.mono.copyWith(
                     fontSize: 10,
                     letterSpacing: 1.5,
@@ -205,9 +235,18 @@ class _HomePageState extends State<HomePage> {
         controller: searchController,
         onChanged: (value) {
           if (_debounce?.isActive ?? false) _debounce!.cancel();
-          _debounce = Timer(const Duration(milliseconds: 500), () {
-            Get.find<ProductController>().filterProducts(value);
-            setState(() {}); // Trigger rebuild to switch views
+          _debounce = Timer(const Duration(milliseconds: 500), () async {
+            if (value.isEmpty) {
+              _searchResults.clear();
+              _isSearching.value = false;
+              _isSearchMode.value = false;
+            } else {
+              _isSearchMode.value = true;
+              _isSearching.value = true;
+              final results = await _repository.searchProducts(value);
+              _searchResults.assignAll(results);
+              _isSearching.value = false;
+            }
           });
         },
         hintText: 'SEARCH_PRODUCTS...',
@@ -215,11 +254,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSearchResults(ProductController controller) {
+  Widget _buildSearchResults() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Obx(() {
-        if (controller.filteredProducts.isEmpty) {
+        if (_isSearching.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (_searchResults.isEmpty) {
           return Center(
             child: Text(
               "NO PRODUCTS FOUND",
@@ -238,9 +280,9 @@ class _HomePageState extends State<HomePage> {
             mainAxisSpacing: 24,
             childAspectRatio: 0.60,
           ),
-          itemCount: controller.filteredProducts.length,
+          itemCount: _searchResults.length,
           itemBuilder: (context, index) {
-            final product = controller.filteredProducts[index];
+            final product = _searchResults[index];
             return ProductCard(product: product);
           },
         );
@@ -279,7 +321,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Obx(
                   () => Text(
-                    "${controller.products.length} ITEMS",
+                    "${controller.productCount.value} ITEMS",
                     style: NeoBrutalTheme.mono.copyWith(
                       color: NeoBrutalColors.black,
                       fontSize: 14,
@@ -306,24 +348,13 @@ class _HomePageState extends State<HomePage> {
 
           return GestureDetector(
             onTap: () {
-              final controller = Get.find<ProductController>();
-              final categoryProducts = controller.products
-                  .where(
-                    (p) => p.category.toLowerCase() == category.toLowerCase(),
-                  )
-                  .toList();
-
-              Get.to(
-                () => CategoryPage(
-                  categoryList: categoryProducts,
-                  category: category.toLowerCase(),
-                  text: category,
-                ),
-              );
+              // Navigate to CategoryPage with just the category name
+              // CategoryPage will fetch products dynamically
+              Get.to(() => CategoryPage(category: category, text: category));
             },
             child: Container(
               margin: const EdgeInsets.only(right: 16),
-              width: 140, // Slightly wider to fit text
+              width: 140,
               decoration: NeoBrutalTheme.brutalBox(
                 color: NeoBrutalColors.white,
                 borderColor: NeoBrutalColors.black,
@@ -357,7 +388,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildTrendingProductsGrid(ProductController controller) {
+  Widget _buildTrendingProductsGrid() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -378,49 +409,37 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         const SizedBox(height: 16),
-        Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        FutureBuilder<List<Product>>(
+          future: _trendingProductsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          // Filter for trending products based on FILTERED list
-          final allFilteredProducts = controller.filteredProducts;
+            final displayProducts = snapshot.data ?? [];
 
-          final trendingProducts = allFilteredProducts
-              .where((p) => p.isTrending)
-              .toList();
+            if (displayProducts.isEmpty) {
+              return const SizedBox.shrink();
+            }
 
-          List<Product> displayProducts;
-
-          if (searchController.text.isNotEmpty) {
-            displayProducts = allFilteredProducts;
-          } else {
-            displayProducts = trendingProducts.isNotEmpty
-                ? trendingProducts.take(6).toList()
-                : allFilteredProducts.take(6).toList();
-          }
-
-          if (displayProducts.isEmpty) {
-            return const SizedBox.shrink();
-          }
-
-          return GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 24,
-              childAspectRatio: 0.60,
-            ),
-            itemCount: displayProducts.length,
-            itemBuilder: (context, index) {
-              final product = displayProducts[index];
-              return ProductCard(product: product, isNew: product.isNew);
-            },
-          );
-        }),
+            return GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 24,
+                childAspectRatio: 0.60,
+              ),
+              itemCount: displayProducts.length,
+              itemBuilder: (context, index) {
+                final product = displayProducts[index];
+                return ProductCard(product: product, isNew: product.isNew);
+              },
+            );
+          },
+        ),
       ],
     );
   }

@@ -1,66 +1,34 @@
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/product_model.dart';
+import '../services/product_repository.dart';
 
+/// Lightweight controller for shared product state.
+/// Individual pages use ProductRepository directly for their specific queries.
 class ProductController extends GetxController {
-  var products = <Product>[].obs;
-  var filteredProducts = <Product>[].obs;
-  var isLoading = true.obs;
-  var isError = false.obs;
+  final ProductRepository _repository = Get.find<ProductRepository>();
+
+  // Shared state for product count (used in header display)
+  var productCount = 0.obs;
+  var isCountLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchProducts();
+    _loadProductCount();
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> _loadProductCount() async {
     try {
-      print('🔍 DEBUG: Starting to fetch products...');
-      isLoading.value = true;
-
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .get();
-
-      print('✅ DEBUG: Products fetched successfully!');
-      print('📦 DEBUG: Total products count: ${snapshot.docs.length}');
-
-      final loadedProducts = snapshot.docs
-          .map((doc) => Product.fromSnapshot(doc))
-          .toList();
-
-      // Sort by rating desc
-      loadedProducts.sort((a, b) => b.rating.compareTo(a.rating));
-
-      products.assignAll(loadedProducts);
-      filteredProducts.assignAll(loadedProducts);
-      
-      print('✨ DEBUG: Loaded ${products.length} products');
-
-      isError.value = false;
+      isCountLoading.value = true;
+      productCount.value = await _repository.getProductCount();
     } catch (e) {
-      print('❌ DEBUG: Error fetching products: $e');
-      print('❌ DEBUG: Error type: ${e.runtimeType}');
-      isError.value = true;
+      print('❌ Error loading product count: $e');
     } finally {
-      isLoading.value = false;
-      print(
-        '🏁 DEBUG: Fetch products completed. isLoading: ${isLoading.value}, isError: ${isError.value}',
-      );
+      isCountLoading.value = false;
     }
   }
 
-  void filterProducts(String query) {
-    if (query.isEmpty) {
-      filteredProducts.assignAll(products);
-    } else {
-      filteredProducts.assignAll(
-        products.where((product) {
-          final title = product.title.toLowerCase();
-          return title.contains(query.toLowerCase());
-        }).toList(),
-      );
-    }
+  /// Refresh product count (call after adding/removing products)
+  Future<void> refreshProductCount() async {
+    await _loadProductCount();
   }
 }

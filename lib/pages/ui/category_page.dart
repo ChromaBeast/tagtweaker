@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/services/product_repository.dart';
 import 'package:tag_tweaker/widgets/grid_painter.dart';
 import 'package:tag_tweaker/widgets/neo_brutal_search_bar.dart';
 import 'package:tag_tweaker/widgets/product_card.dart';
 
 import '../../themes/neo_brutal_theme.dart';
 
-class CategoryPage extends StatelessWidget {
-  final List<Product> categoryList;
+class CategoryPage extends StatefulWidget {
   final String category, text;
 
-  const CategoryPage({
-    super.key,
-    required this.categoryList,
-    required this.category,
-    required this.text,
-  });
+  const CategoryPage({super.key, required this.category, required this.text});
+
+  @override
+  State<CategoryPage> createState() => _CategoryPageState();
+}
+
+class _CategoryPageState extends State<CategoryPage> {
+  late Future<List<Product>> _productsFuture;
+  final ProductRepository _repository = Get.find<ProductRepository>();
+
+  @override
+  void initState() {
+    super.initState();
+    _productsFuture = _repository.fetchProductsByCategory(widget.category);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +50,35 @@ class CategoryPage extends StatelessWidget {
           ),
 
           SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildHeader(context),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: _buildSearchBar(),
+            child: FutureBuilder<List<Product>>(
+              future: _productsFuture,
+              builder: (context, snapshot) {
+                final categoryList = snapshot.data ?? [];
+                final isLoading =
+                    snapshot.connectionState == ConnectionState.waiting;
+
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildHeader(context, categoryList.length, isLoading),
+                      Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: _buildSearchBar(),
+                      ),
+                      if (isLoading)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(48.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      else
+                        _buildProductGrid(categoryList),
+                      const SizedBox(height: 100), // Bottom padding
+                    ],
                   ),
-                  _buildProductGrid(),
-                  const SizedBox(height: 100), // Bottom padding
-                ],
-              ),
+                );
+              },
             ),
           ),
 
@@ -68,7 +94,6 @@ class CategoryPage extends StatelessWidget {
                 shadowColor: NeoBrutalColors.white,
               ),
               child: Material(
-                // Material for ripple
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {},
@@ -83,14 +108,12 @@ class CategoryPage extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bottom Nav Removed (Hosted in UIPage)
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, int itemCount, bool isLoading) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
@@ -112,8 +135,7 @@ class CategoryPage extends StatelessWidget {
                     color: NeoBrutalColors.lime,
                     borderColor: NeoBrutalColors.white,
                     borderWidth: 2,
-                    shadowOffset:
-                        0, // No shadow for back button in this interaction per HTML feel, or simpler style
+                    shadowOffset: 0,
                   ),
                   child: const Icon(
                     Icons.arrow_back,
@@ -126,7 +148,7 @@ class CategoryPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    text.toUpperCase(),
+                    widget.text.toUpperCase(),
                     style: NeoBrutalTheme.heading.copyWith(
                       fontSize: 32,
                       shadows: [
@@ -139,7 +161,9 @@ class CategoryPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "CATEGORY // ${categoryList.length} ITEMS",
+                    isLoading
+                        ? "CATEGORY // LOADING..."
+                        : "CATEGORY // $itemCount ITEMS",
                     style: NeoBrutalTheme.mono.copyWith(
                       fontSize: 10,
                       letterSpacing: 1.2,
@@ -149,7 +173,6 @@ class CategoryPage extends StatelessWidget {
               ),
             ],
           ),
-          // User avatar removed as per request
         ],
       ),
     );
@@ -162,7 +185,21 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildProductGrid() {
+  Widget _buildProductGrid(List<Product> categoryList) {
+    if (categoryList.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(48.0),
+          child: Text(
+            "NO PRODUCTS FOUND",
+            style: NeoBrutalTheme.heading.copyWith(
+              color: NeoBrutalColors.white,
+            ),
+          ),
+        ),
+      );
+    }
+
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       physics: const NeverScrollableScrollPhysics(),
@@ -176,8 +213,8 @@ class CategoryPage extends StatelessWidget {
       itemCount: categoryList.length,
       itemBuilder: (context, index) {
         final product = categoryList[index];
-        final bool isNew = index == 2; // Mock "New" tag for 3rd item
-        final bool isBestSeller = index == 0; // Mock "Best Seller" for 1st
+        final bool isNew = product.isNew;
+        final bool isBestSeller = index == 0;
 
         return ProductCard(
           product: product,

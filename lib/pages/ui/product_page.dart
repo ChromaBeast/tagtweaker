@@ -199,6 +199,7 @@ class ProductPage extends StatelessWidget {
                   child: CustomNetworkImage(
                     img.toString(),
                     fit: BoxFit.contain,
+                    loadingWidget: const SizedBox.shrink(),
                   ),
                 );
               }).toList(),
@@ -208,31 +209,6 @@ class ProductPage extends StatelessWidget {
                 enableInfiniteScroll: images.length > 1,
                 autoPlay: images.length > 1,
                 autoPlayAnimationDuration: const Duration(seconds: 1),
-              ),
-            ),
-          ),
-
-          // Scale/Dimension Badge
-          Positioned(
-            top: 24,
-            right: 24,
-            child: Transform.rotate(
-              angle: 0.05, // 3 deg
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: NeoBrutalTheme.brutalBox(
-                  color: NeoBrutalColors.white,
-                  borderColor: NeoBrutalColors.black,
-                  shadowColor: NeoBrutalColors.black,
-                  shadowOffset: 6,
-                ),
-                child: Text(
-                  "17.23 cm", // Hardcoded per HTML or dynamic if available
-                  style: NeoBrutalTheme.heading.copyWith(
-                    color: NeoBrutalColors.black,
-                    fontSize: 12,
-                  ),
-                ),
               ),
             ),
           ),
@@ -575,7 +551,9 @@ class _DashedLine extends StatelessWidget {
               width: vertical ? 1 : dashWidth,
               height: vertical ? dashWidth : 1,
               child: DecoratedBox(
-                decoration: BoxDecoration(color: Colors.white.withOpacity(0.3)),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.3),
+                ),
               ),
             );
           }),
