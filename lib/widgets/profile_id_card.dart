@@ -6,12 +6,14 @@ import 'package:tag_tweaker/widgets/custom_network_image.dart';
 class ProfileIDCard extends StatelessWidget {
   final User? user;
   final VoidCallback onEdit;
+  final VoidCallback? onNameEdit;
   final bool isLoading;
 
   const ProfileIDCard({
     super.key,
     required this.user,
     required this.onEdit,
+    this.onNameEdit,
     this.isLoading = false,
   });
 
@@ -126,21 +128,40 @@ class ProfileIDCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'NAME',
-                        style: NeoBrutalTheme.mono.copyWith(
-                          fontSize: 10,
-                          color: NeoBrutalColors.mediumGrey,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            'NAME',
+                            style: NeoBrutalTheme.mono.copyWith(
+                              fontSize: 10,
+                              color: NeoBrutalColors.mediumGrey,
+                            ),
+                          ),
+                          if (onNameEdit != null) ...[
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: onNameEdit,
+                              child: const Icon(
+                                Icons.edit,
+                                size: 12,
+                                color: NeoBrutalColors.mediumGrey,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                      Text(
-                        user?.displayName?.toUpperCase() ?? 'NO NAME',
-                        style: NeoBrutalTheme.heading.copyWith(
-                          fontSize: 20,
-                          height: 1.1,
+                      GestureDetector(
+                        onTap: onNameEdit,
+                        child: Text(
+                          user?.displayName?.toUpperCase() ?? 'TAP TO SET NAME',
+                          style: NeoBrutalTheme.heading.copyWith(
+                            fontSize: 20,
+                            height: 1.1,
+                            color: NeoBrutalColors.black,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 12),
                       Text(

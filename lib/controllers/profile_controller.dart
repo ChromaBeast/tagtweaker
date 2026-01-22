@@ -169,4 +169,154 @@ class ProfileController extends GetxController {
       ),
     );
   }
+
+  Future<void> updateDisplayName(BuildContext context) async {
+    final nameController = TextEditingController(
+      text: currentUser.value?.displayName ?? '',
+    );
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: NeoBrutalTheme.brutalBox(
+            color: NeoBrutalColors.white,
+            borderColor: NeoBrutalColors.black,
+            shadowColor: NeoBrutalColors.black,
+            shadowOffset: 8,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'EDIT NAME',
+                style: NeoBrutalTheme.heading.copyWith(
+                  fontSize: 20,
+                  color: NeoBrutalColors.black,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                decoration: NeoBrutalTheme.brutalBox(
+                  color: NeoBrutalColors.white,
+                  borderColor: NeoBrutalColors.black,
+                  shadowOffset: 0,
+                ),
+                child: TextField(
+                  controller: nameController,
+                  style: NeoBrutalTheme.body.copyWith(
+                    color: NeoBrutalColors.black,
+                    fontSize: 16,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Enter your name',
+                    hintStyle: NeoBrutalTheme.body.copyWith(
+                      color: NeoBrutalColors.mediumGrey,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context, false),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      decoration: NeoBrutalTheme.brutalBox(
+                        color: NeoBrutalColors.white,
+                        borderColor: NeoBrutalColors.black,
+                        shadowColor: NeoBrutalColors.black,
+                        shadowOffset: 2,
+                      ),
+                      child: Text(
+                        'CANCEL',
+                        style: NeoBrutalTheme.heading.copyWith(
+                          fontSize: 14,
+                          color: NeoBrutalColors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context, true),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      decoration: NeoBrutalTheme.brutalBox(
+                        color: NeoBrutalColors.lime,
+                        borderColor: NeoBrutalColors.black,
+                        shadowColor: NeoBrutalColors.black,
+                        shadowOffset: 2,
+                      ),
+                      child: Text(
+                        'SAVE',
+                        style: NeoBrutalTheme.heading.copyWith(
+                          fontSize: 14,
+                          color: NeoBrutalColors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final newName = nameController.text.trim();
+    if (newName.isEmpty) {
+      CustomSnackbar.showError(title: 'ERROR', message: 'Name cannot be empty');
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      final user = _auth.currentUser;
+      if (user == null) return;
+
+      await user.updateDisplayName(newName);
+
+      // Update Firestore if document exists
+      final docRef = _firestore.collection('users').doc(user.uid);
+      final doc = await docRef.get();
+      if (doc.exists) {
+        await docRef.update({'displayName': newName});
+      }
+
+      await user.reload();
+      currentUser.value = _auth.currentUser;
+      currentUser.refresh();
+
+      CustomSnackbar.showSuccess(
+        title: 'SUCCESS',
+        message: 'Name updated successfully',
+      );
+    } catch (e) {
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: 'Failed to update name: $e',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
