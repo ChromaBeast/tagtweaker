@@ -28,7 +28,8 @@ class AuthenticationController extends GetxController {
       if (firebaseUser != null) {
         CustomSnackbar.showSuccess(
           title: 'SUCCESS',
-          message: 'Signed in as ${firebaseUser.displayName ?? firebaseUser.email ?? 'User'}',
+          message:
+              'Signed in as ${firebaseUser.displayName ?? firebaseUser.email ?? 'User'}',
         );
       }
     } on GoogleSignInException catch (e) {
@@ -85,6 +86,56 @@ class AuthenticationController extends GetxController {
       CustomSnackbar.showError(
         title: 'ERROR',
         message: 'Sign out failed: ${e.toString()}',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Whether the current user is a guest (anonymous)
+  bool get isGuest => _auth.currentUser?.isAnonymous ?? false;
+
+  /// Links the current anonymous account to Google credentials
+  /// This preserves all user data while upgrading to a full account
+  Future<void> linkGoogleAccount() async {
+    try {
+      isLoading.value = true;
+
+      if (!isGuest) {
+        CustomSnackbar.showError(
+          title: 'ERROR',
+          message: 'You are already signed in with an account',
+        );
+        return;
+      }
+
+      // Get Google credential
+      final credential = await GoogleSignInService.instance
+          .getGoogleCredential();
+
+      // Link to current anonymous user
+      await _auth.currentUser!.linkWithCredential(credential);
+
+      CustomSnackbar.showSuccess(
+        title: 'SUCCESS',
+        message: 'Account upgraded successfully!',
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'credential-already-in-use') {
+        CustomSnackbar.showError(
+          title: 'ERROR',
+          message: 'This Google account is already linked to another user',
+        );
+      } else {
+        CustomSnackbar.showError(
+          title: 'ERROR',
+          message: e.message ?? 'Failed to link account',
+        );
+      }
+    } catch (e) {
+      CustomSnackbar.showError(
+        title: 'ERROR',
+        message: 'An unexpected error occurred: ${e.toString()}',
       );
     } finally {
       isLoading.value = false;

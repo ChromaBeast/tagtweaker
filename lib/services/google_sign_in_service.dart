@@ -115,6 +115,41 @@ class GoogleSignInService {
     return FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  /// Gets Google credential without signing in - for account linking
+  /// Throws [GoogleSignInException] if cancelled or fails
+  Future<AuthCredential> getGoogleCredential() async {
+    if (!_isInitialized) {
+      throw GoogleSignInException(
+        "GoogleSignInService not initialized. Call initialize() first.",
+      );
+    }
+
+    const scopes = [
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'openid',
+    ];
+
+    await _googleSignIn.authenticate(scopeHint: scopes);
+
+    final user = await userStream.firstWhere((u) => u != null);
+
+    final googleAuthentication = user!.authentication;
+    final googleAuthorization = await user.authorizationClient
+        .authorizationForScopes(scopes);
+
+    if (googleAuthorization == null) {
+      throw GoogleSignInException(
+        "Failed to get access token. Authorization not granted.",
+      );
+    }
+
+    return GoogleAuthProvider.credential(
+      idToken: googleAuthentication.idToken,
+      accessToken: googleAuthorization.accessToken,
+    );
+  }
+
   /// Signs out from both Google and Firebase
   Future<void> signOut() async {
     await _googleSignIn.signOut();
