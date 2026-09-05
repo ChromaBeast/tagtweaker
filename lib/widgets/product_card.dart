@@ -4,6 +4,7 @@ import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
+import 'package:tag_tweaker/widgets/product_badge.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -147,65 +148,25 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           if (isBestSeller)
-            Positioned(
+            const Positioned(
               top: -8,
               right: -8,
-              child: Transform.rotate(
+              child: ProductBadge(
+                text: "BEST SELLER",
+                color: NeoBrutalColors.lime,
+                shadowColor: NeoBrutalColors.white,
                 angle: 0.1,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: NeoBrutalColors.lime,
-                    border: Border.all(color: NeoBrutalColors.black, width: 2),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: NeoBrutalColors.white,
-                        offset: Offset(2, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    "BEST SELLER",
-                    style: NeoBrutalTheme.heading.copyWith(
-                      color: NeoBrutalColors.black,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
               ),
             ),
           if (isNew)
-            Positioned(
+            const Positioned(
               top: -8,
               left: -8,
-              child: Transform.rotate(
+              child: ProductBadge(
+                text: "NEW",
+                color: NeoBrutalColors.white,
+                shadowColor: NeoBrutalColors.lime,
                 angle: -0.05,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: NeoBrutalColors.white,
-                    border: Border.all(color: NeoBrutalColors.black, width: 2),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: NeoBrutalColors.lime,
-                        offset: Offset(2, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    "NEW",
-                    style: NeoBrutalTheme.heading.copyWith(
-                      color: NeoBrutalColors.black,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
               ),
             ),
         ],

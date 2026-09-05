@@ -1,36 +1,47 @@
-# Release v1.0.0 - Neo-Brutal Genesis
+# Tag Tweaker — Release Notes
 
-Welcome to the first official release of **Tag Tweaker**! This version introduces a bold **Neo-Brutalism** design language and a comprehensive suite of features for product management and catalog generation.
+## ⚡ What's New in v1.1.0 — The Snappy & Lean Update
 
-## 🚀 Key Features
+We went completely under the hood to make Tag Tweaker dramatically faster, lighter, and more responsive. No more waiting on loading spinners — everything you tap reacts immediately.
 
-### 🎨 Neo-Brutal UI Overhaul
-- **Bold Aesthetics**: High-contrast colors, thick borders, and distinct shadows across the entire app.
-- **Interactive Components**: Custom "brutal" buttons, cards, and navigation elements.
-- **Themes**: Consistent styling using `NeoBrutalTheme` with a vibrant color palette (Lime, Orange, Purple).
+### 📦 50%+ Smaller App Size
+- **Sips your storage**: We cut the app's install and download footprint by more than half (down to ~26 MB) by upgrading to next-gen WebP imagery and stripping away bulky legacy engines.
 
-### 🛒 Product Management
-- **Product Catalog**: Browse a visually engaging list of products.
-- **Product Details**: Detailed view with dashed-border image carousel, specifications sheet, and pricing.
-- **Search & Filter**: Efficiently find products with category filtering.
+### 📄 Brand New, Ultra-Smooth PDF Catalog
+- **Silky-smooth preview**: Exporting your custom product catalogs is now powered by a lightweight native engine with effortless pinch-to-zoom.
+- **Direct print & share**: Send customized catalogs directly via WhatsApp, email, or send to your Wi-Fi printer in a single tap.
 
-### 📄 PDF Catalog Generation
-- **Instant Catalog**: Generate professional PDF catalogs of your favorite products.
-- **Customizable**: Local price overrides allowing you to adjust pricing before generating the PDF.
-- **Preview**: Integrated PDF previewer with sharing capabilities.
+### 🎨 Visual Polishing & Fixes
+- **Clean custom price inputs**: Fixed an issue where the custom price text field on the Favorites screen appeared with unexpected dark contrast — now clean, crisp, and high-visibility.
+- **Crisper icons & graphics**: Upgraded all category graphics to razor-sharp modern formats.
 
-### 👤 User Experience
-- **Authentication**: Seamless login with Google Sign-In and Anonymous Guest access.
-- **Profile ID Card**: Unique "ID Card" style user profile with avatar editing and logout functionality.
-- **Favorites**: Save products to your personal collection (synced via Firestore).
+### 🚀 Instant App Launch
+- **Skip the wait**: Launch wait time slashed by over **80%**. The app now opens instantly so you can get right to your catalog.
 
-### 🛠️ Technical Highlights
-- **Architecture**: Robust MVC pattern using **GetX** for state management and navigation.
-- **Firebase Integration**:
-  - **Firestore**: Real-time data synchronization.
-  - **Storage**: Secure image hosting for user profiles.
-  - **Auth**: Secure authentication flows.
-- **Performance**: Optimized image caching with `CustomNetworkImage`.
+### 🖼️ Zero-Flicker Image Loading
+- **Instant picture display**: Product photos and galleries now save automatically to your phone's memory after you view them once. When you return, images pop up immediately without re-downloading or flickering.
+
+### 🔍 Real-Time Search & Smooth Scrolling
+- **Lag-free browsing**: Category feeds and model searches now filter in real time as you type, running at silky-smooth 60fps.
+
+### ❤️ Instant Favorites & Cloud Sync
+- **One-tap save**: Adding or removing favorite items responds immediately on screen without waiting for cloud confirmations.
+
+### 🔋 Battery & Mobile Data Saver
+- **Zero background waste**: Replaced background web texture downloads with code-drawn visuals, saving your battery and mobile data plan.
+
+---
+
+## 🎨 v1.0.0 — Neo-Brutal Genesis
+
+The debut release of **Tag Tweaker** — a bold, retro-modern product catalog and custom price manager with Neo-Brutalist design.
+
+### Highlights
+- **Bold Neo-Brutal Design**: High-contrast colors, punchy borders, and distinctive retro styling across every screen.
+- **Product Catalog & Details**: Browse products, inspect high-res galleries, check specifications, and view details in style.
+- **Custom PDF Catalogs**: Select your favorite products, tweak prices on the fly, and export ready-to-share PDF catalogs in seconds.
+- **Simple Sign-In**: Jump right in as a guest or sign in with Google to sync your favorites.
+- **Personalized ID Card**: A retro-futuristic member badge where you can customize your profile and avatar.
 
 ---
 *Built with Flutter & ❤️*

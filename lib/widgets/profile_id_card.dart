@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
-import 'package:tag_tweaker/widgets/custom_network_image.dart';
+import 'profile/profile_avatar.dart';
 
+/// Brutalist member ID card displaying user avatar and profile details
 class ProfileIDCard extends StatelessWidget {
   final User? user;
   final VoidCallback onEdit;
@@ -59,71 +60,12 @@ class ProfileIDCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Avatar
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: NeoBrutalColors.black,
-                          width: 3,
-                        ),
-                      ),
-                      child: ClipOval(
-                        child: user?.photoURL != null
-                            ? CustomNetworkImage(
-                                user!.photoURL!,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                color: NeoBrutalColors.mediumGrey,
-                                child: const Icon(
-                                  Icons.person,
-                                  size: 40,
-                                  color: NeoBrutalColors.black,
-                                ),
-                              ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: -4,
-                      right: -4,
-                      child: GestureDetector(
-                        onTap: onEdit,
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: NeoBrutalTheme.brutalBox(
-                            color: NeoBrutalColors.purple,
-                            borderColor: NeoBrutalColors.black,
-                            shadowColor: NeoBrutalColors.black,
-                            shadowOffset: 2,
-                          ),
-                          child: isLoading
-                              ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: NeoBrutalColors.white,
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.edit,
-                                  size: 14,
-                                  color: NeoBrutalColors.white,
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
+                ProfileAvatar(
+                  user: user,
+                  onEdit: onEdit,
+                  isLoading: isLoading,
                 ),
                 const SizedBox(width: 24),
-
-                // Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

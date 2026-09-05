@@ -33,7 +33,7 @@ class BackgroundContainer extends StatelessWidget {
                           shape: BoxShape.circle,
                           gradient: RadialGradient(
                             colors: [
-                              const Color(0xFF00F0FF).withOpacity(0.15),
+                              const Color(0xFF00F0FF).withValues(alpha: 0.15),
                               Colors.transparent,
                             ],
                           ),
@@ -60,7 +60,7 @@ class BackgroundContainer extends StatelessWidget {
                           shape: BoxShape.circle,
                           gradient: RadialGradient(
                             colors: [
-                              const Color(0xFFBC13FE).withOpacity(0.15),
+                              const Color(0xFFBC13FE).withValues(alpha: 0.15),
                               Colors.transparent,
                             ],
                           ),

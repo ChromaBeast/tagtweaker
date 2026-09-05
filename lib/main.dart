@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/controllers/favourites_controller.dart';
 import 'package:tag_tweaker/controllers/navigation_controller.dart';
 import 'package:tag_tweaker/controllers/product_controller.dart';
 import 'package:tag_tweaker/services/google_sign_in_service.dart';
@@ -32,6 +33,7 @@ Future<void> main() async {
   Get.put(NavigationController());
   Get.put(ProductRepository());
   Get.put(ProductController());
+  Get.put(FavouritesController());
   runApp(const MyApp());
 }
 

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/services/product_repository.dart';
-import 'package:tag_tweaker/widgets/grid_painter.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/common/app_background.dart';
 import 'package:tag_tweaker/widgets/neo_brutal_search_bar.dart';
 import 'package:tag_tweaker/widgets/product_card.dart';
 
-import '../../themes/neo_brutal_theme.dart';
-
+/// Category page displaying filtered catalog items
 class CategoryPage extends StatefulWidget {
-  final String category, text;
+  final String category;
+  final String text;
 
   const CategoryPage({super.key, required this.category, required this.text});
 
@@ -33,22 +34,7 @@ class _CategoryPageState extends State<CategoryPage> {
       backgroundColor: NeoBrutalColors.background,
       body: Stack(
         children: [
-          // Background Grid
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    "https://www.transparenttextures.com/patterns/carbon-fibre.png",
-                  ),
-                  fit: BoxFit.cover,
-                  opacity: 0.1,
-                ),
-              ),
-              child: CustomPaint(painter: GridPainter(), child: Container()),
-            ),
-          ),
-
+          const AppBackground(),
           SafeArea(
             child: FutureBuilder<List<Product>>(
               future: _productsFuture,
@@ -61,9 +47,12 @@ class _CategoryPageState extends State<CategoryPage> {
                   child: Column(
                     children: [
                       _buildHeader(context, categoryList.length, isLoading),
-                      Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: _buildSearchBar(),
+                      const Padding(
+                        padding: EdgeInsets.all(24.0),
+                        child: NeoBrutalSearchBar(
+                          hintText: 'FILTER MODELS...',
+                          isRotated: true,
+                        ),
                       ),
                       if (isLoading)
                         const Center(
@@ -74,41 +63,43 @@ class _CategoryPageState extends State<CategoryPage> {
                         )
                       else
                         _buildProductGrid(categoryList),
-                      const SizedBox(height: 100), // Bottom padding
+                      const SizedBox(height: 100),
                     ],
                   ),
                 );
               },
             ),
           ),
+          _buildFilterFab(),
+        ],
+      ),
+    );
+  }
 
-          // Filter FAB
-          Positioned(
-            bottom: 96,
-            right: 24,
-            child: Container(
-              width: 64,
-              height: 64,
-              decoration: NeoBrutalTheme.brutalBox(
-                color: NeoBrutalColors.lime,
-                shadowColor: NeoBrutalColors.white,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {},
-                  child: const Center(
-                    child: Icon(
-                      Icons.filter_list,
-                      color: NeoBrutalColors.black,
-                      size: 36,
-                    ),
-                  ),
-                ),
+  Widget _buildFilterFab() {
+    return Positioned(
+      bottom: 96,
+      right: 24,
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: NeoBrutalTheme.brutalBox(
+          color: NeoBrutalColors.lime,
+          shadowColor: NeoBrutalColors.white,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {},
+            child: const Center(
+              child: Icon(
+                Icons.filter_list,
+                color: NeoBrutalColors.black,
+                size: 36,
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -151,8 +142,8 @@ class _CategoryPageState extends State<CategoryPage> {
                     widget.text.toUpperCase(),
                     style: NeoBrutalTheme.heading.copyWith(
                       fontSize: 32,
-                      shadows: [
-                        const Shadow(
+                      shadows: const [
+                        Shadow(
                           offset: Offset(2, 2),
                           color: NeoBrutalColors.lime,
                         ),
@@ -175,13 +166,6 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return const NeoBrutalSearchBar(
-      hintText: 'FILTER MODELS...',
-      isRotated: true,
     );
   }
 
@@ -213,13 +197,10 @@ class _CategoryPageState extends State<CategoryPage> {
       itemCount: categoryList.length,
       itemBuilder: (context, index) {
         final product = categoryList[index];
-        final bool isNew = product.isNew;
-        final bool isBestSeller = index == 0;
-
         return ProductCard(
           product: product,
-          isNew: isNew,
-          isBestSeller: isBestSeller,
+          isNew: product.isNew,
+          isBestSeller: index == 0,
         );
       },
     );

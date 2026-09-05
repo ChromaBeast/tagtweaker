@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../services/product_repository.dart';
 
@@ -21,7 +22,7 @@ class ProductController extends GetxController {
       isCountLoading.value = true;
       productCount.value = await _repository.getProductCount();
     } catch (e) {
-      print('❌ Error loading product count: $e');
+      debugPrint('Error loading product count: $e');
     } finally {
       isCountLoading.value = false;
     }

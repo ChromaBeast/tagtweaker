@@ -31,18 +31,8 @@ class NeumorphicProductCard extends StatelessWidget {
         color: AppColors.neumorphicBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
-          BoxShadow(
-            color: AppColors.neumorphicLightShadow,
-            offset: Offset(-4, -4),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-          BoxShadow(
-            color: AppColors.neumorphicDarkShadow,
-            offset: Offset(4, 4),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
+          BoxShadow(color: AppColors.neumorphicLightShadow, offset: Offset(-4, -4), blurRadius: 10, spreadRadius: 1),
+          BoxShadow(color: AppColors.neumorphicDarkShadow, offset: Offset(4, 4), blurRadius: 10, spreadRadius: 1),
         ],
       ),
       child: Material(
@@ -52,12 +42,12 @@ class NeumorphicProductCard extends StatelessWidget {
           onTap: () {
             FocusScope.of(context).unfocus();
             Future.delayed(const Duration(milliseconds: 100), () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductPage(product: product),
-                ),
-              );
+              if (context.mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductPage(product: product)),
+                );
+              }
             });
           },
           borderRadius: BorderRadius.circular(16),
@@ -121,12 +111,9 @@ class NeumorphicProductCard extends StatelessWidget {
                   children: [
                     // Rating Badge
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withOpacity(0.5),
+                        color: colorScheme.primaryContainer.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -177,14 +164,12 @@ class NeumorphicProductCard extends StatelessWidget {
                     width: double.infinity,
                     child: FilledButton.tonal(
                       onPressed: () {
-                        genPDF(context, product.toMap());
+                        genPDF(context, product);
                       },
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         backgroundColor: colorScheme.secondaryContainer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -196,12 +181,7 @@ class NeumorphicProductCard extends StatelessWidget {
                             color: colorScheme.onSecondaryContainer,
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            'Share',
-                            style: textTheme.labelMedium?.copyWith(
-                              color: colorScheme.onSecondaryContainer,
-                            ),
-                          ),
+                          Text('Share', style: textTheme.labelMedium?.copyWith(color: colorScheme.onSecondaryContainer)),
                         ],
                       ),
                     ),

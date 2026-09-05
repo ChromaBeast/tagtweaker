@@ -1,30 +1,61 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/product_model.dart';
 
-/// Repository for dynamic product Firestore queries.
-/// Each method queries the database directly instead of loading all products.
+/// Repository for dynamic product Firestore queries with in-memory caching.
 class ProductRepository extends GetxService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _collection = 'products';
 
+  // In-memory query cache to eliminate redundant Firestore reads
+  final Map<String, List<Product>> _cache = {};
+  final Map<String, List<Product>> _searchCache = {};
+  int? _cachedProductCount;
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Pre-warm queries on service startup to eliminate cold read delay in UI
+    prewarm();
+  }
+
+  /// Pre-warm common queries asynchronously
+  void prewarm() {
+    fetchCarouselProducts();
+    fetchTrendingProducts(limit: 6);
+    getProductCount();
+  }
+
   /// Fetch products marked for carousel display.
-  Future<List<Product>> fetchCarouselProducts() async {
+  Future<List<Product>> fetchCarouselProducts({bool forceRefresh = false}) async {
+    const key = 'carousel';
+    if (!forceRefresh && _cache.containsKey(key)) {
+      return _cache[key]!;
+    }
+
     try {
       final snapshot = await _firestore
           .collection(_collection)
           .where('ui.carousel', isEqualTo: true)
           .get();
 
-      return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      _cache[key] = list;
+      return list;
     } catch (e) {
-      print('❌ Error fetching carousel products: $e');
-      return [];
+      debugPrint('Error fetching carousel products: $e');
+      return _cache[key] ?? [];
     }
   }
 
   /// Fetch trending products, optionally limited.
-  Future<List<Product>> fetchTrendingProducts({int limit = 6}) async {
+  Future<List<Product>> fetchTrendingProducts({int limit = 6, bool forceRefresh = false}) async {
+    final key = 'trending_$limit';
+    if (!forceRefresh && _cache.containsKey(key)) {
+      return _cache[key]!;
+    }
+
     try {
       final snapshot = await _firestore
           .collection(_collection)
@@ -33,15 +64,22 @@ class ProductRepository extends GetxService {
           .limit(limit)
           .get();
 
-      return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      _cache[key] = list;
+      return list;
     } catch (e) {
-      print('❌ Error fetching trending products: $e');
-      return [];
+      debugPrint('Error fetching trending products: $e');
+      return _cache[key] ?? [];
     }
   }
 
   /// Fetch top-rated products as fallback when no trending products exist.
-  Future<List<Product>> fetchTopRatedProducts({int limit = 6}) async {
+  Future<List<Product>> fetchTopRatedProducts({int limit = 6, bool forceRefresh = false}) async {
+    final key = 'top_rated_$limit';
+    if (!forceRefresh && _cache.containsKey(key)) {
+      return _cache[key]!;
+    }
+
     try {
       final snapshot = await _firestore
           .collection(_collection)
@@ -49,15 +87,22 @@ class ProductRepository extends GetxService {
           .limit(limit)
           .get();
 
-      return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      _cache[key] = list;
+      return list;
     } catch (e) {
-      print('❌ Error fetching top-rated products: $e');
-      return [];
+      debugPrint('Error fetching top-rated products: $e');
+      return _cache[key] ?? [];
     }
   }
 
   /// Fetch products by category.
-  Future<List<Product>> fetchProductsByCategory(String category) async {
+  Future<List<Product>> fetchProductsByCategory(String category, {bool forceRefresh = false}) async {
+    final key = 'category_$category';
+    if (!forceRefresh && _cache.containsKey(key)) {
+      return _cache[key]!;
+    }
+
     try {
       final snapshot = await _firestore
           .collection(_collection)
@@ -65,42 +110,54 @@ class ProductRepository extends GetxService {
           .orderBy('rating', descending: true)
           .get();
 
-      return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      _cache[key] = list;
+      return list;
     } catch (e) {
-      print('❌ Error fetching products for category $category: $e');
-      return [];
+      debugPrint('Error fetching products for category $category: $e');
+      return _cache[key] ?? [];
     }
   }
 
-  /// Search products by title prefix.
-  /// Firestore doesn't support full-text search, so we use startAt/endAt.
+  /// Search products by title prefix with memory caching.
   Future<List<Product>> searchProducts(String query) async {
-    if (query.isEmpty) return [];
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return [];
+
+    if (_searchCache.containsKey(trimmed)) {
+      return _searchCache[trimmed]!;
+    }
 
     try {
-      // Firestore range query for prefix matching
       final snapshot = await _firestore
           .collection(_collection)
           .orderBy('title')
-          .startAt([query])
-          .endAt(['$query\uf8ff'])
+          .startAt([trimmed])
+          .endAt(['$trimmed\uf8ff'])
           .get();
 
-      return snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      _searchCache[trimmed] = list;
+      return list;
     } catch (e) {
-      print('❌ Error searching products: $e');
-      return [];
+      debugPrint('Error searching products: $e');
+      return _searchCache[trimmed] ?? [];
     }
   }
 
-  /// Get total product count for display purposes.
-  Future<int> getProductCount() async {
+  /// Get total product count with caching.
+  Future<int> getProductCount({bool forceRefresh = false}) async {
+    if (!forceRefresh && _cachedProductCount != null) {
+      return _cachedProductCount!;
+    }
+
     try {
       final snapshot = await _firestore.collection(_collection).count().get();
-      return snapshot.count ?? 0;
+      _cachedProductCount = snapshot.count ?? 0;
+      return _cachedProductCount!;
     } catch (e) {
-      print('❌ Error getting product count: $e');
-      return 0;
+      debugPrint('Error getting product count: $e');
+      return _cachedProductCount ?? 0;
     }
   }
 
@@ -113,8 +170,15 @@ class ProductRepository extends GetxService {
       }
       return null;
     } catch (e) {
-      print('❌ Error fetching product by ID: $e');
+      debugPrint('Error fetching product by ID: $e');
       return null;
     }
+  }
+
+  /// Invalidate query cache.
+  void invalidateCache() {
+    _cache.clear();
+    _searchCache.clear();
+    _cachedProductCount = null;
   }
 }

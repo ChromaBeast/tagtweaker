@@ -11,8 +11,8 @@ class UIPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize controller if not found (failsafe) or find existing
-    final NavigationController navCtrl = Get.put(NavigationController());
+    // Find existing controller registered in main.dart
+    final NavigationController navCtrl = Get.find<NavigationController>();
 
     // Set initial index
     WidgetsBinding.instance.addPostFrameCallback((_) {

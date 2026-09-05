@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:printing/printing.dart';
 
 import '../../themes/neo_brutal_theme.dart';
 import '../../controllers/pdf_preview_controller.dart';
@@ -136,12 +136,15 @@ class PdfPreviewPage extends GetView<PdfPreviewController> {
           );
         }
 
-        return SfPdfViewer.file(
-          File(controller.pdfPath.value),
+        return PdfPreview(
           key: Key(controller.pdfPath.value),
-          canShowScrollHead: true,
-          canShowScrollStatus: true,
-          enableDoubleTapZooming: true,
+          build: (format) => File(controller.pdfPath.value).readAsBytes(),
+          useActions: false,
+          canChangeOrientation: false,
+          canChangePageFormat: false,
+          canDebug: false,
+          maxPageWidth: 700,
+          previewPageMargin: const EdgeInsets.all(12),
         );
       }),
     );

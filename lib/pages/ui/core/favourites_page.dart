@@ -5,48 +5,33 @@ import 'package:get/get.dart';
 import 'package:tag_tweaker/controllers/favourites_controller.dart';
 import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
-import 'package:tag_tweaker/widgets/favourites/favourite_product_card.dart';
-
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
-import 'package:tag_tweaker/widgets/grid_painter.dart';
+import 'package:tag_tweaker/widgets/common/app_background.dart';
+import 'package:tag_tweaker/widgets/favourites/empty_favourites_view.dart';
+import 'package:tag_tweaker/widgets/favourites/favourite_product_card.dart';
+import 'package:tag_tweaker/widgets/favourites/remove_favourite_dialog.dart';
 
+/// Favourites page displaying saved user products and PDF export action
 class FavouritesPage extends StatelessWidget {
   const FavouritesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Initialize controller
-    final controller = Get.put(FavouritesController());
-
-    FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final colorScheme = Theme.of(context).colorScheme;
+    final controller = Get.find<FavouritesController>();
+    final auth = FirebaseAuth.instance;
+    final firestore = FirebaseFirestore.instance;
 
     return Scaffold(
       backgroundColor: NeoBrutalColors.background,
       body: Stack(
         children: [
-          // Grid Pattern
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  "https://www.transparenttextures.com/patterns/carbon-fibre.png",
-                ),
-                fit: BoxFit.cover,
-                opacity: 0.1,
-              ),
-            ),
-            child: CustomPaint(painter: GridPainter(), child: Container()),
-          ),
-
+          const AppBackground(),
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(context, colorScheme),
-
+                  _buildHeader(),
                   StreamBuilder<QuerySnapshot>(
                     stream: firestore
                         .collection('users')
@@ -71,56 +56,22 @@ class FavouritesPage extends StatelessWidget {
                           itemCount: docs.length,
                           itemBuilder: (context, index) {
                             final product = Product.fromSnapshot(docs[index]);
-                            return _buildFavouriteCard(
-                              context,
-                              product,
-                              auth,
-                              colorScheme,
-                              index,
+                            return FavouriteProductCard(
+                              item: product,
+                              auth: auth,
+                              onTap: () => Get.to(() => ProductPage(product: product)),
+                              onRemove: () => RemoveFavouriteDialog.show(
+                                context,
+                                onConfirm: () {
+                                  controller.toggleFavourite(product);
+                                },
+                              ),
                             );
                           },
                         );
                       }
 
-                      return Center(
-                        child: Container(
-                          margin: const EdgeInsets.all(24),
-                          padding: const EdgeInsets.all(32),
-                          decoration: NeoBrutalTheme.brutalBox(
-                            color: NeoBrutalColors.white,
-                            borderColor: NeoBrutalColors.black,
-                            shadowColor: NeoBrutalColors.black,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.favorite_border,
-                                size: 64,
-                                color: NeoBrutalColors.mediumGrey,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'NO FAVOURITES YET',
-                                style: NeoBrutalTheme.heading.copyWith(
-                                  color: NeoBrutalColors.black,
-                                  fontSize: 20,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'ADD PRODUCTS TO YOUR FAVOURITES TO SEE THEM HERE',
-                                style: NeoBrutalTheme.mono.copyWith(
-                                  color: NeoBrutalColors.mediumGrey,
-                                  fontSize: 12,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                      return const EmptyFavouritesView();
                     },
                   ),
                   const SizedBox(height: 100),
@@ -135,9 +86,9 @@ class FavouritesPage extends StatelessWidget {
         child: FloatingActionButton.extended(
           onPressed: () => controller.generatePDF(context),
           backgroundColor: NeoBrutalColors.purple,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
-            side: const BorderSide(color: NeoBrutalColors.black, width: 2),
+            side: BorderSide(color: NeoBrutalColors.black, width: 2),
           ),
           icon: const Icon(Icons.picture_as_pdf, color: NeoBrutalColors.white),
           label: Text(
@@ -152,7 +103,7 @@ class FavouritesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
@@ -168,134 +119,13 @@ class FavouritesPage extends StatelessWidget {
             'YOUR\nFAVOURITES',
             style: NeoBrutalTheme.heading.copyWith(
               fontSize: 32,
-              shadows: [
-                const Shadow(offset: Offset(2, 2), color: NeoBrutalColors.lime),
+              shadows: const [
+                Shadow(offset: Offset(2, 2), color: NeoBrutalColors.lime),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildFavouriteCard(
-    BuildContext context,
-    Product item,
-    FirebaseAuth auth,
-    ColorScheme colorScheme,
-    int index,
-  ) {
-    return FavouriteProductCard(
-      item: item,
-      auth: auth,
-      onTap: () => goToProductPage(context, item),
-      onRemove: () => _showRemoveDialog(context, item, auth, colorScheme),
-    );
-  }
-
-  void _showRemoveDialog(
-    BuildContext context,
-    Product item,
-    FirebaseAuth auth,
-    ColorScheme colorScheme,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: NeoBrutalTheme.brutalBox(
-            color: NeoBrutalColors.white,
-            borderColor: NeoBrutalColors.black,
-            shadowColor: NeoBrutalColors.black,
-            shadowOffset: 8,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'REMOVE ITEM?',
-                style: NeoBrutalTheme.heading.copyWith(
-                  fontSize: 20,
-                  color: NeoBrutalColors.black,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Are you sure you want to remove this item from your favourites?',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                      decoration: NeoBrutalTheme.brutalBox(
-                        color: NeoBrutalColors.white,
-                        borderColor: NeoBrutalColors.black,
-                        shadowColor: NeoBrutalColors.black,
-                        shadowOffset: 2,
-                      ),
-                      child: Text(
-                        'CANCEL',
-                        style: NeoBrutalTheme.heading.copyWith(
-                          fontSize: 14,
-                          color: NeoBrutalColors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(auth.currentUser?.uid)
-                          .collection('favourites')
-                          .doc(item.id)
-                          .delete();
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                      decoration: NeoBrutalTheme.brutalBox(
-                        color: NeoBrutalColors.orange,
-                        borderColor: NeoBrutalColors.black,
-                        shadowColor: NeoBrutalColors.black,
-                        shadowOffset: 2,
-                      ),
-                      child: Text(
-                        'REMOVE',
-                        style: NeoBrutalTheme.heading.copyWith(
-                          fontSize: 14,
-                          color: NeoBrutalColors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void goToProductPage(BuildContext context, Product item) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ProductPage(product: item)),
     );
   }
 }

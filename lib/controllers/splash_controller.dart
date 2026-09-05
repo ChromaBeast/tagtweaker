@@ -11,10 +11,10 @@ class SplashController extends GetxController {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 600));
     final isLoggedIn = FirebaseAuth.instance.currentUser != null;
     if (isLoggedIn) {
-      Get.offAll(() => UIPage(selectedIndex: 0));
+      Get.offAll(() => const UIPage(selectedIndex: 0));
     } else {
       Get.offAll(() => const LoginPage());
     }

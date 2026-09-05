@@ -68,6 +68,36 @@ class Product {
     };
   }
 
+  Product copyWith({
+    String? id,
+    String? title,
+    double? price,
+    double? rating,
+    String? thumbnail,
+    List<String>? images,
+    String? category,
+    String? brand,
+    String? description,
+    bool? isTrending,
+    bool? isNew,
+    bool? showInCarousel,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      price: price ?? this.price,
+      rating: rating ?? this.rating,
+      thumbnail: thumbnail ?? this.thumbnail,
+      images: images ?? this.images,
+      category: category ?? this.category,
+      brand: brand ?? this.brand,
+      description: description ?? this.description,
+      isTrending: isTrending ?? this.isTrending,
+      isNew: isNew ?? this.isNew,
+      showInCarousel: showInCarousel ?? this.showInCarousel,
+    );
+  }
+
   static const List<String> categories = [
     "Smartphone",
     "Laptop",
