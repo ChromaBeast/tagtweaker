@@ -51,20 +51,40 @@ class CustomNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl.trim().isEmpty) {
+    final uri = Uri.tryParse(imageUrl.trim());
+    if (uri == null || uri.scheme != 'https') {
       return errorWidget ?? _buildDefaultError();
     }
 
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: fit,
-      width: width,
-      height: height,
-      progressIndicatorBuilder: (context, url, progress) {
-        return loadingWidget ?? _buildDefaultLoading(progress);
-      },
-      errorWidget: (context, url, error) {
-        return errorWidget ?? _buildDefaultError();
+    // Decode at the displayed size instead of the source resolution, which
+    // cuts image memory (and decode time) dramatically in grids/carousels.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final dpr = MediaQuery.devicePixelRatioOf(context);
+        final w = width ??
+            (constraints.hasBoundedWidth ? constraints.maxWidth : null);
+        final h = height ??
+            (constraints.hasBoundedHeight ? constraints.maxHeight : null);
+        // Use the larger box side so BoxFit.cover never has to upscale
+        // (and blur) a decoded image.
+        final side = w == null ? null : (h == null ? w : (w > h ? w : h));
+        final cacheWidth =
+            side == null || side <= 0 ? null : (side * dpr).round();
+
+        return CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: fit,
+          width: width,
+          height: height,
+          memCacheWidth: cacheWidth,
+          fadeInDuration: const Duration(milliseconds: 200),
+          progressIndicatorBuilder: (context, url, progress) {
+            return loadingWidget ?? _buildDefaultLoading(progress);
+          },
+          errorWidget: (context, url, error) {
+            return errorWidget ?? _buildDefaultError();
+          },
+        );
       },
     );
   }

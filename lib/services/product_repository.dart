@@ -3,15 +3,35 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/product_model.dart';
 
+/// A cached value plus the time it was stored, used for TTL expiry.
+class _CacheEntry<T> {
+  final T value;
+  final DateTime storedAt;
+  _CacheEntry(this.value) : storedAt = DateTime.now();
+}
+
 /// Repository for dynamic product Firestore queries with in-memory caching.
 class ProductRepository extends GetxService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _collection = 'products';
 
+  /// How long cached query results stay fresh before being re-fetched.
+  static const Duration _ttl = Duration(minutes: 10);
+
+  /// Upper bound on cached search queries (oldest evicted first).
+  static const int _maxSearchEntries = 50;
+
+  /// Upper bound on documents returned by a single search / category query.
+  static const int _maxResults = 100;
+
   // In-memory query cache to eliminate redundant Firestore reads
-  final Map<String, List<Product>> _cache = {};
-  final Map<String, List<Product>> _searchCache = {};
-  int? _cachedProductCount;
+  final Map<String, _CacheEntry<List<Product>>> _cache = {};
+  final Map<String, _CacheEntry<List<Product>>> _searchCache = {};
+  _CacheEntry<int>? _cachedProductCount;
+
+  // In-flight requests, so concurrent callers (e.g. prewarm + first build)
+  // share a single Firestore read instead of issuing duplicates.
+  final Map<String, Future<Object?>> _inFlight = {};
 
   @override
   void onInit() {
@@ -27,138 +47,157 @@ class ProductRepository extends GetxService {
     getProductCount();
   }
 
-  /// Fetch products marked for carousel display.
-  Future<List<Product>> fetchCarouselProducts({bool forceRefresh = false}) async {
-    const key = 'carousel';
-    if (!forceRefresh && _cache.containsKey(key)) {
-      return _cache[key]!;
+  bool _isFresh(_CacheEntry? entry) =>
+      entry != null && DateTime.now().difference(entry.storedAt) < _ttl;
+
+  /// Runs [loader] at most once per [key] at a time; concurrent callers
+  /// await the same future.
+  Future<T> _dedupe<T>(String key, Future<T> Function() loader) {
+    final existing = _inFlight[key];
+    if (existing != null) return existing.then((v) => v as T);
+    final future = loader().whenComplete(() => _inFlight.remove(key));
+    _inFlight[key] = future;
+    return future;
+  }
+
+  /// Cached + deduplicated list query. Falls back to stale data on error.
+  Future<List<Product>> _cachedQuery(
+    String key,
+    Query<Map<String, dynamic>> Function() buildQuery, {
+    bool forceRefresh = false,
+  }) {
+    final cached = _cache[key];
+    if (!forceRefresh && _isFresh(cached)) {
+      return Future.value(cached!.value);
     }
 
-    try {
-      final snapshot = await _firestore
+    return _dedupe(key, () async {
+      try {
+        final snapshot = await buildQuery().get();
+        final list = snapshot.docs.map(Product.fromSnapshot).toList();
+        _cache[key] = _CacheEntry(list);
+        return list;
+      } catch (e) {
+        debugPrint('Error fetching products ($key): $e');
+        return cached?.value ?? <Product>[];
+      }
+    });
+  }
+
+  /// Fetch products marked for carousel display.
+  Future<List<Product>> fetchCarouselProducts({bool forceRefresh = false}) {
+    return _cachedQuery(
+      'carousel',
+      () => _firestore
           .collection(_collection)
           .where('ui.carousel', isEqualTo: true)
-          .get();
-
-      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
-      _cache[key] = list;
-      return list;
-    } catch (e) {
-      debugPrint('Error fetching carousel products: $e');
-      return _cache[key] ?? [];
-    }
+          .limit(_maxResults),
+      forceRefresh: forceRefresh,
+    );
   }
 
   /// Fetch trending products, optionally limited.
-  Future<List<Product>> fetchTrendingProducts({int limit = 6, bool forceRefresh = false}) async {
-    final key = 'trending_$limit';
-    if (!forceRefresh && _cache.containsKey(key)) {
-      return _cache[key]!;
-    }
-
-    try {
-      final snapshot = await _firestore
+  Future<List<Product>> fetchTrendingProducts({
+    int limit = 6,
+    bool forceRefresh = false,
+  }) {
+    return _cachedQuery(
+      'trending_$limit',
+      () => _firestore
           .collection(_collection)
           .where('isTrending', isEqualTo: true)
           .orderBy('rating', descending: true)
-          .limit(limit)
-          .get();
-
-      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
-      _cache[key] = list;
-      return list;
-    } catch (e) {
-      debugPrint('Error fetching trending products: $e');
-      return _cache[key] ?? [];
-    }
+          .limit(limit),
+      forceRefresh: forceRefresh,
+    );
   }
 
   /// Fetch top-rated products as fallback when no trending products exist.
-  Future<List<Product>> fetchTopRatedProducts({int limit = 6, bool forceRefresh = false}) async {
-    final key = 'top_rated_$limit';
-    if (!forceRefresh && _cache.containsKey(key)) {
-      return _cache[key]!;
-    }
-
-    try {
-      final snapshot = await _firestore
+  Future<List<Product>> fetchTopRatedProducts({
+    int limit = 6,
+    bool forceRefresh = false,
+  }) {
+    return _cachedQuery(
+      'top_rated_$limit',
+      () => _firestore
           .collection(_collection)
           .orderBy('rating', descending: true)
-          .limit(limit)
-          .get();
-
-      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
-      _cache[key] = list;
-      return list;
-    } catch (e) {
-      debugPrint('Error fetching top-rated products: $e');
-      return _cache[key] ?? [];
-    }
+          .limit(limit),
+      forceRefresh: forceRefresh,
+    );
   }
 
   /// Fetch products by category.
-  Future<List<Product>> fetchProductsByCategory(String category, {bool forceRefresh = false}) async {
-    final key = 'category_$category';
-    if (!forceRefresh && _cache.containsKey(key)) {
-      return _cache[key]!;
-    }
-
-    try {
-      final snapshot = await _firestore
+  Future<List<Product>> fetchProductsByCategory(
+    String category, {
+    bool forceRefresh = false,
+  }) {
+    return _cachedQuery(
+      'category_$category',
+      () => _firestore
           .collection(_collection)
           .where('category', isEqualTo: category)
           .orderBy('rating', descending: true)
-          .get();
-
-      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
-      _cache[key] = list;
-      return list;
-    } catch (e) {
-      debugPrint('Error fetching products for category $category: $e');
-      return _cache[key] ?? [];
-    }
+          .limit(_maxResults),
+      forceRefresh: forceRefresh,
+    );
   }
 
-  /// Search products by title prefix with memory caching.
-  Future<List<Product>> searchProducts(String query) async {
+  /// Search products by title prefix with bounded memory caching.
+  Future<List<Product>> searchProducts(String query) {
     final trimmed = query.trim();
-    if (trimmed.isEmpty) return [];
+    if (trimmed.isEmpty) return Future.value(<Product>[]);
 
-    if (_searchCache.containsKey(trimmed)) {
-      return _searchCache[trimmed]!;
+    final cached = _searchCache[trimmed];
+    if (_isFresh(cached)) {
+      // Re-insert to mark as most recently used.
+      _searchCache.remove(trimmed);
+      _searchCache[trimmed] = cached!;
+      return Future.value(cached.value);
     }
 
-    try {
-      final snapshot = await _firestore
-          .collection(_collection)
-          .orderBy('title')
-          .startAt([trimmed])
-          .endAt(['$trimmed\uf8ff'])
-          .get();
+    return _dedupe('search_$trimmed', () async {
+      try {
+        final snapshot = await _firestore
+            .collection(_collection)
+            .orderBy('title')
+            .startAt([trimmed])
+            .endAt(['$trimmed'])
+            .limit(_maxResults)
+            .get();
 
-      final list = snapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
-      _searchCache[trimmed] = list;
-      return list;
-    } catch (e) {
-      debugPrint('Error searching products: $e');
-      return _searchCache[trimmed] ?? [];
-    }
+        final list = snapshot.docs.map(Product.fromSnapshot).toList();
+        _searchCache.remove(trimmed);
+        _searchCache[trimmed] = _CacheEntry(list);
+        while (_searchCache.length > _maxSearchEntries) {
+          _searchCache.remove(_searchCache.keys.first);
+        }
+        return list;
+      } catch (e) {
+        debugPrint('Error searching products: $e');
+        return cached?.value ?? <Product>[];
+      }
+    });
   }
 
   /// Get total product count with caching.
-  Future<int> getProductCount({bool forceRefresh = false}) async {
-    if (!forceRefresh && _cachedProductCount != null) {
-      return _cachedProductCount!;
+  Future<int> getProductCount({bool forceRefresh = false}) {
+    final cached = _cachedProductCount;
+    if (!forceRefresh && _isFresh(cached)) {
+      return Future.value(cached!.value);
     }
 
-    try {
-      final snapshot = await _firestore.collection(_collection).count().get();
-      _cachedProductCount = snapshot.count ?? 0;
-      return _cachedProductCount!;
-    } catch (e) {
-      debugPrint('Error getting product count: $e');
-      return _cachedProductCount ?? 0;
-    }
+    return _dedupe('count', () async {
+      try {
+        final snapshot = await _firestore.collection(_collection).count().get();
+        final count = snapshot.count ?? 0;
+        _cachedProductCount = _CacheEntry(count);
+        return count;
+      } catch (e) {
+        debugPrint('Error getting product count: $e');
+        return cached?.value ?? 0;
+      }
+    });
   }
 
   /// Fetch a single product by ID.

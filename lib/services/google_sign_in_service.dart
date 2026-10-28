@@ -57,7 +57,7 @@ class GoogleSignInService {
     if (event is GoogleSignInAuthenticationEventSignIn) {
       _authenticatedUser = event.user;
       _userController.add(event.user);
-      if (kDebugMode) print("Signed in: ${event.user.email}");
+      if (kDebugMode) print("Google sign-in event received");
     } else if (event is GoogleSignInAuthenticationEventSignOut) {
       _authenticatedUser = null;
       _userController.add(null);
@@ -88,14 +88,13 @@ class GoogleSignInService {
       'openid',
     ];
 
-    // Launch Google Sign-In with scope hint
-    await _googleSignIn.authenticate(scopeHint: scopes);
-
-    // Wait for event
-    final user = await userStream.firstWhere((u) => u != null);
+    // Launch Google Sign-In with scope hint. Use the returned account rather
+    // than waiting on userStream: the event can fire before a listener is
+    // attached, which would hang sign-in forever.
+    final user = await _googleSignIn.authenticate(scopeHint: scopes);
 
     // Get authentication (idToken only)
-    final googleAuthentication = user!.authentication;
+    final googleAuthentication = user.authentication;
 
     // Get authorization (accessToken)
     final googleAuthorization = await user.authorizationClient
@@ -130,11 +129,9 @@ class GoogleSignInService {
       'openid',
     ];
 
-    await _googleSignIn.authenticate(scopeHint: scopes);
+    final user = await _googleSignIn.authenticate(scopeHint: scopes);
 
-    final user = await userStream.firstWhere((u) => u != null);
-
-    final googleAuthentication = user!.authentication;
+    final googleAuthentication = user.authentication;
     final googleAuthorization = await user.authorizationClient
         .authorizationForScopes(scopes);
 

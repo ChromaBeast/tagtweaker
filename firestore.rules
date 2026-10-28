@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Catalog is read-only for app users. Writes go through the Admin SDK
+    // (upload.py), which bypasses these rules.
+    match /products/{productId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // Per-user profile data: only the owner can read or write it.
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['displayName', 'photoURL'])
+        && (!('displayName' in request.resource.data)
+            || (request.resource.data.displayName is string
+                && request.resource.data.displayName.size() <= 100))
+        && (!('photoURL' in request.resource.data)
+            || (request.resource.data.photoURL is string
+                && request.resource.data.photoURL.size() <= 2048));
+
+      match /favourites/{productId} {
+        allow read, delete: if isOwner(uid);
+        // Favourites are product snapshots; cap document size to prevent abuse.
+        allow create, update: if isOwner(uid)
+          && request.resource.data.size() <= 20
+          && request.resource.data.id == productId;
+      }
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

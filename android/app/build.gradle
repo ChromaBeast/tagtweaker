@@ -69,13 +69,11 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            // Fall back to debug signing when key.properties is absent (CI / forks)
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            signingConfig signingConfigs.release
         }
     }
 }

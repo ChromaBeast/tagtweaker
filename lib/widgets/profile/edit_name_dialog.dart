@@ -65,6 +65,7 @@ class _NeoEditNameDialogState extends State<NeoEditNameDialog> {
               ),
               child: TextField(
                 controller: _controller,
+                maxLength: 50,
                 style: NeoBrutalTheme.body.copyWith(
                   color: NeoBrutalColors.black,
                   fontSize: 16,

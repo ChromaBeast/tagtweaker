@@ -50,6 +50,7 @@ class CatalogPdfService {
       );
 
       final output = await getTemporaryDirectory();
+      await _deleteOldCatalogs(output);
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final file = File('${output.path}/tag_tweaker_catalog_$timestamp.pdf');
       await file.writeAsBytes(await pdf.save());
@@ -58,6 +59,23 @@ class CatalogPdfService {
     } catch (e) {
       debugPrint('CatalogPdfService error: $e');
       throw Exception('Error generating PDF: $e');
+    }
+  }
+
+  /// Removes previously generated catalogs so temp storage doesn't grow
+  /// unbounded and stale price sheets don't linger on the device.
+  static Future<void> _deleteOldCatalogs(Directory dir) async {
+    try {
+      await for (final entity in dir.list()) {
+        final name = entity.uri.pathSegments.last;
+        if (entity is File &&
+            name.startsWith('tag_tweaker_catalog_') &&
+            name.endsWith('.pdf')) {
+          await entity.delete();
+        }
+      }
+    } catch (e) {
+      debugPrint('CatalogPdfService cleanup error: $e');
     }
   }
 

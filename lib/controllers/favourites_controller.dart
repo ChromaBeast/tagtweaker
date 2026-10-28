@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +18,25 @@ class FavouritesController extends GetxController {
   // Cached set of favourite product IDs for instant optimistic UI sync
   final RxSet<String> favouriteIds = <String>{}.obs;
 
+  StreamSubscription<User?>? _authSub;
+
   @override
   void onInit() {
     super.onInit();
-    loadFavourites();
+    // The controller is created at app start, before login. Track auth state
+    // so favourites load after sign-in and one user's favourites / tweaked
+    // prices never leak into the next user's session.
+    _authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
+      favouriteIds.clear();
+      modifiedPrices.clear();
+      if (user != null) loadFavourites();
+    });
+  }
+
+  @override
+  void onClose() {
+    _authSub?.cancel();
+    super.onClose();
   }
 
   Future<void> loadFavourites() async {
@@ -88,8 +105,9 @@ class FavouritesController extends GetxController {
       }
       CustomSnackbar.showError(
         title: 'ERROR',
-        message: 'Error updating favourites: $e',
+        message: 'Error updating favourites',
       );
+      debugPrint('toggleFavourite error: $e');
       return false;
     }
   }

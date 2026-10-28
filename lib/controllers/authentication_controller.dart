@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tag_tweaker/services/google_sign_in_service.dart';
+import 'package:tag_tweaker/services/pdf_image_loader_service.dart';
 import 'package:tag_tweaker/widgets/custom_snackbar.dart';
 
 class AuthenticationController extends GetxController {
@@ -13,7 +16,15 @@ class AuthenticationController extends GetxController {
   void onInit() {
     super.onInit();
     // Listen to auth state changes
-    _auth.authStateChanges().listen((u) => user.value = u);
+    _authSub = _auth.authStateChanges().listen((u) => user.value = u);
+  }
+
+  StreamSubscription<User?>? _authSub;
+
+  @override
+  void onClose() {
+    _authSub?.cancel();
+    super.onClose();
   }
 
   Future<void> signInWithGoogle() async {
@@ -42,8 +53,9 @@ class AuthenticationController extends GetxController {
     } catch (e) {
       CustomSnackbar.showError(
         title: 'ERROR',
-        message: 'An unexpected error occurred: ${e.toString()}',
+        message: 'An unexpected error occurred',
       );
+      debugPrint('Auth error: $e');
     } finally {
       isLoading.value = false;
     }
@@ -65,8 +77,9 @@ class AuthenticationController extends GetxController {
     } catch (e) {
       CustomSnackbar.showError(
         title: 'ERROR',
-        message: 'An unexpected error occurred: ${e.toString()}',
+        message: 'An unexpected error occurred',
       );
+      debugPrint('Auth error: $e');
     } finally {
       isLoading.value = false;
     }
@@ -77,16 +90,24 @@ class AuthenticationController extends GetxController {
       isLoading.value = true;
       if (_auth.currentUser != null) {
         if (_auth.currentUser!.isAnonymous) {
-          await _auth.currentUser!.delete();
+          try {
+            await _auth.currentUser!.delete();
+          } on FirebaseAuthException {
+            // e.g. requires-recent-login: still make sure the session ends.
+            await _auth.signOut();
+          }
         } else {
           await GoogleSignInService.instance.signOut();
         }
       }
+      // Drop cached PDF images so nothing from this session lingers.
+      PdfImageLoaderService.clearCache();
     } catch (e) {
       CustomSnackbar.showError(
         title: 'ERROR',
-        message: 'Sign out failed: ${e.toString()}',
+        message: 'Sign out failed',
       );
+      debugPrint('signOut error: $e');
     } finally {
       isLoading.value = false;
     }
@@ -135,8 +156,9 @@ class AuthenticationController extends GetxController {
     } catch (e) {
       CustomSnackbar.showError(
         title: 'ERROR',
-        message: 'An unexpected error occurred: ${e.toString()}',
+        message: 'An unexpected error occurred',
       );
+      debugPrint('Auth error: $e');
     } finally {
       isLoading.value = false;
     }

@@ -72,6 +72,8 @@ class _HomePageState extends State<HomePage> {
         _isSearchMode.value = true;
         _isSearching.value = true;
         final results = await _repository.searchProducts(query);
+        // Drop out-of-order responses for an older query.
+        if (!mounted || searchController.text.trim() != query) return;
         _searchResults.assignAll(results);
         _isSearching.value = false;
       }
