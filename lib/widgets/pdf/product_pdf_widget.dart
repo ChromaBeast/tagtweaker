@@ -1,5 +1,6 @@
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/utils/money.dart';
 import 'package:tag_tweaker/widgets/pdf/neo_brutal_pdf_theme.dart';
 import 'package:tag_tweaker/widgets/pdf/pdf_specs_section.dart';
 
@@ -63,7 +64,7 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
               crossAxisAlignment: pw.CrossAxisAlignment.end,
               children: [
                 pw.Text(
-                  'Rs. ${product.price.toStringAsFixed(0)}',
+                  'Rs. ${formatMoney(product.price)}',
                   style: const pw.TextStyle(
                     fontSize: 32,
                     fontWeight: pw.FontWeight.bold,

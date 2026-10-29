@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:tag_tweaker/controllers/favourites_controller.dart';
 import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/utils/money.dart';
 
-/// Editable price input field for a favourite product item
+/// Editable price input for a favourite item. Empty means "use the pricing
+/// rules" (shown as the hint); any typed value is a manual override.
 class FavouritePriceInput extends StatefulWidget {
   final Product item;
 
@@ -23,12 +25,8 @@ class _FavouritePriceInputState extends State<FavouritePriceInput> {
   void initState() {
     super.initState();
     final controller = Get.find<FavouritesController>();
-    final price = controller.getPrice(
-      widget.item.id,
-      widget.item.price.toStringAsFixed(0),
-    );
     _priceController = TextEditingController(
-      text: price.isNotEmpty ? price : '0',
+      text: controller.getPrice(widget.item.id, ''),
     );
   }
 
@@ -48,6 +46,7 @@ class _FavouritePriceInputState extends State<FavouritePriceInput> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<FavouritesController>();
     return Container(
       constraints: const BoxConstraints(minHeight: 48),
       decoration: BoxDecoration(
@@ -76,29 +75,34 @@ class _FavouritePriceInputState extends State<FavouritePriceInput> {
             ),
           ),
           Expanded(
-            child: TextField(
-              controller: _priceController,
-              onChanged: _onPriceChanged,
-              style: NeoBrutalTheme.mono.copyWith(
-                fontSize: 14,
-                color: NeoBrutalColors.black,
-              ),
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                filled: false,
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 14,
-                ),
-                hintText: widget.item.price.toStringAsFixed(0),
-                hintStyle: NeoBrutalTheme.mono.copyWith(
+            child: Obx(
+              () => TextField(
+                key: Key('priceInput_${widget.item.id}'),
+                controller: _priceController,
+                onChanged: _onPriceChanged,
+                style: NeoBrutalTheme.mono.copyWith(
                   fontSize: 14,
-                  color: NeoBrutalColors.mediumGrey,
+                  color: NeoBrutalColors.black,
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: InputDecoration(
+                  filled: false,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                  hintText: formatMoney(controller.rulePrice(widget.item)),
+                  hintStyle: NeoBrutalTheme.mono.copyWith(
+                    fontSize: 14,
+                    color: NeoBrutalColors.mediumGrey,
+                  ),
                 ),
               ),
             ),

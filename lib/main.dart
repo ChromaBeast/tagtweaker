@@ -9,6 +9,7 @@ import 'package:tag_tweaker/firebase_options.dart';
 import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/services/google_sign_in_service.dart';
 import 'package:tag_tweaker/services/product_repository.dart';
+import 'package:tag_tweaker/services/quotation_repository.dart';
 import 'package:tag_tweaker/themes/dark_theme.dart';
 
 Future<void> main() async {
@@ -31,6 +32,7 @@ Future<void> main() async {
   Get.put(AuthenticationController());
   Get.put(NavigationController());
   Get.put(ProductRepository());
+  Get.put(QuotationRepository());
   Get.put(ProductController());
   Get.put(FavouritesController());
   runApp(const MyApp());

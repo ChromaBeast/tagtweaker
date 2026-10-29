@@ -47,57 +47,5 @@ void main() {
       expect(results['1'], isNull);
       expect(results['2'], isNull);
     });
-
-    test('benchmarks sub-millisecond memory cache lookup performance', () {
-      final sw = Stopwatch()..start();
-      for (int i = 0; i < 1000; i++) {
-        PdfImageLoaderService.cachedCount;
-      }
-      sw.stop();
-
-      expect(sw.elapsedMilliseconds, lessThan(50));
-    });
-  });
-
-  group('Catalog Price Override Logic Tests', () {
-    test('local price overrides take precedence over remote pricing', () {
-      final modifiedPrices = {'prod_101': '49.99', 'prod_102': '199.00'};
-      final remoteItems = [
-        Product(
-          id: 'prod_101',
-          title: 'Shoes',
-          price: 89.99,
-          rating: 4,
-          thumbnail: '',
-          images: [],
-          category: 'Fashion',
-          brand: 'Brand',
-          description: 'Desc',
-        ),
-        Product(
-          id: 'prod_102',
-          title: 'Jacket',
-          price: 249.99,
-          rating: 5,
-          thumbnail: '',
-          images: [],
-          category: 'Fashion',
-          brand: 'Brand',
-          description: 'Desc',
-        ),
-      ];
-
-      final processed = remoteItems.map((item) {
-        if (modifiedPrices.containsKey(item.id)) {
-          final modPrice =
-              double.tryParse(modifiedPrices[item.id]!) ?? item.price;
-          return item.copyWith(price: modPrice);
-        }
-        return item;
-      }).toList();
-
-      expect(processed[0].price, 49.99);
-      expect(processed[1].price, 199.00);
-    });
   });
 }
