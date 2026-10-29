@@ -17,11 +17,11 @@ dependencies:
   get: ^4.7.3
 
   # Firebase
-  firebase_core: ^4.4.0
-  firebase_auth: ^6.1.4
-  cloud_firestore: ^6.1.2
-  firebase_storage: ^13.0.6
-  firebase_app_check: ^0.4.1+2
+  firebase_core: ^5.1.0
+  firebase_auth: ^7.0.1
+  cloud_firestore: ^7.1.0
+  firebase_storage: ^14.0.1
+  firebase_app_check: ^0.5.1
   google_sign_in: ^7.2.0
 
   # PDF generation & sharing
@@ -45,8 +45,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  fake_cloud_firestore: ^4.4.0
-  firebase_auth_mocks: ^0.15.2
+  fake_cloud_firestore: ^4.5.0
+  firebase_auth_mocks: ^0.16.0
 
 flutter:
   uses-material-design: true
