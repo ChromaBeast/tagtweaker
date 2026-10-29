@@ -7,16 +7,27 @@ import 'package:tag_tweaker/models/product_model.dart';
 class _CacheEntry<T> {
   final T value;
   final DateTime storedAt;
-  _CacheEntry(this.value) : storedAt = DateTime.now();
+  _CacheEntry(this.value, this.storedAt);
 }
 
 /// Repository for dynamic product Firestore queries with in-memory caching.
 class ProductRepository extends GetxService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  /// [firestore] and [clock] are injectable so the cache can be tested
+  /// against a fake Firestore with controllable time.
+  ProductRepository({
+    FirebaseFirestore? firestore,
+    DateTime Function()? clock,
+    this.prewarmOnInit = true,
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _clock = clock ?? DateTime.now;
+
+  final FirebaseFirestore _firestore;
+  final DateTime Function() _clock;
+  final bool prewarmOnInit;
   static const String _collection = 'products';
 
   /// How long cached query results stay fresh before being re-fetched.
-  static const Duration _ttl = Duration(minutes: 10);
+  static const Duration ttl = Duration(minutes: 10);
 
   /// Upper bound on cached search queries (oldest evicted first).
   static const int _maxSearchEntries = 50;
@@ -37,7 +48,7 @@ class ProductRepository extends GetxService {
   void onInit() {
     super.onInit();
     // Pre-warm queries on service startup to eliminate cold read delay in UI
-    prewarm();
+    if (prewarmOnInit) prewarm();
   }
 
   /// Pre-warm common queries asynchronously
@@ -48,14 +59,18 @@ class ProductRepository extends GetxService {
   }
 
   bool _isFresh(_CacheEntry<Object>? entry) =>
-      entry != null && DateTime.now().difference(entry.storedAt) < _ttl;
+      entry != null && _clock().difference(entry.storedAt) < ttl;
 
   /// Runs [loader] at most once per [key] at a time; concurrent callers
   /// await the same future.
   Future<T> _dedupe<T>(String key, Future<T> Function() loader) {
     final existing = _inFlight[key];
     if (existing != null) return existing.then((v) => v as T);
-    final future = loader().whenComplete(() => _inFlight.remove(key));
+    // Block body on purpose: `=> _inFlight.remove(key)` would return this
+    // very future to whenComplete, which then waits on itself forever.
+    final future = loader().whenComplete(() {
+      _inFlight.remove(key);
+    });
     _inFlight[key] = future;
     return future;
   }
@@ -75,7 +90,7 @@ class ProductRepository extends GetxService {
       try {
         final snapshot = await buildQuery().get();
         final list = snapshot.docs.map(Product.fromSnapshot).toList();
-        _cache[key] = _CacheEntry(list);
+        _cache[key] = _CacheEntry(list, _clock());
         return list;
       } catch (e) {
         debugPrint('Error fetching products ($key): $e');
@@ -168,7 +183,7 @@ class ProductRepository extends GetxService {
 
         final list = snapshot.docs.map(Product.fromSnapshot).toList();
         _searchCache.remove(trimmed);
-        _searchCache[trimmed] = _CacheEntry(list);
+        _searchCache[trimmed] = _CacheEntry(list, _clock());
         while (_searchCache.length > _maxSearchEntries) {
           _searchCache.remove(_searchCache.keys.first);
         }
@@ -191,7 +206,7 @@ class ProductRepository extends GetxService {
       try {
         final snapshot = await _firestore.collection(_collection).count().get();
         final count = snapshot.count ?? 0;
-        _cachedProductCount = _CacheEntry(count);
+        _cachedProductCount = _CacheEntry(count, _clock());
         return count;
       } catch (e) {
         debugPrint('Error getting product count: $e');
