@@ -11,6 +11,35 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
+    // Quotations are immutable snapshots written by FavouritesController.
+    function validQuotation(d) {
+      let keys = ['clientName', 'createdAt', 'lines', 'rules', 'subtotal',
+                  'taxPercent', 'tax', 'total', 'itemCount'];
+      return d.keys().hasOnly(keys) && d.keys().hasAll(keys)
+        && d.clientName is string && d.clientName.size() <= 100
+        && d.createdAt is timestamp
+        && d.lines is list && d.lines.size() > 0 && d.lines.size() <= 200
+        && d.rules is map
+        && d.subtotal is number && d.subtotal >= 0
+        && d.tax is number && d.tax >= 0
+        && d.total is number && d.total >= 0
+        && d.taxPercent is number
+        && d.itemCount is int && d.itemCount > 0;
+    }
+
+    // Mirrors the bounds enforced by PricingRulesSheet.
+    function validPricingRules(d) {
+      return d.keys().hasOnly(['markupPercent', 'categoryMarkupPercent',
+                               'taxPercent', 'rounding'])
+        && d.markupPercent is number
+        && d.markupPercent >= -90 && d.markupPercent <= 500
+        && d.taxPercent is number
+        && d.taxPercent >= 0 && d.taxPercent <= 100
+        && d.categoryMarkupPercent is map
+        && d.categoryMarkupPercent.size() <= 50
+        && d.rounding in ['none', 'nearestOne', 'nearestTen', 'endingIn9'];
+    }
+
     // Catalog is read-only for app users. Writes go through the Admin SDK
     // (upload.py), which bypasses these rules.
     match /products/{productId} {
@@ -36,6 +65,19 @@ service cloud.firestore {
         allow create, update: if isOwner(uid)
           && request.resource.data.size() <= 20
           && request.resource.data.id == productId;
+      }
+
+      match /quotations/{quoteId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && validQuotation(request.resource.data);
+        allow update: if false;
+      }
+
+      match /settings/{settingId} {
+        allow read: if isOwner(uid);
+        allow write: if isOwner(uid)
+          && settingId == 'pricing'
+          && validPricingRules(request.resource.data);
       }
     }
 

@@ -1,17 +1,4 @@
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-
-# 1. Initialize Firebase Admin
-# Replace 'serviceAccountKey.json' with the path to your downloaded key file
-cred = credentials.Certificate("service-account.json")
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-collection_name = "products"
-
-# 2. Your Data (Paste the full JSON list here)
-products_data = [
+[
   {
     "id": 21,
     "title": "Sony WH-1000XM6",
@@ -29,8 +16,8 @@ products_data = [
       "https://images.unsplash.com/photo-1599669454699-24889362302a?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": True,
-      "isTrending": True
+      "carousel": true,
+      "isTrending": true
     }
   },
   {
@@ -50,8 +37,8 @@ products_data = [
       "https://images.unsplash.com/photo-1629367494173-c78a56567877?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": True
+      "carousel": false,
+      "isTrending": true
     }
   },
   {
@@ -71,8 +58,8 @@ products_data = [
       "https://images.unsplash.com/photo-1543512214-318c77a07232?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": False
+      "carousel": false,
+      "isTrending": false
     }
   },
   {
@@ -92,8 +79,8 @@ products_data = [
       "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": False
+      "carousel": false,
+      "isTrending": false
     }
   },
   {
@@ -113,8 +100,8 @@ products_data = [
       "https://images.unsplash.com/photo-1612658596525-e7039838446b?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": True,
-      "isTrending": True
+      "carousel": true,
+      "isTrending": true
     }
   },
   {
@@ -134,8 +121,8 @@ products_data = [
       "https://images.unsplash.com/photo-1586723916590-473e353b76b3?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": True
+      "carousel": false,
+      "isTrending": true
     }
   },
   {
@@ -155,8 +142,8 @@ products_data = [
       "https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": False
+      "carousel": false,
+      "isTrending": false
     }
   },
   {
@@ -176,8 +163,8 @@ products_data = [
       "https://images.unsplash.com/photo-1635334276626-797a1a228952?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": True,
-      "isTrending": False
+      "carousel": true,
+      "isTrending": false
     }
   },
   {
@@ -197,8 +184,8 @@ products_data = [
       "https://images.unsplash.com/photo-1600080972464-8a5d35f63d60?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": False
+      "carousel": false,
+      "isTrending": false
     }
   },
   {
@@ -218,8 +205,8 @@ products_data = [
       "https://images.unsplash.com/photo-1581604556328-b56544149466?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": True
+      "carousel": false,
+      "isTrending": true
     }
   },
   {
@@ -239,8 +226,8 @@ products_data = [
       "https://images.unsplash.com/photo-1577979749830-f1d742b96791?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": True,
-      "isTrending": True
+      "carousel": true,
+      "isTrending": true
     }
   },
   {
@@ -260,8 +247,8 @@ products_data = [
       "https://images.unsplash.com/photo-1593784653277-8d36824566eb?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": True,
-      "isTrending": False
+      "carousel": true,
+      "isTrending": false
     }
   },
   {
@@ -281,8 +268,8 @@ products_data = [
       "https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": True
+      "carousel": false,
+      "isTrending": true
     }
   },
   {
@@ -302,8 +289,8 @@ products_data = [
       "https://images.unsplash.com/photo-1461151304267-38535e780c79?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": False
+      "carousel": false,
+      "isTrending": false
     }
   },
   {
@@ -323,43 +310,8 @@ products_data = [
       "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=800&q=80"
     ],
     "ui": {
-      "carousel": False,
-      "isTrending": True
+      "carousel": false,
+      "isTrending": true
     }
   }
 ]
-
-def upload_products(data):
-    batch = db.batch()
-    count = 0
-    total_batches = 0
-
-    print(f"Starting upload of {len(data)} products...")
-
-    for product in data:
-        # We use the product 'id' as the document ID in Firestore
-        # Convert id to string because document IDs must be strings
-        doc_ref = db.collection(collection_name).document(str(product["id"]))
-        batch.set(doc_ref, product)
-        count += 1
-
-        # Firestore batches allow up to 500 operations. 
-        # Committing every 400 to be safe.
-        if count >= 400:
-            batch.commit()
-            print(f"Committed batch of {count} items.")
-            batch = db.batch() # Start a new batch
-            count = 0
-            total_batches += 1
-
-    # Commit any remaining items
-    if count > 0:
-        batch.commit()
-        print(f"Committed final batch of {count} items.")
-
-    print("Upload complete!")
-
-if __name__ == "__main__":
-    # If you pasted the partial list above, make sure to use the FULL list
-    # from the previous message before running.
-    upload_products(products_data)
