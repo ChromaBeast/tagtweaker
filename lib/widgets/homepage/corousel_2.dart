@@ -1,11 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/pages/ui/product_page.dart';
 import 'package:tag_tweaker/services/product_repository.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
-import 'package:tag_tweaker/models/product_model.dart';
 
 class NeoBrutalCarousel extends StatefulWidget {
   const NeoBrutalCarousel({super.key});
@@ -43,9 +43,7 @@ class _NeoBrutalCarouselState extends State<NeoBrutalCarousel> {
         }
 
         return CarouselSlider(
-          items: carouselProducts.map((product) {
-            return _buildCarouselItem(product);
-          }).toList(),
+          items: carouselProducts.map(_buildCarouselItem).toList(),
           options: CarouselOptions(
             scrollPhysics: const BouncingScrollPhysics(),
             height: 220,
@@ -153,7 +151,7 @@ class _NeoBrutalCarouselState extends State<NeoBrutalCarousel> {
                     ],
                   ),
                   child: Text(
-                    "FEATURED",
+                    'FEATURED',
                     style: NeoBrutalTheme.heading.copyWith(
                       color: NeoBrutalColors.black,
                       fontSize: 12,

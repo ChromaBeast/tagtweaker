@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:printing/printing.dart';
-
-import '../../themes/neo_brutal_theme.dart';
-import '../../controllers/pdf_preview_controller.dart';
+import 'package:tag_tweaker/controllers/pdf_preview_controller.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 class PdfPreviewPage extends GetView<PdfPreviewController> {
   const PdfPreviewPage({super.key});
@@ -27,7 +26,7 @@ class PdfPreviewPage extends GetView<PdfPreviewController> {
         ),
         iconTheme: const IconThemeData(color: NeoBrutalColors.white),
         leading: InkWell(
-          onTap: () => Get.back(),
+          onTap: Get.back,
           child: const Icon(
             Icons.arrow_back_ios_new,
             color: NeoBrutalColors.white,

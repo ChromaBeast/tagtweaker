@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/release
 service-account.json
 .env
+*.keystore
+*.jks
+key.properties
+
+# Local analysis / test output
+analysis*.txt
+coverage/
+firebase-debug.log
+firestore-debug.log
+node_modules/

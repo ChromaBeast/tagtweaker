@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       trendingProducts,
     ) async {
       if (trendingProducts.isEmpty) {
-        return await _repository.fetchTopRatedProducts(limit: 6);
+        return _repository.fetchTopRatedProducts(limit: 6);
       }
       return trendingProducts;
     });
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Text(
-                "NO PRODUCTS FOUND",
+                'NO PRODUCTS FOUND',
                 style: NeoBrutalTheme.heading.copyWith(
                   color: NeoBrutalColors.white,
                 ),

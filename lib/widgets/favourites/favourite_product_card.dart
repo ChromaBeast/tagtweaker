@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tag_tweaker/models/product_model.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/custom_network_image.dart';
-import '../functions/share_individual.dart';
-import 'favourite_price_input.dart';
+import 'package:tag_tweaker/widgets/favourites/favourite_price_input.dart';
+import 'package:tag_tweaker/widgets/functions/share_individual.dart';
 
 /// Card representing a favourite item with customizable price and actions
 class FavouriteProductCard extends StatelessWidget {
@@ -45,10 +45,7 @@ class FavouriteProductCard extends StatelessWidget {
                 ),
               ),
               padding: const EdgeInsets.all(16),
-              child: CustomNetworkImage(
-                item.thumbnail,
-                fit: BoxFit.contain,
-              ),
+              child: CustomNetworkImage(item.thumbnail, fit: BoxFit.contain),
             ),
           ),
 
@@ -76,9 +73,7 @@ class FavouriteProductCard extends StatelessWidget {
                 // Price Input and Actions
                 Row(
                   children: [
-                    Expanded(
-                      child: FavouritePriceInput(item: item),
-                    ),
+                    Expanded(child: FavouritePriceInput(item: item)),
                     const SizedBox(width: 12),
                     _buildActionButton(
                       icon: Icons.delete_outline,

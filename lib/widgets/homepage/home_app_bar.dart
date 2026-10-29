@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/authentication_controller.dart';
-import '../../controllers/product_controller.dart';
-import '../../pages/auth/login_page.dart';
-import '../../pages/ui/core/profile_page.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../custom_network_image.dart';
+import 'package:tag_tweaker/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/controllers/product_controller.dart';
+import 'package:tag_tweaker/pages/auth/login_page.dart';
+import 'package:tag_tweaker/pages/ui/core/profile_page.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
 /// Reusable Neo-Brutal app bar for the home screen
 class HomeAppBar extends StatelessWidget {
@@ -95,7 +95,10 @@ class HomeAppBar extends StatelessWidget {
                     height: 20,
                     decoration: BoxDecoration(
                       color: NeoBrutalColors.lime,
-                      border: Border.all(color: NeoBrutalColors.black, width: 2),
+                      border: Border.all(
+                        color: NeoBrutalColors.black,
+                        width: 2,
+                      ),
                       shape: BoxShape.circle,
                     ),
                   ),

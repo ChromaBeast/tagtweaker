@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../grid_painter.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/grid_painter.dart';
 
 /// Reusable Neo-Brutal background pattern widget with grid overlay.
 /// Eliminates network calls for background textures and renders directly via Canvas.

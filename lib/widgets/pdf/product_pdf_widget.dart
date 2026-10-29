@@ -1,7 +1,7 @@
 import 'package:pdf/widgets.dart' as pw;
-import '../../models/product_model.dart';
-import 'neo_brutal_pdf_theme.dart';
-import 'pdf_specs_section.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/widgets/pdf/neo_brutal_pdf_theme.dart';
+import 'package:tag_tweaker/widgets/pdf/pdf_specs_section.dart';
 
 /// PDF builder widget for individual product catalog pages
 pw.Widget buildProductPdfWidget(Product product, pw.MemoryImage? image) {
@@ -29,7 +29,10 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Container(
-              padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const pw.EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               decoration: NeoBrutalPdfTheme.brutalBox(
                 color: NeoBrutalPdfColors.lime,
                 borderColor: NeoBrutalPdfColors.black,
@@ -37,7 +40,7 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
               ),
               child: pw.Text(
                 product.brand.toUpperCase(),
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   fontSize: 10,
                   fontWeight: pw.FontWeight.bold,
                   color: NeoBrutalPdfColors.black,
@@ -48,7 +51,7 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
             pw.SizedBox(height: 10),
             pw.Text(
               product.title,
-              style: pw.TextStyle(
+              style: const pw.TextStyle(
                 fontSize: 28,
                 fontWeight: pw.FontWeight.bold,
                 color: NeoBrutalPdfColors.white,
@@ -61,7 +64,7 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
               children: [
                 pw.Text(
                   'Rs. ${product.price.toStringAsFixed(0)}',
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 32,
                     fontWeight: pw.FontWeight.bold,
                     color: NeoBrutalPdfColors.lime,
@@ -72,7 +75,10 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
             pw.SizedBox(height: 20),
             if (product.rating > 0)
               pw.Container(
-                padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const pw.EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 decoration: NeoBrutalPdfTheme.brutalBox(
                   color: NeoBrutalPdfColors.darkGrey,
                   borderColor: NeoBrutalPdfColors.white,
@@ -82,7 +88,7 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
                   children: [
                     pw.Text(
                       'RATING',
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                         fontSize: 8,
                         fontWeight: pw.FontWeight.bold,
                         color: NeoBrutalPdfColors.white,
@@ -91,7 +97,7 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
                     pw.SizedBox(width: 6),
                     pw.Text(
                       '${product.rating}/5',
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                         fontSize: 12,
                         fontWeight: pw.FontWeight.bold,
                         color: NeoBrutalPdfColors.lime,
@@ -117,7 +123,9 @@ pw.Widget _buildHeroSection(Product product, pw.MemoryImage? image) {
               : pw.Center(
                   child: pw.Text(
                     'No Image',
-                    style: const pw.TextStyle(color: NeoBrutalPdfColors.lightGrey),
+                    style: const pw.TextStyle(
+                      color: NeoBrutalPdfColors.lightGrey,
+                    ),
                   ),
                 ),
         ),
@@ -132,7 +140,7 @@ pw.Widget _buildDescriptionSection(Product product) {
     children: [
       pw.Text(
         'ABOUT THIS PRODUCT',
-        style: pw.TextStyle(
+        style: const pw.TextStyle(
           fontSize: 12,
           fontWeight: pw.FontWeight.bold,
           color: NeoBrutalPdfColors.lime,
@@ -141,7 +149,9 @@ pw.Widget _buildDescriptionSection(Product product) {
       ),
       pw.SizedBox(height: 10),
       pw.Text(
-        product.description.isNotEmpty ? product.description : 'No description available.',
+        product.description.isNotEmpty
+            ? product.description
+            : 'No description available.',
         style: const pw.TextStyle(
           fontSize: 11,
           color: NeoBrutalPdfColors.white,

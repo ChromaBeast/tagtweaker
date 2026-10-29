@@ -5,11 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/pdf_preview_controller.dart';
-import '../models/product_model.dart';
-import '../pages/ui/pdf_preview_page.dart';
-import '../services/catalog_pdf_service.dart';
-import '../widgets/custom_snackbar.dart';
+import 'package:tag_tweaker/controllers/pdf_preview_controller.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/pages/ui/pdf_preview_page.dart';
+import 'package:tag_tweaker/services/catalog_pdf_service.dart';
+import 'package:tag_tweaker/widgets/custom_snackbar.dart';
 
 class FavouritesController extends GetxController {
   // Map to store local price overrides: ProductID -> New Price
@@ -145,15 +145,17 @@ class FavouritesController extends GetxController {
     }
 
     // Navigate immediately to the preview page
-    Get.to(
-      () => const PdfPreviewPage(),
-      binding: BindingsBuilder(() {
-        Get.put(
-          PdfPreviewController(
-            pdfGenerator: () => _generatePdfFile(snapshot.docs),
-          ),
-        );
-      }),
+    unawaited(
+      Get.to(
+        () => const PdfPreviewPage(),
+        binding: BindingsBuilder(() {
+          Get.put(
+            PdfPreviewController(
+              pdfGenerator: () => _generatePdfFile(snapshot.docs),
+            ),
+          );
+        }),
+      ),
     );
   }
 
@@ -163,7 +165,8 @@ class FavouritesController extends GetxController {
     final items = docs.map((doc) {
       final product = Product.fromSnapshot(doc);
       if (modifiedPrices.containsKey(product.id)) {
-        final modPrice = double.tryParse(modifiedPrices[product.id]!) ?? product.price;
+        final modPrice =
+            double.tryParse(modifiedPrices[product.id]!) ?? product.price;
         return product.copyWith(price: modPrice);
       }
       return product;

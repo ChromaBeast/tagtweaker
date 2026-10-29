@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Reusable Neo-Brutal action button used for product actions (Save, Share, etc.)
 class NeoActionButton extends StatelessWidget {

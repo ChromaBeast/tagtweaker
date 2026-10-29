@@ -71,7 +71,7 @@ class ProductPage extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
-                onTap: () => Get.back(),
+                onTap: Get.back,
                 child: Container(
                   width: 48,
                   height: 48,
@@ -92,7 +92,7 @@ class ProductPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "PRODUCT",
+                    'PRODUCT',
                     style: NeoBrutalTheme.heading.copyWith(
                       fontSize: 16,
                       height: 1,
@@ -100,7 +100,7 @@ class ProductPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "DETAILS",
+                    'DETAILS',
                     style: NeoBrutalTheme.heading.copyWith(
                       fontSize: 16,
                       height: 1,
@@ -146,9 +146,13 @@ class ProductPage extends StatelessWidget {
           Expanded(
             child: NeoActionButton(
               icon: isSaved ? Icons.favorite : Icons.favorite_border,
-              label: isSaved ? "SAVED" : "SAVE",
-              bgColor: isSaved ? NeoBrutalColors.lime : NeoBrutalColors.background,
-              textColor: isSaved ? NeoBrutalColors.black : NeoBrutalColors.white,
+              label: isSaved ? 'SAVED' : 'SAVE',
+              bgColor: isSaved
+                  ? NeoBrutalColors.lime
+                  : NeoBrutalColors.background,
+              textColor: isSaved
+                  ? NeoBrutalColors.black
+                  : NeoBrutalColors.white,
               shadowColor: NeoBrutalColors.lime,
               onTap: () => favController.toggleFavourite(product),
             ),
@@ -157,7 +161,7 @@ class ProductPage extends StatelessWidget {
           Expanded(
             child: NeoActionButton(
               icon: Icons.share,
-              label: "SHARE",
+              label: 'SHARE',
               bgColor: NeoBrutalColors.white,
               textColor: NeoBrutalColors.black,
               shadowColor: NeoBrutalColors.black,

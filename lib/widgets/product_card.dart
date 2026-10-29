@@ -87,7 +87,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2), // Further reduced from 4
                         Text(
-                          "₹${product.price.toStringAsFixed(0)}",
+                          '₹${product.price.toStringAsFixed(0)}',
                           style: NeoBrutalTheme.heading.copyWith(
                             fontSize: 14,
                             color: NeoBrutalColors.lime,
@@ -116,7 +116,7 @@ class ProductCard extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    "${product.rating}",
+                                    '${product.rating}',
                                     style: NeoBrutalTheme.heading.copyWith(
                                       fontSize: 12,
                                     ),
@@ -130,7 +130,7 @@ class ProductCard extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 child: Text(
-                                  "BY ${product.brand.toUpperCase()}",
+                                  'BY ${product.brand.toUpperCase()}',
                                   style: NeoBrutalTheme.heading.copyWith(
                                     fontSize: 8,
                                     color: NeoBrutalColors.white,
@@ -152,7 +152,7 @@ class ProductCard extends StatelessWidget {
               top: -8,
               right: -8,
               child: ProductBadge(
-                text: "BEST SELLER",
+                text: 'BEST SELLER',
                 color: NeoBrutalColors.lime,
                 shadowColor: NeoBrutalColors.white,
                 angle: 0.1,
@@ -163,7 +163,7 @@ class ProductCard extends StatelessWidget {
               top: -8,
               left: -8,
               child: ProductBadge(
-                text: "NEW",
+                text: 'NEW',
                 color: NeoBrutalColors.white,
                 shadowColor: NeoBrutalColors.lime,
                 angle: -0.05,

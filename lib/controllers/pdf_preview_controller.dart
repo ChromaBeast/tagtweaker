@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'dart:io';
 
 class PdfPreviewController extends GetxController {
   final Future<String> Function() pdfGenerator;
@@ -31,7 +32,7 @@ class PdfPreviewController extends GetxController {
 
   Future<void> shareFile() async {
     if (pdfPath.value.isEmpty) return;
-    
+
     final file = File(pdfPath.value);
     if (await file.exists()) {
       // ignore: deprecated_member_use

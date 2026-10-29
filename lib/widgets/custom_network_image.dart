@@ -61,15 +61,18 @@ class CustomNetworkImage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final dpr = MediaQuery.devicePixelRatioOf(context);
-        final w = width ??
+        final w =
+            width ??
             (constraints.hasBoundedWidth ? constraints.maxWidth : null);
-        final h = height ??
+        final h =
+            height ??
             (constraints.hasBoundedHeight ? constraints.maxHeight : null);
         // Use the larger box side so BoxFit.cover never has to upscale
         // (and blur) a decoded image.
         final side = w == null ? null : (h == null ? w : (w > h ? w : h));
-        final cacheWidth =
-            side == null || side <= 0 ? null : (side * dpr).round();
+        final cacheWidth = side == null || side <= 0
+            ? null
+            : (side * dpr).round();
 
         return CachedNetworkImage(
           imageUrl: imageUrl,

@@ -99,11 +99,11 @@ class Product {
   }
 
   static const List<String> categories = [
-    "Smartphone",
-    "Laptop",
-    "Controller",
-    "Audio",
-    "TV",
-    "Accessories",
+    'Smartphone',
+    'Laptop',
+    'Controller',
+    'Audio',
+    'TV',
+    'Accessories',
   ];
 }

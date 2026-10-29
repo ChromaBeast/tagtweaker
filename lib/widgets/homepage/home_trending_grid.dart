@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../models/product_model.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../product_card.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/product_card.dart';
 
 /// Trending products section displaying header and grid of cards
 class HomeTrendingGrid extends StatelessWidget {
@@ -17,15 +17,12 @@ class HomeTrendingGrid extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Text(
-            "TRENDING NOW",
+            'TRENDING NOW',
             style: NeoBrutalTheme.heading.copyWith(
               fontSize: 24,
               color: NeoBrutalColors.lime,
               shadows: const [
-                Shadow(
-                  offset: Offset(2, 2),
-                  color: NeoBrutalColors.black,
-                ),
+                Shadow(offset: Offset(2, 2), color: NeoBrutalColors.black),
               ],
             ),
           ),

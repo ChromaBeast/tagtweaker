@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/authentication_controller.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../../widgets/neo_brutal_button.dart';
-import '../../widgets/or_divider.dart';
-import '../ui/ui_screen.dart';
+import 'package:tag_tweaker/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/pages/ui/ui_screen.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/neo_brutal_button.dart';
+import 'package:tag_tweaker/widgets/or_divider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
 
           if (authCtrl.user.value != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Get.offAll(() => UIPage(selectedIndex: 0));
+              Get.offAll(() => const UIPage(selectedIndex: 0));
             });
             return const SizedBox.shrink();
           }

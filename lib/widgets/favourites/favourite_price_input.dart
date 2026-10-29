@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/favourites_controller.dart';
-import '../../models/product_model.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/controllers/favourites_controller.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Editable price input field for a favourite product item
 class FavouritePriceInput extends StatefulWidget {

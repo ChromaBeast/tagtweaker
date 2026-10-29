@@ -19,7 +19,9 @@ class DashedLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: vertical ? const Size(1, double.infinity) : const Size(double.infinity, 1),
+      size: vertical
+          ? const Size(1, double.infinity)
+          : const Size(double.infinity, 1),
       painter: _DashedLinePainter(
         vertical: vertical,
         color: color ?? Colors.white.withValues(alpha: 0.3),

@@ -4,9 +4,7 @@ import 'package:tag_tweaker/services/pdf_image_loader_service.dart';
 
 void main() {
   group('PdfImageLoaderService Tests', () {
-    setUp(() {
-      PdfImageLoaderService.clearCache();
-    });
+    setUp(PdfImageLoaderService.clearCache);
 
     test('handles null and empty URLs gracefully without error', () async {
       final imgNull = await PdfImageLoaderService.fetchImage(null);
@@ -91,7 +89,8 @@ void main() {
 
       final processed = remoteItems.map((item) {
         if (modifiedPrices.containsKey(item.id)) {
-          final modPrice = double.tryParse(modifiedPrices[item.id]!) ?? item.price;
+          final modPrice =
+              double.tryParse(modifiedPrices[item.id]!) ?? item.price;
           return item.copyWith(price: modPrice);
         }
         return item;

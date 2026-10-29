@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Reusable Neo-Brutal dialog confirming product removal from favourites
 class RemoveFavouriteDialog extends StatelessWidget {
@@ -7,7 +7,10 @@ class RemoveFavouriteDialog extends StatelessWidget {
 
   const RemoveFavouriteDialog({super.key, required this.onConfirm});
 
-  static Future<void> show(BuildContext context, {required VoidCallback onConfirm}) {
+  static Future<void> show(
+    BuildContext context, {
+    required VoidCallback onConfirm,
+  }) {
     return showDialog(
       context: context,
       builder: (context) => RemoveFavouriteDialog(onConfirm: onConfirm),
@@ -49,7 +52,10 @@ class RemoveFavouriteDialog extends StatelessWidget {
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: NeoBrutalTheme.brutalBox(
                       color: NeoBrutalColors.white,
                       borderColor: NeoBrutalColors.black,
@@ -71,7 +77,10 @@ class RemoveFavouriteDialog extends StatelessWidget {
                     onConfirm();
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: NeoBrutalTheme.brutalBox(
                       color: NeoBrutalColors.orange,
                       borderColor: NeoBrutalColors.black,

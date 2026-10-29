@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.example.tag_tweaker"
+    namespace "com.sheersh.tag_tweaker"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

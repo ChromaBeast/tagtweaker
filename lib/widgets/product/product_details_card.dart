@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/product_model.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Reusable Neo-Brutal card displaying product title, rating, and pricing
 class ProductDetailsCard extends StatelessWidget {
@@ -39,7 +39,10 @@ class ProductDetailsCard extends StatelessWidget {
               Transform.rotate(
                 angle: -0.035,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: NeoBrutalColors.black,
                     border: Border.all(color: NeoBrutalColors.black, width: 2),
@@ -54,7 +57,7 @@ class ProductDetailsCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        "${product.rating}",
+                        '${product.rating}',
                         style: NeoBrutalTheme.heading.copyWith(
                           color: NeoBrutalColors.lime,
                           fontSize: 14,
@@ -88,7 +91,7 @@ class ProductDetailsCard extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      "₹${product.price.toStringAsFixed(0)}",
+                      '₹${product.price.toStringAsFixed(0)}',
                       style: NeoBrutalTheme.mono.copyWith(
                         color: NeoBrutalColors.black,
                         fontSize: 40,
@@ -98,7 +101,7 @@ class ProductDetailsCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      "₹${(product.price * 1.2).toStringAsFixed(0)}",
+                      '₹${(product.price * 1.2).toStringAsFixed(0)}',
                       style: NeoBrutalTheme.mono.copyWith(
                         color: Colors.grey,
                         fontSize: 18,
@@ -116,9 +119,12 @@ class ProductDetailsCard extends StatelessWidget {
                     color: NeoBrutalColors.lime,
                     border: Border.all(color: NeoBrutalColors.black, width: 1),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 0,
+                  ),
                   child: Text(
-                    "INCLUSIVE OF ALL TAXES",
+                    'INCLUSIVE OF ALL TAXES',
                     style: NeoBrutalTheme.mono.copyWith(
                       color: NeoBrutalColors.black,
                       fontSize: 10,

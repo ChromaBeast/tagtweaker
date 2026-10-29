@@ -50,25 +50,25 @@ class GoogleSignInService {
     );
 
     _isInitialized = true;
-    if (kDebugMode) print("GoogleSignIn v7.2.0 initialized");
+    if (kDebugMode) print('GoogleSignIn v7.2.0 initialized');
   }
 
   void _handleEvent(GoogleSignInAuthenticationEvent event) {
     if (event is GoogleSignInAuthenticationEventSignIn) {
       _authenticatedUser = event.user;
       _userController.add(event.user);
-      if (kDebugMode) print("Google sign-in event received");
+      if (kDebugMode) print('Google sign-in event received');
     } else if (event is GoogleSignInAuthenticationEventSignOut) {
       _authenticatedUser = null;
       _userController.add(null);
-      if (kDebugMode) print("Signed out");
+      if (kDebugMode) print('Signed out');
     }
   }
 
   void _handleError(Object error) {
     _authenticatedUser = null;
     _userController.add(null);
-    if (kDebugMode) print("GoogleSignIn error: $error");
+    if (kDebugMode) print('GoogleSignIn error: $error');
   }
 
   /// Signs in the user with Google and returns a [UserCredential]
@@ -77,7 +77,7 @@ class GoogleSignInService {
   Future<UserCredential> signInWithGoogle() async {
     if (!_isInitialized) {
       throw GoogleSignInException(
-        "GoogleSignInService not initialized. Call initialize() first.",
+        'GoogleSignInService not initialized. Call initialize() first.',
       );
     }
 
@@ -102,7 +102,7 @@ class GoogleSignInService {
 
     if (googleAuthorization == null) {
       throw GoogleSignInException(
-        "Failed to get access token. Authorization not granted.",
+        'Failed to get access token. Authorization not granted.',
       );
     }
 
@@ -119,7 +119,7 @@ class GoogleSignInService {
   Future<AuthCredential> getGoogleCredential() async {
     if (!_isInitialized) {
       throw GoogleSignInException(
-        "GoogleSignInService not initialized. Call initialize() first.",
+        'GoogleSignInService not initialized. Call initialize() first.',
       );
     }
 
@@ -137,7 +137,7 @@ class GoogleSignInService {
 
     if (googleAuthorization == null) {
       throw GoogleSignInException(
-        "Failed to get access token. Authorization not granted.",
+        'Failed to get access token. Authorization not granted.',
       );
     }
 

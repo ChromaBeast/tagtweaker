@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Animated background with floating geometric particles
 class PremiumParticleBackground extends StatefulWidget {

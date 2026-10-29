@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Reusable Neo-Brutal logout confirmation dialog
 class NeoLogoutDialog extends StatelessWidget {
@@ -7,7 +7,10 @@ class NeoLogoutDialog extends StatelessWidget {
 
   const NeoLogoutDialog({super.key, required this.onConfirm});
 
-  static Future<void> show(BuildContext context, {required VoidCallback onConfirm}) {
+  static Future<void> show(
+    BuildContext context, {
+    required VoidCallback onConfirm,
+  }) {
     return showDialog(
       context: context,
       builder: (context) => NeoLogoutDialog(onConfirm: onConfirm),

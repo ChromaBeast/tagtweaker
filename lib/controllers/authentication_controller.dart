@@ -1,7 +1,8 @@
 import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tag_tweaker/services/google_sign_in_service.dart';
 import 'package:tag_tweaker/services/pdf_image_loader_service.dart';
 import 'package:tag_tweaker/widgets/custom_snackbar.dart';
@@ -103,10 +104,7 @@ class AuthenticationController extends GetxController {
       // Drop cached PDF images so nothing from this session lingers.
       PdfImageLoaderService.clearCache();
     } catch (e) {
-      CustomSnackbar.showError(
-        title: 'ERROR',
-        message: 'Sign out failed',
-      );
+      CustomSnackbar.showError(title: 'ERROR', message: 'Sign out failed');
       debugPrint('signOut error: $e');
     } finally {
       isLoading.value = false;

@@ -119,7 +119,7 @@ class _CategoryPageState extends State<CategoryPage> {
           Row(
             children: [
               GestureDetector(
-                onTap: () => Get.back(),
+                onTap: Get.back,
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: NeoBrutalTheme.brutalBox(
@@ -153,8 +153,8 @@ class _CategoryPageState extends State<CategoryPage> {
                   const SizedBox(height: 4),
                   Text(
                     isLoading
-                        ? "CATEGORY // LOADING..."
-                        : "CATEGORY // $itemCount ITEMS",
+                        ? 'CATEGORY // LOADING...'
+                        : 'CATEGORY // $itemCount ITEMS',
                     style: NeoBrutalTheme.mono.copyWith(
                       fontSize: 10,
                       letterSpacing: 1.2,
@@ -175,7 +175,7 @@ class _CategoryPageState extends State<CategoryPage> {
         child: Padding(
           padding: const EdgeInsets.all(48.0),
           child: Text(
-            "NO PRODUCTS FOUND",
+            'NO PRODUCTS FOUND',
             style: NeoBrutalTheme.heading.copyWith(
               color: NeoBrutalColors.white,
             ),

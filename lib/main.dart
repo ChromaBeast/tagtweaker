@@ -5,12 +5,11 @@ import 'package:tag_tweaker/controllers/authentication_controller.dart';
 import 'package:tag_tweaker/controllers/favourites_controller.dart';
 import 'package:tag_tweaker/controllers/navigation_controller.dart';
 import 'package:tag_tweaker/controllers/product_controller.dart';
+import 'package:tag_tweaker/firebase_options.dart';
+import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/services/google_sign_in_service.dart';
 import 'package:tag_tweaker/services/product_repository.dart';
-import 'package:tag_tweaker/pages/splash_screen.dart';
 import 'package:tag_tweaker/themes/dark_theme.dart';
-
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Tag Tweaker",
+      title: 'Tag Tweaker',
       themeMode: ThemeMode.dark,
       darkTheme: darkTheme,
       home: const SplashScreen(),

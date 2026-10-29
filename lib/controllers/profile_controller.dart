@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -107,14 +108,17 @@ class ProfileController extends GetxController {
       onConfirm: () async {
         // Signs out of Google + Firebase and clears per-user caches.
         await Get.find<AuthenticationController>().signOut();
-        Get.offAll(() => const LoginPage());
+        unawaited(Get.offAll(() => const LoginPage()));
       },
     );
   }
 
   Future<void> updateDisplayName(BuildContext context) async {
     final currentName = currentUser.value?.displayName ?? '';
-    final newName = await NeoEditNameDialog.show(context, initialName: currentName);
+    final newName = await NeoEditNameDialog.show(
+      context,
+      initialName: currentName,
+    );
 
     if (newName == null) return;
 

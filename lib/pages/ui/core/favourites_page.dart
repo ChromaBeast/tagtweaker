@@ -59,7 +59,8 @@ class FavouritesPage extends StatelessWidget {
                             return FavouriteProductCard(
                               item: product,
                               auth: auth,
-                              onTap: () => Get.to(() => ProductPage(product: product)),
+                              onTap: () =>
+                                  Get.to(() => ProductPage(product: product)),
                               onRemove: () => RemoveFavouriteDialog.show(
                                 context,
                                 onConfirm: () {

@@ -20,7 +20,7 @@ class NeoBrutalSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget searchBar = Container(
+    final Widget searchBar = Container(
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: hasBorder

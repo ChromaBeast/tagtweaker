@@ -45,7 +45,7 @@ class UIPage extends StatelessWidget {
                 children: [
                   _NavItem(
                     icon: Icons.home,
-                    label: "HOME",
+                    label: 'HOME',
                     index: 0,
                     controller: navCtrl,
                   ),
@@ -53,7 +53,7 @@ class UIPage extends StatelessWidget {
                   Container(width: 4, color: NeoBrutalColors.white),
                   _NavItem(
                     icon: Icons.favorite,
-                    label: "FAVOURITES",
+                    label: 'FAVOURITES',
                     index: 1,
                     controller: navCtrl,
                   ),

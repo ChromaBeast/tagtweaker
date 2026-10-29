@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../controllers/splash_controller.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../../widgets/splash/splash_components.dart';
+import 'package:get/get.dart';
+import 'package:tag_tweaker/controllers/splash_controller.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/splash/splash_components.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

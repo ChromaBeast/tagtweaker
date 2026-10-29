@@ -1,13 +1,13 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-
-import '../models/product_model.dart';
-import '../widgets/pdf/neo_brutal_pdf_theme.dart';
-import '../widgets/pdf/product_pdf_widget.dart';
-import 'pdf_image_loader_service.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/services/pdf_image_loader_service.dart';
+import 'package:tag_tweaker/widgets/pdf/neo_brutal_pdf_theme.dart';
+import 'package:tag_tweaker/widgets/pdf/product_pdf_widget.dart';
 
 /// Modular service responsible for building and compiling Neo-Brutal PDF Catalogs.
 class CatalogPdfService {
@@ -28,7 +28,9 @@ class CatalogPdfService {
 
         if (i < items.length - 1) {
           pdfContent.add(pw.SizedBox(height: 20));
-          pdfContent.add(pw.Divider(color: NeoBrutalPdfColors.mediumGrey, thickness: 1));
+          pdfContent.add(
+            pw.Divider(color: NeoBrutalPdfColors.mediumGrey, thickness: 1),
+          );
           pdfContent.add(pw.SizedBox(height: 20));
         }
       }
@@ -44,7 +46,7 @@ class CatalogPdfService {
             ),
           ),
           header: (context) => _buildHeader(),
-          footer: (context) => _buildFooter(context),
+          footer: _buildFooter,
           build: (pw.Context context) => pdfContent,
         ),
       );
@@ -91,7 +93,7 @@ class CatalogPdfService {
               children: [
                 pw.Text(
                   'TAG TWEAKER',
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 24,
                     fontWeight: pw.FontWeight.bold,
                     color: NeoBrutalPdfColors.white,
@@ -99,7 +101,7 @@ class CatalogPdfService {
                 ),
                 pw.Text(
                   'PRODUCT CATALOG',
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 10,
                     color: NeoBrutalPdfColors.lime,
                     letterSpacing: 2,
@@ -109,14 +111,17 @@ class CatalogPdfService {
               ],
             ),
             pw.Container(
-              padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const pw.EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
               decoration: NeoBrutalPdfTheme.brutalBox(
                 color: NeoBrutalPdfColors.purple,
                 borderColor: NeoBrutalPdfColors.white,
               ),
               child: pw.Text(
                 'OFFICIAL DOCUMENT',
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   fontSize: 8,
                   color: NeoBrutalPdfColors.white,
                   fontWeight: pw.FontWeight.bold,
@@ -142,11 +147,17 @@ class CatalogPdfService {
           children: [
             pw.Text(
               'Tag Tweaker © ${DateTime.now().year}',
-              style: const pw.TextStyle(fontSize: 8, color: NeoBrutalPdfColors.lightGrey),
+              style: const pw.TextStyle(
+                fontSize: 8,
+                color: NeoBrutalPdfColors.lightGrey,
+              ),
             ),
             pw.Text(
               'Page ${context.pageNumber} of ${context.pagesCount}',
-              style: const pw.TextStyle(fontSize: 8, color: NeoBrutalPdfColors.lightGrey),
+              style: const pw.TextStyle(
+                fontSize: 8,
+                color: NeoBrutalPdfColors.lightGrey,
+              ),
             ),
           ],
         ),

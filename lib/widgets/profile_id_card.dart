@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
-import 'profile/profile_avatar.dart';
+import 'package:tag_tweaker/widgets/profile/profile_avatar.dart';
 
 /// Brutalist member ID card displaying user avatar and profile details
 class ProfileIDCard extends StatelessWidget {
@@ -60,11 +60,7 @@ class ProfileIDCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ProfileAvatar(
-                  user: user,
-                  onEdit: onEdit,
-                  isLoading: isLoading,
-                ),
+                ProfileAvatar(user: user, onEdit: onEdit, isLoading: isLoading),
                 const SizedBox(width: 24),
                 Expanded(
                   child: Column(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../models/product_model.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 
 /// A cached value plus the time it was stored, used for TTL expiry.
 class _CacheEntry<T> {
@@ -47,7 +47,7 @@ class ProductRepository extends GetxService {
     getProductCount();
   }
 
-  bool _isFresh(_CacheEntry? entry) =>
+  bool _isFresh(_CacheEntry<Object>? entry) =>
       entry != null && DateTime.now().difference(entry.storedAt) < _ttl;
 
   /// Runs [loader] at most once per [key] at a time; concurrent callers
@@ -162,7 +162,7 @@ class ProductRepository extends GetxService {
             .collection(_collection)
             .orderBy('title')
             .startAt([trimmed])
-            .endAt(['$trimmed'])
+            .endAt(['$trimmed\uf8ff']) // \uf8ff = highest BMP code point
             .limit(_maxResults)
             .get();
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Reusable Neo-Brutal edit display name dialog
 class NeoEditNameDialog extends StatefulWidget {
@@ -7,7 +7,10 @@ class NeoEditNameDialog extends StatefulWidget {
 
   const NeoEditNameDialog({super.key, required this.initialName});
 
-  static Future<String?> show(BuildContext context, {required String initialName}) {
+  static Future<String?> show(
+    BuildContext context, {
+    required String initialName,
+  }) {
     return showDialog<String>(
       context: context,
       builder: (context) => NeoEditNameDialog(initialName: initialName),
@@ -95,7 +98,10 @@ class _NeoEditNameDialogState extends State<NeoEditNameDialog> {
                 GestureDetector(
                   onTap: () => Navigator.pop(context, null),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: NeoBrutalTheme.brutalBox(
                       color: NeoBrutalColors.white,
                       borderColor: NeoBrutalColors.black,
@@ -114,7 +120,10 @@ class _NeoEditNameDialogState extends State<NeoEditNameDialog> {
                 GestureDetector(
                   onTap: () => Navigator.pop(context, _controller.text.trim()),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                     decoration: NeoBrutalTheme.brutalBox(
                       color: NeoBrutalColors.lime,
                       borderColor: NeoBrutalColors.black,

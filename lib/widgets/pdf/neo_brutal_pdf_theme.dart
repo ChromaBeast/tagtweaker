@@ -25,11 +25,11 @@ class NeoBrutalPdfTheme {
       color: color,
       border: pw.Border.all(color: borderColor, width: borderWidth),
       // PDF package doesn't support complex shadows easily in the same way as Flutter
-      // We will simulate it or just stick to strong borders for now. 
+      // We will simulate it or just stick to strong borders for now.
       // BoxShadow in pdf package is limited.
     );
   }
-  
+
   // Helper to create a stack for the hard shadow effect if needed
   // or just use a simple border for now as shadows in PDF are tricky.
   // We'll stick to strong borders and high contrast.

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../services/product_repository.dart';
+import 'package:tag_tweaker/services/product_repository.dart';
 
 /// Lightweight controller for shared product state.
 /// Individual pages use ProductRepository directly for their specific queries.

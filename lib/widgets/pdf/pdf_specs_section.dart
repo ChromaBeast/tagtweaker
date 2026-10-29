@@ -1,7 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../../models/product_model.dart';
-import 'neo_brutal_pdf_theme.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/widgets/pdf/neo_brutal_pdf_theme.dart';
 
 /// Specifications table section for product PDF
 pw.Widget buildPdfSpecsSection(Product product) {
@@ -10,7 +10,7 @@ pw.Widget buildPdfSpecsSection(Product product) {
     children: [
       pw.Text(
         'SPECIFICATIONS',
-        style: pw.TextStyle(
+        style: const pw.TextStyle(
           fontSize: 12,
           fontWeight: pw.FontWeight.bold,
           color: NeoBrutalPdfColors.lime,
@@ -27,8 +27,16 @@ pw.Widget buildPdfSpecsSection(Product product) {
         ),
         child: pw.Column(
           children: [
-            buildPdfSpecRow('Product ID', '#${product.id}', NeoBrutalPdfColors.lime),
-            buildPdfSpecRow('Category', product.category, NeoBrutalPdfColors.white),
+            buildPdfSpecRow(
+              'Product ID',
+              '#${product.id}',
+              NeoBrutalPdfColors.lime,
+            ),
+            buildPdfSpecRow(
+              'Category',
+              product.category,
+              NeoBrutalPdfColors.white,
+            ),
             buildPdfSpecRow('Brand', product.brand, NeoBrutalPdfColors.lime),
           ],
         ),
@@ -48,7 +56,13 @@ pw.Widget buildPdfSpecRow(String label, String value, PdfColor valueColor) {
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        pw.Text(label, style: const pw.TextStyle(fontSize: 10, color: NeoBrutalPdfColors.white)),
+        pw.Text(
+          label,
+          style: const pw.TextStyle(
+            fontSize: 10,
+            color: NeoBrutalPdfColors.white,
+          ),
+        ),
         pw.Text(
           value,
           style: pw.TextStyle(

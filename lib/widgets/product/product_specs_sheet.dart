@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Reusable Neo-Brutal specs sheet widget for product details
 class ProductSpecsSheet extends StatelessWidget {
@@ -43,7 +43,7 @@ class ProductSpecsSheet extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  "SPECS SHEET",
+                  'SPECS SHEET',
                   style: NeoBrutalTheme.heading.copyWith(
                     color: NeoBrutalColors.black,
                     fontSize: 20,

@@ -1,7 +1,9 @@
-import 'package:get/get.dart';
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tag_tweaker/pages/ui/ui_screen.dart';
+import 'package:get/get.dart';
 import 'package:tag_tweaker/pages/auth/login_page.dart';
+import 'package:tag_tweaker/pages/ui/ui_screen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -14,9 +16,9 @@ class SplashController extends GetxController {
     await Future.delayed(const Duration(milliseconds: 600));
     final isLoggedIn = FirebaseAuth.instance.currentUser != null;
     if (isLoggedIn) {
-      Get.offAll(() => const UIPage(selectedIndex: 0));
+      unawaited(Get.offAll(() => const UIPage(selectedIndex: 0)));
     } else {
-      Get.offAll(() => const LoginPage());
+      unawaited(Get.offAll(() => const LoginPage()));
     }
   }
 }

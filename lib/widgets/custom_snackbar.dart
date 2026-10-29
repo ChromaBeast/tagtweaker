@@ -83,7 +83,11 @@ class CustomSnackbar {
       isDismissible: true,
       dismissDirection: DismissDirection.horizontal,
       forwardAnimationCurve: Curves.easeOutBack,
-      icon: const Icon(Icons.warning_amber_rounded, color: NeoBrutalColors.black, size: 28),
+      icon: const Icon(
+        Icons.warning_amber_rounded,
+        color: NeoBrutalColors.black,
+        size: 28,
+      ),
     );
   }
 }

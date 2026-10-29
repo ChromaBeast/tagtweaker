@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/product_controller.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/controllers/product_controller.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Rotated Neo-Brutal inventory count banner
 class HomeInventoryBanner extends StatelessWidget {
@@ -26,7 +26,7 @@ class HomeInventoryBanner extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "FULL INVENTORY",
+                'FULL INVENTORY',
                 style: NeoBrutalTheme.heading.copyWith(
                   color: NeoBrutalColors.black,
                   fontSize: 20,
@@ -41,7 +41,7 @@ class HomeInventoryBanner extends StatelessWidget {
                 ),
                 child: Obx(
                   () => Text(
-                    "${productController.productCount.value} ITEMS",
+                    '${productController.productCount.value} ITEMS',
                     style: NeoBrutalTheme.mono.copyWith(
                       color: NeoBrutalColors.black,
                       fontSize: 14,

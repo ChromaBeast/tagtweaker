@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Animated logo reveal with staggered typography animation
 class AnimatedLogoReveal extends StatelessWidget {
@@ -13,14 +13,14 @@ class AnimatedLogoReveal extends StatelessWidget {
       children: [
         // TAG - smaller, lime accent
         Text(
-          'TAG',
-          style: NeoBrutalTheme.mono.copyWith(
-            fontSize: 16,
-            letterSpacing: 12,
-            fontWeight: FontWeight.w400,
-            color: NeoBrutalColors.lime,
-          ),
-        )
+              'TAG',
+              style: NeoBrutalTheme.mono.copyWith(
+                fontSize: 16,
+                letterSpacing: 12,
+                fontWeight: FontWeight.w400,
+                color: NeoBrutalColors.lime,
+              ),
+            )
             .animate()
             .fadeIn(
               duration: const Duration(milliseconds: 600),
@@ -37,13 +37,13 @@ class AnimatedLogoReveal extends StatelessWidget {
 
         // TWEAKER - larger, main title
         Text(
-          'TWEAKER',
-          style: NeoBrutalTheme.heading.copyWith(
-            fontSize: 48,
-            letterSpacing: 8,
-            fontWeight: FontWeight.w900,
-          ),
-        )
+              'TWEAKER',
+              style: NeoBrutalTheme.heading.copyWith(
+                fontSize: 48,
+                letterSpacing: 8,
+                fontWeight: FontWeight.w900,
+              ),
+            )
             .animate()
             .fadeIn(
               duration: const Duration(milliseconds: 800),

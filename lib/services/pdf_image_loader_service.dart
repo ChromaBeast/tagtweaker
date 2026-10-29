@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/widgets.dart' as pw;
-import '../models/product_model.dart';
+import 'package:tag_tweaker/models/product_model.dart';
 
 /// High-performance concurrent image loader with in-memory caching for PDF generation.
 class PdfImageLoaderService {
@@ -32,7 +32,9 @@ class PdfImageLoaderService {
     for (var i = 0; i < items.length; i += _maxConcurrent) {
       final batch = items.skip(i).take(_maxConcurrent);
       final entries = await Future.wait(
-        batch.map((item) async => MapEntry(item.id, await fetchImage(item.thumbnail))),
+        batch.map(
+          (item) async => MapEntry(item.id, await fetchImage(item.thumbnail)),
+        ),
       );
       result.addEntries(entries);
     }

@@ -1,9 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../../models/product_model.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../custom_network_image.dart';
-import 'dashed_line.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
+import 'package:tag_tweaker/widgets/product/dashed_line.dart';
 
 /// Reusable Neo-Brutal image carousel with canvas-rendered dashed lines
 class ProductImageCarousel extends StatelessWidget {
@@ -13,8 +13,9 @@ class ProductImageCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> images =
-        product.images.isNotEmpty ? product.images : [product.thumbnail];
+    final List<dynamic> images = product.images.isNotEmpty
+        ? product.images
+        : [product.thumbnail];
 
     return Container(
       width: double.infinity,

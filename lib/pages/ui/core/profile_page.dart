@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tag_tweaker/controllers/profile_controller.dart';
 import 'package:tag_tweaker/controllers/authentication_controller.dart';
+import 'package:tag_tweaker/controllers/profile_controller.dart';
 import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 import 'package:tag_tweaker/widgets/common/app_background.dart';
 import 'package:tag_tweaker/widgets/profile_id_card.dart';
@@ -55,7 +55,7 @@ class ProfilePage extends StatelessWidget {
         Row(
           children: [
             GestureDetector(
-              onTap: () => Get.back(),
+              onTap: Get.back,
               child: Container(
                 width: 48,
                 height: 48,
@@ -165,7 +165,10 @@ class ProfilePage extends StatelessWidget {
     });
   }
 
-  Widget _buildLogoutButton(BuildContext context, ProfileController controller) {
+  Widget _buildLogoutButton(
+    BuildContext context,
+    ProfileController controller,
+  ) {
     return GestureDetector(
       onTap: () => controller.logout(context),
       child: Container(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../models/product_model.dart';
-import '../../pages/ui/category_page.dart';
-import '../../themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/models/product_model.dart';
+import 'package:tag_tweaker/pages/ui/category_page.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
 
 /// Horizontal scrollable category list with Neo-Brutal styled cards
 class HomeCategoriesRow extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../themes/neo_brutal_theme.dart';
-import '../custom_network_image.dart';
+import 'package:tag_tweaker/themes/neo_brutal_theme.dart';
+import 'package:tag_tweaker/widgets/custom_network_image.dart';
 
 /// Reusable avatar widget with edit button for profile ID card
 class ProfileAvatar extends StatelessWidget {
