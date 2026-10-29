@@ -37,7 +37,7 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.8
-  carousel_slider: ^5.1.1
+  carousel_slider: ^5.1.2
   google_fonts: ^8.2.1
   flutter_animate: ^4.5.2
 
