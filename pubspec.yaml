@@ -27,7 +27,7 @@ dependencies:
   # PDF generation & sharing
   pdf: ^3.11.3
   printing: ^5.15.0
-  path_provider: ^2.1.5
+  path_provider: ^2.1.6
   share_plus: ^13.3.0
 
   # Networking & media
