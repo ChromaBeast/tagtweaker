@@ -1,5 +1,19 @@
 # Tag Tweaker — Release Notes
 
+## 🧾 What's New in v1.2.0 — Quotations
+
+### Client quotations with pricing rules
+- **Pricing rules**: set a markup (or discount), GST/tax and rounding (exact, ₹1, ₹10 or prices ending in 9) once, and every item in your quote follows it. Typing a price by hand still wins for that item.
+- **Live totals**: see the subtotal, tax and grand total update as you edit.
+- **Quotation history**: every quote is saved with the client's name. Open any past quote to export it again, or swipe to delete it.
+- **Better PDFs**: quotations now open with a client block, an itemised price table that flows across pages, and totals. Prices use Indian digit grouping (₹1,29,999).
+
+### Fixes
+- Home, category and search screens could stay on the loading state indefinitely after the v1.1.0 caching update. Fixed.
+- Very long quotations no longer fail to generate.
+- The © symbol in the PDF footer rendered incorrectly.
+
+
 ## ⚡ What's New in v1.1.0 — The Snappy & Lean Update
 
 We went completely under the hood to make Tag Tweaker dramatically faster, lighter, and more responsive. No more waiting on loading spinners — everything you tap reacts immediately.

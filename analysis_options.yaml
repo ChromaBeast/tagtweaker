@@ -5,6 +5,7 @@ analyzer:
     - build/**
     - android/**
     - ios/**
+    - test_rules/**
     - lib/firebase_options.dart
   language:
     strict-casts: true
